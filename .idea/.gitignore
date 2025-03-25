@@ -1,0 +1,37 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Bỏ qua các file hệ thống và IDE
+.idea/
+.DS_Store
+Thumbs.db
+
+# Bỏ qua các thư mục build và biên dịch
+**/target/
+**/build/
+**/out/
+
+# Bỏ qua các thư viện bên ngoài (Frontend & Backend)
+**/node_modules/
+**/.mvn/
+**/.gradle/
+
+# Bỏ qua file nén và tạm thời
+*.zip
+*.log
+*.tmp
+
+# Bỏ qua file cấu hình môi trường
+.env
+
+# Bỏ qua các file biên dịch Java
+*.class
+
+# Bỏ qua thư viện ngoài
+External Libraries/
