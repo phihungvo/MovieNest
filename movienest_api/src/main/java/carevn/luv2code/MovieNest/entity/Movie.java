@@ -1,7 +1,9 @@
 package carevn.luv2code.MovieNest.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.List;
@@ -10,29 +12,30 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "movie")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Movie {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    UUID id;
 
     @Column(nullable = false)
-    private String title;
+    String title;
 
-    private String overview;
+    String overview;
 
     @Column(name = "release_date")
-    private Date releaseDate;
+    Date releaseDate;
 
     @Column(name = "poster_path")
-    private String posterPath;
+    String posterPath;
 
     @Column(name = "backdrop_path")
-    private String backdropPath;
+    String backdropPath;
 
-    private float vote_average;
+    float vote_average;
 
-    private int vote_count;
+    int vote_count;
 
     @ManyToMany
     @JoinTable(
@@ -40,8 +43,8 @@ public class Movie {
             joinColumns =@JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genres_id")
     )
-    private List<Genres> genres; // Danh sách thể loại
+    List<Genres> genres; // Danh sách thể loại
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Trailer> trailers;
+    List<Trailer> trailers;
 }

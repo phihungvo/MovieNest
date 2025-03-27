@@ -3,7 +3,9 @@ package carevn.luv2code.MovieNest.entity;
 import carevn.luv2code.MovieNest.enums.TrailerType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.Set;
@@ -12,30 +14,31 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "trailer")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Trailer {
     @Id
     @GeneratedValue
-    private UUID id;
+    UUID id;
 
-    private String title;
+    String title;
 
     @Column(name = "trailer_key")
-    private String key; // Store key of youtube link
+    String key; // Store key of youtube link
 
-    private String site;
+    String site;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "trailer_type")
-    private TrailerType trailerType;
+    TrailerType trailerType;
 
-    private boolean official;
+    boolean official;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")
     @JsonIgnore
-    private Movie movie;
+    Movie movie;
 
     @Column(name = "published_at")
-    private Date publishedAt;
+    Date publishedAt;
 
 }

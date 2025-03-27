@@ -2,9 +2,11 @@ package carevn.luv2code.MovieNest.entity;
 
 import carevn.luv2code.MovieNest.enums.Role;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
@@ -14,44 +16,45 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "users")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue
-    private UUID id;
+    UUID id;
 
     @Column(nullable = false)
-    private String username;
+    String username;
 
-    private String first_name;
+    String first_name;
 
-    private String last_name;
+    String last_name;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    String email;
 
     @Column(nullable = false)
-    private String password;
+    String password;
 
-    private String address;
+    String address;
 
-    private String phone_number;
+    String phone_number;
 
-    private String profile_picture;
+    String profile_picture;
 
-    private String bio;
+    String bio;
 
-    private Date create_at;
+    Date create_at;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    Set<Role> roles;
 
-    private boolean enabled = true;
+    boolean enabled = true;
 
-    private boolean accountNonExpired = true;
+    boolean accountNonExpired = true;
 
-    private boolean credentialsNonExpired = true;
+    boolean credentialsNonExpired = true;
 
-    private boolean accountNonLocked = true;
+    boolean accountNonLocked = true;
 
 }

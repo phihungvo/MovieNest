@@ -1,20 +1,23 @@
 package carevn.luv2code.MovieNest.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
 
-    private String email;
+     String email;
 
-    private String address;
+     String address;
 
-    private String phone_number;
+     String phone_number;
 
-    private String profile_picture;
+     String profile_picture;
 
-    private String bio;
+     String bio;
 
 }

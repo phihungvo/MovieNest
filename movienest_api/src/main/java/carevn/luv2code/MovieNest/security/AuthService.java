@@ -3,6 +3,8 @@ package carevn.luv2code.MovieNest.security;
 import carevn.luv2code.MovieNest.dto.requests.RegisterRequest;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.enums.Role;
+import carevn.luv2code.MovieNest.exception.AppException;
+import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +24,7 @@ public class AuthService {
     public String register(RegisterRequest request) {
         // Check if email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new BadCredentialsException("Email already in use");
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
         // Create new user

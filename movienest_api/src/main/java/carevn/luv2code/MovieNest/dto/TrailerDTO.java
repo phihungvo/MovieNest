@@ -1,27 +1,30 @@
 package carevn.luv2code.MovieNest.dto;
 
 import carevn.luv2code.MovieNest.enums.TrailerType;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TrailerDTO {
 
-    private String title;
+     String title;
 
-    private String key;
+     String key;
 
-    private String site;
+     String site;
 
-    private TrailerType trailerType;
+     TrailerType trailerType;
 
-    private boolean official;
+     boolean official;
 
-    private UUID movieId;
+     UUID movieId;
 
-    private Date publishedAt;
+     Date publishedAt;
 }

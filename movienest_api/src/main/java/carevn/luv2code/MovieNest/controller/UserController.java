@@ -1,5 +1,6 @@
 package carevn.luv2code.MovieNest.controller;
 
+import carevn.luv2code.MovieNest.dto.requests.ApiResponse;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,11 @@ public class UserController {
     }
 
     @GetMapping("/getByUsername")
-    public ResponseEntity<User> getByUsername(@RequestParam String username) {
-        return ResponseEntity.ok().body(userService.findByUsername(username));
+    public ApiResponse<User> getByUsername(@RequestParam String username) {
+        return ApiResponse.<User>builder()
+                .code(200)
+                .result(userService.findByUsername(username))
+                .build();
     }
 
     @GetMapping("/findAll")
