@@ -33,5 +33,5 @@ build/
 .vscode/
 
 # Ignore Spring Boot config
-# /movienest_api/src/main/resources/application.*
-/movienest_api/src/main/resources/
+/movienest_api/src/main/resources/application.*
+# /movienest_api/src/main/resources/
