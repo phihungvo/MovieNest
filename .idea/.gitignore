@@ -35,3 +35,6 @@ Thumbs.db
 
 # Bỏ qua thư viện ngoài
 External Libraries/
+
+# Ignore Spring Boot config
+/movienest_api/src/main/resources/application.*
