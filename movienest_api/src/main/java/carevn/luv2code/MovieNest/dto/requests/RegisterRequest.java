@@ -1,4 +1,4 @@
-package carevn.luv2code.MovieNest.dto;
+package carevn.luv2code.MovieNest.dto.requests;
 
 import carevn.luv2code.MovieNest.enums.Role;
 import lombok.Data;

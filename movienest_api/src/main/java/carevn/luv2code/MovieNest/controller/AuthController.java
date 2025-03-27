@@ -1,8 +1,8 @@
 package carevn.luv2code.MovieNest.controller;
 
-import carevn.luv2code.MovieNest.dto.AuthenticationRequest;
-import carevn.luv2code.MovieNest.dto.AuthenticationResponse;
-import carevn.luv2code.MovieNest.dto.RegisterRequest;
+import carevn.luv2code.MovieNest.dto.requests.AuthenticationRequest;
+import carevn.luv2code.MovieNest.dto.response.AuthenticationResponse;
+import carevn.luv2code.MovieNest.dto.requests.RegisterRequest;
 import carevn.luv2code.MovieNest.security.AuthService;
 import carevn.luv2code.MovieNest.security.JwtService;
 import lombok.RequiredArgsConstructor;

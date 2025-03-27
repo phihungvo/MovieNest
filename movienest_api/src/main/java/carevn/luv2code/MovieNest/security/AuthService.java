@@ -1,6 +1,6 @@
 package carevn.luv2code.MovieNest.security;
 
-import carevn.luv2code.MovieNest.dto.RegisterRequest;
+import carevn.luv2code.MovieNest.dto.requests.RegisterRequest;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.enums.Role;
 import carevn.luv2code.MovieNest.repository.UserRepository;

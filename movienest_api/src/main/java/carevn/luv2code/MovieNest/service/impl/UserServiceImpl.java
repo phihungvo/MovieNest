@@ -5,7 +5,6 @@ import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.mapper.UserMapper;
 import carevn.luv2code.MovieNest.repository.UserRepository;
 import carevn.luv2code.MovieNest.service.UserService;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

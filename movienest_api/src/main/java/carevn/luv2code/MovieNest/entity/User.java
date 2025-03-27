@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,9 +17,9 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue
-    private UUID user_id;
+    private UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String username;
 
     private String first_name;
@@ -27,7 +29,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String password;
 
     private String address;
@@ -37,6 +39,8 @@ public class User {
     private String profile_picture;
 
     private String bio;
+
+    private Date create_at;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

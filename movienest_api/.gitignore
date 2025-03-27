@@ -31,15 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-# Bỏ qua thư mục build
-target/
-out/
-
-# Bỏ qua Maven và Gradle cache
-.mvn/
-.gradle/
-
-# Bỏ qua file cấu hình môi trường
-.env
-application.yml

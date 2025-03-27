@@ -38,8 +38,13 @@ public class SecurityConfig {
                         // User endpoints
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
 
+                        // User endpoints for movies
+                        .requestMatchers("/api/movie/**").hasAnyRole("USER", "ADMIN")
+
                         // Admin-only endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers("/api/trailers/**").hasRole("ADMIN")
 
                         // Moderator endpoints
                         .requestMatchers("/api/moderator/**").hasAnyRole("MODERATOR", "ADMIN")

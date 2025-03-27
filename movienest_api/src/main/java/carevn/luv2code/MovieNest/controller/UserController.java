@@ -1,6 +1,5 @@
 package carevn.luv2code.MovieNest.controller;
 
-import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 

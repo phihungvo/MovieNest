@@ -2,7 +2,6 @@ package carevn.luv2code.MovieNest.service;
 
 import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.entity.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
