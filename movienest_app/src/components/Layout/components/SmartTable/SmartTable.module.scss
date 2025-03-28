@@ -1,0 +1,13 @@
+
+.table-container{
+    padding-top: 20px;
+}
+
+.customTable :global(.ant-table-thead) {
+    background-color: #1890ff; /* Màu xanh dương */
+}
+
+.customTable :global(.ant-table-thead) th {
+    color: white; /* Chữ màu trắng */
+    font-weight: bold;
+}

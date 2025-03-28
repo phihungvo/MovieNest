@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DashboardLayout from './components/Layout/DashboardLayout';
-import { publicRoutes } from './routes';
+import { publicRoutes, privateRoutes } from './routes';
 
 function App() {
   return (
     <Router>
     <div>
       <Routes>
-        {publicRoutes.map((route, index) => {
+        {privateRoutes.map((route, index) => {
           const Page = route.component
           let Layout = DashboardLayout
 
