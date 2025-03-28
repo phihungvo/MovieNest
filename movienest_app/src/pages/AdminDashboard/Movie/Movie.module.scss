@@ -1,8 +1,7 @@
-.movie-wrapper{
+.movie-wrapper {
     width: 100%;
-    padding: 20px 23px; 
+    padding: 20px 23px;
     display: block;
-
 }
 .movie-container {
     width: 100%;
@@ -13,5 +12,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding-bottom: 19px;
+}
+
+.sub_header {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 19px;
+}
+.features {
+    display: flex; /* Hoặc display: grid */
+    gap: 10px; /* Khoảng cách giữa các phần tử */
 }

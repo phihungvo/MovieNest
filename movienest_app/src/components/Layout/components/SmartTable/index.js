@@ -5,7 +5,7 @@ import styles from './SmartTable.module.scss';
 
 const cx = classNames.bind(styles);
 
-function SmartTable({columns, dataSource, loading, pagination, onTableChange}) {
+function SmartTable({columns, movieSources, loading, pagination, onTableChange}) {
 
     return (
         <div className={cx('table-container')}>
@@ -13,7 +13,7 @@ function SmartTable({columns, dataSource, loading, pagination, onTableChange}) {
                 bordered
                 className={cx('customTable')}
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={movieSources}
                 loading={loading}
                 rowKey="id"
                 pagination={{

@@ -2,21 +2,21 @@ import { Button } from 'antd';
 
 function SmartButton({
     size = 'middle', // large | middle | small
-    type = 'primary',
-    title = 'Button',
-    buttonWidth = 38,
+    type = '',
+    title = '',
+    buttonWidth = 120,
     buttonHeight = 38,
     icon = null,
+    onClick = ''
 }) {
     return (
         <>
             <Button
                 size={size}
                 type={type}
-                buttonWidth={buttonWidth}
-                buttonHeight={buttonHeight}
                 icon={icon}
-                // style={{ width: inputWidth, height: inputHeight }}
+                onClick={onClick}
+                style={{ width: buttonWidth, height: buttonHeight }}
             >
                 {title}
             </Button>

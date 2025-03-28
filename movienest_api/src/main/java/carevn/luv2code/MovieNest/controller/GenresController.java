@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/api/admin")
+@RequestMapping("/api/genres")
 public class GenresController {
 
     private final GenresService genresService;

@@ -52,6 +52,8 @@
                          // Admin-only endpoints
                          .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
+                         .requestMatchers("/api/genres/**").hasRole("ADMIN")
+
                          .requestMatchers("/api/trailers/**").hasRole("ADMIN")
 
                          // Moderator endpoints
