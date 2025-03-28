@@ -1,6 +1,8 @@
 package carevn.luv2code.MovieNest.repository;
 
 import carevn.luv2code.MovieNest.entity.Movie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +22,6 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
     List<Movie> findByReleaseDate(Date release_date);
 
     Optional<Movie> findByTitle(String title);
+
+    Page<Movie> findAll(Pageable pageable);
 }

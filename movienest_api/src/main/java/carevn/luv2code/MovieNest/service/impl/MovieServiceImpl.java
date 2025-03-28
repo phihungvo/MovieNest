@@ -9,6 +9,9 @@ import carevn.luv2code.MovieNest.repository.MovieRepository;
 import carevn.luv2code.MovieNest.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,5 +59,12 @@ public class MovieServiceImpl implements MovieService {
         movies = movieRepository.searchMovie(keyWord);
         log.info("Found {} movies", movies.size());
         return movies;
+    }
+
+    @Override
+    public Page<Movie> findAllMovies(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Movie> pageMovies = movieRepository.findAll(pageable);
+        return pageMovies;
     }
 }
