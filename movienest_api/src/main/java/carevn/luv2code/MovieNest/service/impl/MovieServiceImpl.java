@@ -29,27 +29,27 @@ public class MovieServiceImpl implements MovieService {
 
     private final GenresRepository genresRepository;
 
-    private final MovieMapper movieMapper;
+//    private final MovieMapper movieMapper;
 
     public MovieServiceImpl(MovieRepository movieRepository,GenresRepository genresRepository ,MovieMapper movieMapper) {
         this.movieRepository = movieRepository;
         this.genresRepository = genresRepository;
-        this.movieMapper = movieMapper;
+//        this.movieMapper = movieMapper;
     }
 
     @Override
     public void save(MovieDTO movieDTO) {
-        Optional<Movie> existingMovie = movieRepository.findByTitle(movieDTO.getTitle());
-        if (existingMovie.isPresent()) {
-            throw new IllegalArgumentException("Movie with title already exists");
-        }
-
-        Movie movie = movieMapper.toEntity(movieDTO);
-        List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenre_ids());
-        movie.setGenres(genresList);
-
-        movieRepository.save(movie);
-        log.info("Saved movie: {}", movie.getTitle());
+//        Optional<Movie> existingMovie = movieRepository.findByTitle(movieDTO.getTitle());
+//        if (existingMovie.isPresent()) {
+//            throw new IllegalArgumentException("Movie with title already exists");
+//        }
+//
+//        Movie movie = movieMapper.toEntity(movieDTO);
+//        List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenre_ids());
+//        movie.setGenres(genresList);
+//
+//        movieRepository.save(movie);
+//        log.info("Saved movie: {}", movie.getTitle());
     }
 
 

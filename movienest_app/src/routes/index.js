@@ -5,8 +5,8 @@ import Register from '../pages/General/Register';
 
 const publicRoutes = [
     { path: '/', component: Home, title: 'Home' },
-    { path: '/login', component: Login, title: 'Login' },
-    { path: '/register', component: Register, title: 'Register' },
+    // { path: '/admin/login', component: Login, title: 'Login' },
+    // { path: '/admin/register', component: Register, title: 'Register' },
 ];
 
 // const resultsRoutes = [
@@ -15,6 +15,8 @@ const publicRoutes = [
 
 const privateRoutes = [
     { path: '/admin/movie', component: Movie, title: 'Movie' },
+    { path: '/admin/login', component: Login, title: 'Login' },
+    { path: '/admin/register', component: Register, title: 'Register' },
 ];
 
 export { publicRoutes, privateRoutes };

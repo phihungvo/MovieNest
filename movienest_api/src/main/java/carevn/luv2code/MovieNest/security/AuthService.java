@@ -30,12 +30,8 @@ public class AuthService {
         // Create new user
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setFirst_name(request.getFirst_name());
-        user.setLast_name(request.getLast_name());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setAddress(request.getAddress());
-        user.setPhone_number(request.getPhone_number());
 
         // Set roles - default to USER if not provided
         Set<Role> roles = request.getRoles() != null && !request.getRoles().isEmpty()
