@@ -1,6 +1,5 @@
 package carevn.luv2code.MovieNest.dto;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +20,16 @@ public class MovieDTO {
 
      Date releaseDate;
 
-     String poster_path;
+     String posterPath;
 
-     String backdrop_path;
+     String backdropPath;
 
      float vote_average;
 
      int vote_count;
 
-     List<UUID> genre_ids; // Danh sách thể loại
+     List<UUID> genres; // Danh sách thể loại
+
+     List<UUID> trailers;
 
 }

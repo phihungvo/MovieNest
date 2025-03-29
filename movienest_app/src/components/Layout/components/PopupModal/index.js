@@ -11,14 +11,21 @@ import {
     Modal,
     Row,
     Col,
-    Button
+    Button,
 } from 'antd';
 
 const { TextArea } = Input;
 
 const normFile = (e) => (Array.isArray(e) ? e : e?.fileList);
 
-function PopupModal({ isModalOpen, setIsModalOpen, title, genresSources, fields, onSubmit }) {
+function PopupModal({
+    isModalOpen,
+    setIsModalOpen,
+    title,
+    genresSources,
+    fields,
+    onSubmit,
+}) {
     const [componentDisabled, setComponentDisabled] = useState(false);
     const [form] = Form.useForm();
 
@@ -80,14 +87,15 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, genresSources, fields,
                         rules={field.rules}
                     >
                         <Select>
-                            {genresSources && genresSources.map((genre) => (
-                                <Select.Option 
-                                    key={genre.id} 
-                                    value={genre.id}
-                                >
-                                    {genre.name}
-                                </Select.Option>
-                            ))}
+                            {genresSources &&
+                                genresSources.map((genre) => (
+                                    <Select.Option
+                                        key={genre.id}
+                                        value={genre.id}
+                                    >
+                                        {genre.name}
+                                    </Select.Option>
+                                ))}
                         </Select>
                     </Form.Item>
                 );
@@ -123,7 +131,11 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, genresSources, fields,
                         getValueFromEvent={normFile}
                         style={{ marginLeft: '50px' }}
                     >
-                        <Upload action="/upload.do" listType="picture-card">
+                        <Upload
+                            // action="/upload.do"
+                            listType="picture-card"
+                            beforeUpload={() => false}
+                        >
                             <button
                                 type="button"
                                 style={{ border: 0, background: 'none' }}

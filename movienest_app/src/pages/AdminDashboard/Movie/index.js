@@ -14,6 +14,7 @@ import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { getAllGenres } from '~/service/admin/genres';
+import { Form } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -90,10 +91,13 @@ function Movie() {
             label: 'Genres',
             name: 'category',
             type: 'select',
-            options: Array.isArray(genresSources) && genresSources.length > 0 ? genresSources.map((genre) => ({
-                label: genre.name,  
-                value: genre.id,    
-            })) : [],  
+            options:
+                Array.isArray(genresSources) && genresSources.length > 0
+                    ? genresSources.map((genre) => ({
+                          label: genre.name,
+                          value: genre.id,
+                      }))
+                    : [],
         },
         { label: 'Overview', name: 'overview', type: 'textarea' },
         { label: 'Poster', name: 'poster', type: 'upload' },
@@ -142,14 +146,17 @@ function Movie() {
             setLoading(false);
         }
     };
+    const [form] = Form.useForm();
 
     const handleCreateMovie = async (formData) => {
         try {
+            console.log('Form data submitted:', formData); // Add this to debug
             const response = await createMovie(formData);
-            // Làm mới danh sách phim hoặc thêm phim mới vào state
+
             handleGetAllMovies();
-            // handleGetAllGenres();  
-            setIsModalOpen(false); 
+            // handleGetAllGenres();
+            setIsModalOpen(false);
+            form.resetFields();
         } catch (error) {
             console.error('Failed to create movies:', error);
         }
@@ -159,7 +166,7 @@ function Movie() {
         try {
             const response = await getAllGenres();
             if (response) {
-                setGenresSources(response); 
+                setGenresSources(response);
             } else {
                 console.error('No genres data available');
             }
@@ -167,7 +174,6 @@ function Movie() {
             console.error('Failed to get all genres:', error);
         }
     };
-    
 
     return (
         <div className={cx('movie-wrapper')}>

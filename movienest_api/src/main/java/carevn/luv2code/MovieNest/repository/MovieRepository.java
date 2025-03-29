@@ -16,12 +16,12 @@ import java.util.UUID;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, UUID> {
 
+    boolean existsByTitle(String title);
+
     @Query("SELECT m FROM Movie m where m.title LIKE %:keyWord%")
     List<Movie> searchMovie(@Param("keyWord") String keyWord);
 
     List<Movie> findByReleaseDate(Date release_date);
-
-    Optional<Movie> findByTitle(String title);
 
     Page<Movie> findAll(Pageable pageable);
 }

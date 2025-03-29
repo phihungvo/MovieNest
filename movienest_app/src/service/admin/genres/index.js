@@ -2,11 +2,14 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const TOKEN = process.env.REACT_APP_TOKEN;
+// const TOKEN = process.env.REACT_APP_TOKEN;
+
+const TOKEN = localStorage.getItem("token");
 
 // http://localhost:8080/api/admin/findAll
 export const getAllGenres = async () => {
     try {
+        console.log(`Genres with token ${TOKEN}`)
         const response = await axios.get(`${API_URL}/genres/findAll`, {
             withCredentials: true,
             headers: {
@@ -14,7 +17,8 @@ export const getAllGenres = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        console.log('Genres data: ', response.data)
+        
+        console.log('Genres data: ', response.data, ` with token ${TOKEN}`)
         return response.data;
     } catch (error) {
         console.error(

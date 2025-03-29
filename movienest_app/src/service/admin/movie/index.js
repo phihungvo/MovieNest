@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const TOKEN = process.env.REACT_APP_TOKEN;
+const TOKEN = localStorage.getItem("token");
 
 export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
     try {
@@ -17,6 +17,7 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
                 'Content-Type': 'application/json',
             },
         });
+        console.log("Token: ", TOKEN)
         return response.data;
     } catch (error) {
         console.error(
@@ -29,12 +30,28 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
 
 export const createMovie = async (formData) => {
     try {
-        // Chuyển đổi ngày tháng
-        const releaseDate = formData.releaseDate
-            ? formData.releaseDate.isValid
+        // Simplify date handling
+        let releaseDate = null;
+        if (formData.releaseDate) {
+            releaseDate = formData.releaseDate.format
                 ? formData.releaseDate.format('YYYY-MM-DD')
-                : formData.releaseDate
-            : null;
+                : formData.releaseDate;
+        }
+
+        // Correctly extract file URLs from Upload component
+        const posterPath =
+            formData.poster && formData.poster.length > 0
+                ? formData.poster[0].name ||
+                  formData.poster[0].response?.name ||
+                  ''
+                : '';
+
+        const backdropPath =
+            formData.backdrop && formData.backdrop.length > 0
+                ? formData.backdrop[0].name ||
+                  formData.backdrop[0].response?.name ||
+                  ''
+                : '';
 
         const response = await axios.post(
             `${API_URL}/movie/create`,
@@ -42,11 +59,11 @@ export const createMovie = async (formData) => {
                 title: formData.title,
                 overview: formData.overview,
                 releaseDate: releaseDate,
-                poster_path: formData.poster?.url || '',
-                backdrop_path: formData.backdrop?.[0]?.url || '',
-                vote_average: formData.voteAverage,
-                vote_count: formData.voteCount,
-                genre_ids: [formData.category], // Giả sử chỉ chọn 1 thể loại
+                poster_path: posterPath,
+                backdrop_path: backdropPath,
+                vote_average: formData.voteAverage || 0,
+                vote_count: formData.voteCount || 0,
+                genre_ids: formData.category ? [formData.category] : [],
             },
             {
                 headers: {
@@ -58,9 +75,11 @@ export const createMovie = async (formData) => {
 
         console.log('Movie Created:', response.data);
         return response.data; // Trả về dữ liệu phim đã tạo
-
     } catch (error) {
-        console.error('Error creating movie:', error.response ? error.response.data : error);
+        console.error(
+            'Error creating movie:',
+            error.response ? error.response.data : error,
+        );
         throw error; // Ném lỗi để component có thể xử lý
     }
 };

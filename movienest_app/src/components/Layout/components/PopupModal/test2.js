@@ -211,3 +211,57 @@ export default PopupModal;
             //             </Select>
             //         </Form.Item>
             //     );
+
+
+
+
+
+//             // Fix createMovie function to properly handle form data:
+// export const createMovie = async (formData) => {
+//     try {
+//         // Simplify date handling
+//         let releaseDate = null;
+//         if (formData.releaseDate) {
+//             // For Ant Design DatePicker, use moment or dayjs object's format method
+//             releaseDate = formData.releaseDate.format ? 
+//                           formData.releaseDate.format('YYYY-MM-DD') : 
+//                           formData.releaseDate;
+//         }
+
+//         // Correctly extract file URLs from Upload component
+//         const posterPath = formData.poster && formData.poster.length > 0 ? 
+//                           formData.poster[0].url || formData.poster[0].response?.url || '' : 
+//                           '';
+        
+//         const backdropPath = formData.backdrop && formData.backdrop.length > 0 ? 
+//                            formData.backdrop[0].url || formData.backdrop[0].response?.url || '' : 
+//                            '';
+
+//         const response = await axios.post(
+//             `${API_URL}/movie/create`,
+//             {
+//                 title: formData.title,
+//                 overview: formData.overview,
+//                 releaseDate: releaseDate,
+//                 poster_path: posterPath,
+//                 backdrop_path: backdropPath,
+//                 vote_average: formData.voteAverage || 0,
+//                 vote_count: formData.voteCount || 0,
+//                 genre_ids: formData.category ? [formData.category] : [],
+//             },
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${TOKEN}`,
+//                     'Content-Type': 'application/json',
+//                 },
+//             },
+//         );
+
+//         console.log('Movie Created:', response.data);
+//         return response.data;
+
+//     } catch (error) {
+//         console.error('Error creating movie:', error.response ? error.response.data : error);
+//         throw error;
+//     }
+// };

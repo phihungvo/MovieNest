@@ -20,13 +20,15 @@ public enum ErrorCode {
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You don't have permission", HttpStatus.FORBIDDEN),
     EMAIL_EXISTED(1009, "Email already in use", HttpStatus.CONFLICT),
+    MOVIE_ALREADY_EXISTS(1010, "Movie with title already exists", HttpStatus.BAD_REQUEST),
+    TRAILER_NOT_FOUND(1011, "Trailer not found", HttpStatus.NOT_FOUND),
     ;
 
     int code;
     String message;
-    HttpStatusCode statusCode;
+    HttpStatus statusCode;
 
-    ErrorCode(int code, String message, HttpStatusCode statusCode){
+    ErrorCode(int code, String message, HttpStatus statusCode){
         this.code = code;
         this.message = message;
         this.statusCode = statusCode;

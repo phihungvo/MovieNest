@@ -3,9 +3,13 @@ package carevn.luv2code.MovieNest.service.impl;
 import carevn.luv2code.MovieNest.dto.MovieDTO;
 import carevn.luv2code.MovieNest.entity.Genres;
 import carevn.luv2code.MovieNest.entity.Movie;
+import carevn.luv2code.MovieNest.entity.Trailer;
+import carevn.luv2code.MovieNest.exception.AppException;
+import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.MovieMapper;
 import carevn.luv2code.MovieNest.repository.GenresRepository;
 import carevn.luv2code.MovieNest.repository.MovieRepository;
+import carevn.luv2code.MovieNest.repository.TrailerRepository;
 import carevn.luv2code.MovieNest.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,27 +33,52 @@ public class MovieServiceImpl implements MovieService {
 
     private final GenresRepository genresRepository;
 
+    private final TrailerRepository trailerRepository;
+
 //    private final MovieMapper movieMapper;
 
-    public MovieServiceImpl(MovieRepository movieRepository,GenresRepository genresRepository ,MovieMapper movieMapper) {
+    public MovieServiceImpl(MovieRepository movieRepository,
+                            GenresRepository genresRepository,
+                            TrailerRepository trailerRepository
+                            ) {
         this.movieRepository = movieRepository;
         this.genresRepository = genresRepository;
-//        this.movieMapper = movieMapper;
+        this.trailerRepository = trailerRepository;
+
     }
 
     @Override
     public void save(MovieDTO movieDTO) {
-//        Optional<Movie> existingMovie = movieRepository.findByTitle(movieDTO.getTitle());
-//        if (existingMovie.isPresent()) {
-//            throw new IllegalArgumentException("Movie with title already exists");
-//        }
-//
-//        Movie movie = movieMapper.toEntity(movieDTO);
-//        List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenre_ids());
-//        movie.setGenres(genresList);
-//
-//        movieRepository.save(movie);
-//        log.info("Saved movie: {}", movie.getTitle());
+
+        if(movieRepository.existsByTitle(movieDTO.getTitle())){
+            throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
+        }
+
+        // Tạo Movie entity và ánh xạ dữ liệu từ MovieDTO
+        Movie movie = new Movie();
+        movie.setTitle(movieDTO.getTitle());
+        movie.setOverview(movieDTO.getOverview());
+        movie.setReleaseDate(movieDTO.getReleaseDate());
+        movie.setPosterPath(movieDTO.getPosterPath());
+        movie.setBackdropPath(movieDTO.getBackdropPath());
+        movie.setVote_average(movieDTO.getVote_average());
+        movie.setVote_count(movieDTO.getVote_count());
+
+        // Chỉ lấy danh sách Genres nếu có dữ liệu hợp lệ
+        if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
+            List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
+            movie.setGenres(genresList);
+        }
+
+        // Chỉ lấy danh sách Trailers nếu có dữ liệu hợp lệ
+        if (movieDTO.getTrailers() != null && !movieDTO.getTrailers().isEmpty()) {
+            List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
+            movie.setTrailers(trailerList);
+        }
+
+        // Lưu vào database
+        movieRepository.save(movie);
+        log.info("Saved movie: {}", movie.getTitle());
     }
 
 

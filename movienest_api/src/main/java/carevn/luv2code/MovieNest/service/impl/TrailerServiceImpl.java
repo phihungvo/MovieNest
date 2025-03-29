@@ -3,6 +3,8 @@ package carevn.luv2code.MovieNest.service.impl;
 import carevn.luv2code.MovieNest.dto.TrailerDTO;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.Trailer;
+import carevn.luv2code.MovieNest.exception.AppException;
+import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.TrailerMapper;
 import carevn.luv2code.MovieNest.repository.MovieRepository;
 import carevn.luv2code.MovieNest.repository.TrailerRepository;
@@ -29,13 +31,14 @@ public class TrailerServiceImpl implements TrailerService {
         this.trailerRepository = trailerRepository;
         this.movieRepository = movieRepository;
         this.trailerMapper = trailerMapper;
+        System.out.println("TrailerMapper Bean: " + trailerMapper);
     }
 
     @Override
     public void createTrailer(TrailerDTO trailerDTO) {
         Trailer trailer = trailerMapper.toEntity(trailerDTO);
         Movie movie = movieRepository.findById(trailerDTO.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.TRAILER_NOT_FOUND));
 
         trailer.setMovie(movie);
         trailerRepository.save(trailer);
@@ -64,7 +67,7 @@ public class TrailerServiceImpl implements TrailerService {
     @Override
     public Trailer updateTrailer(UUID trailerId, TrailerDTO trailerDTO) {
         Trailer trailer = trailerRepository.findById(trailerId)
-                .orElseThrow(() -> new RuntimeException("Trailer not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.TRAILER_NOT_FOUND));
 
         trailer.setTitle(trailerDTO.getTitle());
         trailer.setKey(trailerDTO.getKey());
