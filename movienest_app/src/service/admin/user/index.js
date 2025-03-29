@@ -20,7 +20,7 @@ export const login = async (email, password) => {
         console.log('Login Response:', response.data);
 
         if (response.status === 200) {
-            return response.data.token; // Giả sử API trả về { token: "JWT_TOKEN" }
+            return response.data.token;
         } else {
             console.error('Login failed with status:', response.status);
             throw new Error('Invalid credentials');

@@ -35,14 +35,16 @@ const sideBar = [
         ]
     },
     {
-        title: 'Compose',
+        title: 'Movie',
         color: '#7b53c0',
-        icon: <EditOutlined />
+        icon: <EditOutlined />,
+        url: '/admin/movie'
     },
     {
         title: 'Calendar',
         color: '#e91e63',
-        icon: <CalendarOutlined />
+        icon: <CalendarOutlined />,
+        url: '/auth/login'
     },
     {
         title: 'Charts',
@@ -96,6 +98,7 @@ function Sidebar() {
                             color={item.color}
                             icon={item.icon}
                             children={item.children}
+                            url={item.url}
                         />
                     ))}
                 </div>

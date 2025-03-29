@@ -40,5 +40,5 @@ External Libraries/
 /movienest_api/src/main/resources/application.*
 
 # Ignore Workflow.md file
-Workflow.md
-
+WORKFLOW.md
+WorkFlowWithBranch.md

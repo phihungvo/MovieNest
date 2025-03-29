@@ -2,18 +2,25 @@ import classNames from 'classnames/bind';
 import styles from './NavItem.module.scss';
 import { useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function NavItem({ title, color, icon, children }) {
+function NavItem({ title, color, icon, children, url = '' }) {
     const [isOpen, setIsOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleToggle = () => {
         if (children) setIsOpen(!isOpen);
     };
 
+    const handleNavigate = () => {
+        navigate(url);
+    }
+
     return (
-        <div className={cx('nav-item')}>
+        <div className={cx('nav-item')} onClick={handleNavigate}>
             <div className={cx('sidebar-link')} onClick={handleToggle}>
                 <div className={cx('logo-item')} style={{ color: color }}>
                     {icon}
