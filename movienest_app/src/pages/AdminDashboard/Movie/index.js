@@ -14,23 +14,21 @@ import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { getAllGenres } from '~/service/admin/genres';
-import { Form } from 'antd';
+import { Form, message } from 'antd';
 
 const cx = classNames.bind(styles);
 
 function Movie() {
     const [movieSources, setMovieSources] = useState([]);
     const [genresSources, setGenresSources] = useState([]);
-
     const [loading, setLoading] = useState(false);
-
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 5,
         total: 0,
     });
-
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
 
     const columns = [
         { title: 'Movie Title', dataIndex: 'title', key: 'title', width: 250 },
@@ -106,9 +104,9 @@ function Movie() {
             label: 'Release Date',
             name: 'releaseDate',
             type: 'date',
-            rules: [{ required: true }],
+            rules: [{ required: true, message: 'Release date is required!' }],
         },
-        { label: 'Rate', name: 'rate', type: 'rate' },
+        // { label: 'Rate', name: 'rate', type: 'rate' },
     ];
 
     useEffect(() => {
@@ -124,7 +122,7 @@ function Movie() {
         setLoading(true);
         try {
             const response = await getAllMovies({ page, pageSize });
-            // console.log('Movies Data:', response);
+            console.log('Movies Data:', response);
             const movieList = response.content;
 
             if (Array.isArray(movieList)) {
@@ -146,24 +144,25 @@ function Movie() {
             setLoading(false);
         }
     };
-    const [form] = Form.useForm();
 
     const handleCreateMovie = async (formData) => {
         try {
-            console.log('Form data submitted:', formData); // Add this to debug
-
-            if (!formData.genres) formData.genres = [];
-            if (!formData.posterPath) formData.posterPath = null;
-            if (!formData.backdropPath) formData.backdropPath = null;
+            console.log('Form data submitted:', formData); 
 
             const response = await createMovie(formData);
 
-            handleGetAllMovies();
-            // handleGetAllGenres();
-            setIsModalOpen(false);
-            form.resetFields();
+            console.log('Create movie response: ', response);
+
+            if (response) {
+                message.success('Movie created successfully!');
+                handleGetAllMovies();
+                setIsModalOpen(false);
+            }
         } catch (error) {
             console.error('Failed to create movies:', error);
+            message.error(
+                'Failed to create movie: ' + (error.message || 'Unknown error'),
+            );
         }
     };
 
@@ -190,7 +189,7 @@ function Movie() {
                         title="Add new"
                         icon={<PlusOutlined />}
                         type="primary"
-                        onClick={() => setIsModalOpen(true)} // Khi nhấn nút, mở modal
+                        onClick={() => setIsModalOpen(true)}
                     />
                     <PopupModal
                         isModalOpen={isModalOpen}

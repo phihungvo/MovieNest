@@ -22,6 +22,8 @@ public enum ErrorCode {
     EMAIL_EXISTED(1009, "Email already in use", HttpStatus.CONFLICT),
     MOVIE_ALREADY_EXISTS(1010, "Movie with title already exists", HttpStatus.BAD_REQUEST),
     TRAILER_NOT_FOUND(1011, "Trailer not found", HttpStatus.NOT_FOUND),
+    FILE_NOT_FOUND(1012, "File not found", HttpStatus.NOT_FOUND),
+    MAX_UPLOAD_SIZE_EXCEEDED(1013, "File upload size exceeds the allowed limit", HttpStatus.BAD_REQUEST),
     ;
 
     int code;

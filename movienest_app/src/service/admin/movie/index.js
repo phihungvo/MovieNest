@@ -2,9 +2,10 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const TOKEN = localStorage.getItem("token");
-
 export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
+
+    const TOKEN = localStorage.getItem('token');
+
     try {
         const response = await axios.get(`${API_URL}/movie/getAll`, {
             params: {
@@ -29,6 +30,9 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
 };
 
 export const createMovie = async (formData) => {
+
+    const TOKEN = localStorage.getItem('token');
+
     try {
         // Simplify date handling
         let releaseDate = null;
@@ -59,8 +63,8 @@ export const createMovie = async (formData) => {
                 title: formData.title,
                 overview: formData.overview,
                 releaseDate: releaseDate,
-                poster_path: posterPath,
-                backdrop_path: backdropPath,
+                posterPath: posterPath,
+                backdropPath: backdropPath,
                 vote_average: formData.voteAverage || 0,
                 vote_count: formData.voteCount || 0,
                 genre_ids: formData.category ? [formData.category] : [],

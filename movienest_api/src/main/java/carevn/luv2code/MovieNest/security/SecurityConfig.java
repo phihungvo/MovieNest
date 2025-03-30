@@ -33,35 +33,39 @@
 
      private final JwtAuthenticationFilter jwtAuthenticationFilter;
      private final UserDetailsServiceImpl userDetailsService;
-
      @Bean
      public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
          http
+                 // Disable CSRF since we're using JWT authentication
                  .csrf(csrf -> csrf.disable())
+
+                 // Set session management to stateless (JWT)
                  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                 // Configure authorization rules
                  .authorizeHttpRequests(auth -> auth
                          // Public endpoints
                          .requestMatchers("/api/auth/**").permitAll()
 
                          // User endpoints
-                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-
-                         // User endpoints for movies
-                         .requestMatchers("/api/movie/**").hasAnyRole("USER", "ADMIN")
+                         .requestMatchers("/api/user/**", "/api/movie/**").hasAnyRole("USER", "ADMIN")
 
                          // Admin-only endpoints
-                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                         .requestMatchers("/api/genres/**").hasRole("ADMIN")
-
-                         .requestMatchers("/api/trailers/**").hasRole("ADMIN")
+                         .requestMatchers(
+                                 "/api/admin/**",
+                                 "/api/storage/**",
+                                 "/api/genres/**",
+                                 "/api/trailers/**"
+                         ).hasRole("ADMIN")
 
                          // Moderator endpoints
                          .requestMatchers("/api/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
 
-                         // Default to authenticated
+                         // Default: all other requests must be authenticated
                          .anyRequest().authenticated()
                  )
+
+                 // Configure CORS settings
                  .cors(cors -> cors.configurationSource(request -> {
                      CorsConfiguration configuration = new CorsConfiguration();
                      configuration.setAllowedOrigins(List.of("http://localhost:3000"));
@@ -71,6 +75,7 @@
                      return configuration;
                  }))
 
+                 // Add JWT authentication filter before UsernamePasswordAuthenticationFilter
                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
          return http.build();

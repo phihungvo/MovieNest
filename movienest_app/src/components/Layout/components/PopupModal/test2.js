@@ -11,28 +11,109 @@ import {
     Modal,
     Row,
     Col,
+    Button,
+    message,
 } from 'antd';
+import axios from 'axios';
 
 const { TextArea } = Input;
 
-const normFile = (e) => (Array.isArray(e) ? e : e?.fileList);
+// Custom function to handle file upload and return URL
+const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        const response = await axios.post('http://localhost:8080/api/storage/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        
+        if (response.status === 200) {
+            // Get the file URL from the backend
+            const fileInfoResponse = await axios.get('http://localhost:8080/api/storage/files');
+            const fileInfo = fileInfoResponse.data.find(info => info.name === file.name);
+            
+            if (fileInfo) {
+                message.success(`${file.name} uploaded successfully`);
+                return fileInfo.url;
+            }
+        }
+        return null;
+    } catch (error) {
+        message.error(`${file.name} upload failed: ${error.message}`);
+        return null;
+    }
+};
 
-function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
+function PopupModal({
+    isModalOpen,
+    setIsModalOpen,
+    title,
+    genresSources,
+    fields,
+    onSubmit,
+}) {
     const [componentDisabled, setComponentDisabled] = useState(false);
     const [form] = Form.useForm();
+    const [uploadedFiles, setUploadedFiles] = useState({});
+    const [uploadLoading, setUploadLoading] = useState(false);
 
     const handleOk = async () => {
+        setUploadLoading(true);
         try {
             const values = await form.validateFields();
-            onSubmit(values);
-            setIsModalOpen(false);
-        } catch (error) {
-            console.log('Validation Failed:', error);
+            
+            // Process poster upload if exists
+            if (values.posterPath && values.posterPath.length > 0) {
+                const posterFile = values.posterPath[0].originFileObj;
+                const posterUrl = await uploadFile(posterFile);
+                values.posterPath = posterUrl;
+            } else {
+                values.posterPath = null;
+            }
+            
+            // Process backdrop upload if exists
+            if (values.backdropPath && values.backdropPath.length > 0) {
+                const backdropFile = values.backdropPath[0].originFileObj;
+                const backdropUrl = await uploadFile(backdropFile);
+                values.backdropPath = backdropUrl;
+            } else {
+                values.backdropPath = null;
+            }
+            
+            // Ensure genres is an array
+            if (values.genres && !Array.isArray(values.genres)) {
+                values.genres = [values.genres];
+            }
+            
+            onSubmit(values); // Send data to parent component
+            form.resetFields();
+            setUploadedFiles({});
+        } catch (errorInfo) {
+            console.log('Validation Failed:', errorInfo);
+        } finally {
+            setUploadLoading(false);
         }
     };
+    
+    const handleCancel = () => {
+        form.resetFields();
+        setUploadedFiles({});
+        setIsModalOpen(false);
+    };
 
-    // Render từng field theo kiểu của nó
-    const renderField = (field) => {
+    // Custom upload button for images
+    const uploadButton = (
+        <button type="button" style={{ border: 0, background: 'none' }}>
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    // Render each field based on its type
+    const renderField = (field, isFullWidth) => {
         switch (field.type) {
             case 'text':
                 return (
@@ -52,6 +133,7 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
                         label={field.label}
                         name={field.name}
                         rules={field.rules}
+                        style={{ display: 'flex', justifyContent: 'center' }}
                     >
                         <DatePicker style={{ width: '100%' }} />
                     </Form.Item>
@@ -76,14 +158,15 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
                         rules={field.rules}
                     >
                         <Select>
-                            {field.options.map((option) => (
-                                <Select.Option
-                                    key={option.value}
-                                    value={option.value}
-                                >
-                                    {option.label}
-                                </Select.Option>
-                            ))}
+                            {genresSources &&
+                                genresSources.map((genre) => (
+                                    <Select.Option
+                                        key={genre.id}
+                                        value={genre.id}
+                                    >
+                                        {genre.name}
+                                    </Select.Option>
+                                ))}
                         </Select>
                     </Form.Item>
                 );
@@ -93,6 +176,7 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
                         key={field.name}
                         label={field.label}
                         name={field.name}
+                        style={{ display: 'flex', justifyContent: 'center' }}
                     >
                         <Rate />
                     </Form.Item>
@@ -115,16 +199,29 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
                         label={field.label}
                         name={field.name}
                         valuePropName="fileList"
-                        getValueFromEvent={normFile}
+                        getValueFromEvent={(e) => {
+                            if (Array.isArray(e)) {
+                                return e;
+                            }
+                            return e?.fileList;
+                        }}
+                        style={{ marginLeft: isFullWidth ? '0' : '50px' }}
                     >
-                        <Upload action="/upload.do" listType="picture-card">
-                            <button
-                                type="button"
-                                style={{ border: 0, background: 'none' }}
-                            >
-                                <PlusOutlined />
-                                <div style={{ marginTop: 8 }}>Upload</div>
-                            </button>
+                        <Upload
+                            listType="picture-card"
+                            beforeUpload={() => false} // Prevent auto upload
+                            maxCount={1} // Allow only one file
+                            accept="image/*" // Accept only images
+                            onPreview={(file) => {
+                                if (file.url) {
+                                    window.open(file.url);
+                                } else if (file.originFileObj) {
+                                    const objectUrl = URL.createObjectURL(file.originFileObj);
+                                    window.open(objectUrl);
+                                }
+                            }}
+                        >
+                            {uploadButton}
                         </Upload>
                     </Form.Item>
                 );
@@ -133,7 +230,7 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
         }
     };
 
-    // Sắp xếp các field vào các hàng (2 field cùng type một hàng nếu có thể)
+    // Group fields into rows (2 fields of same type per row if possible)
     const groupedFields = [];
     let row = [];
     let prevType = null;
@@ -149,6 +246,7 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
         prevType = field.type;
     });
 
+    // Add any remaining row
     if (row.length > 0) {
         groupedFields.push([...row]);
     }
@@ -158,26 +256,36 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
             title={title}
             open={isModalOpen}
             onOk={handleOk}
-            onCancel={() => setIsModalOpen(false)}
+            onCancel={handleCancel}
             width={700}
+            footer={[
+                <Button key="cancel" onClick={handleCancel}>
+                    Cancel
+                </Button>,
+                <Button 
+                    key="submit" 
+                    type="primary" 
+                    onClick={handleOk}
+                    loading={uploadLoading}
+                >
+                    Submit
+                </Button>,
+            ]}
         >
-            <Form
-                form={form}
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 18 }}
-                layout="horizontal"
-                disabled={componentDisabled}
-            >
+            <Form form={form} layout="horizontal" disabled={componentDisabled}>
                 {groupedFields.map((row, rowIndex) => (
                     <Row key={rowIndex} gutter={[16, 16]}>
-                        {row.map((field) => (
-                            <Col
-                                span={row.length === 1 ? 24 : 12}
-                                key={field.name}
-                            >
-                                {renderField(field)}
-                            </Col>
-                        ))}
+                        {row.map((field) => {
+                            const isFullWidth = row.length === 1;
+                            return (
+                                <Col
+                                    span={isFullWidth ? 24 : 12}
+                                    key={field.name}
+                                >
+                                    {renderField(field, isFullWidth)}
+                                </Col>
+                            );
+                        })}
                     </Row>
                 ))}
             </Form>
@@ -187,81 +295,83 @@ function PopupModal({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
 
 export default PopupModal;
 
+const handleOk = async () => {
+    setUploadLoading(true);
 
+    try {
+        const values = await form.validateFields();
+        const formData = { ...values }; // Tạo bản sao của values
 
-            // case 'select':
-            //     return (
-            //         <Form.Item
-            //             key={field.name}
-            //             label={field.label}
-            //             name={field.name}
-            //             rules={field.rules}
-            //         >
-            //             <Select>
-            //                 {
-            //                     genresSources && genresSources.map((genre) => {
-            //                         <Select
-            //                             key={genre.id}
-            //                             value={genre.id}
-            //                         >
-            //                             {genre.name}
-            //                         </Select>
-            //                     })
-            //                 }
-            //             </Select>
-            //         </Form.Item>
-            //     );
+        // Upload và lấy URL ảnh poster
+        if (values.posterPath && values.posterPath.length > 0) {
+            const posterFile = values.posterPath[0].originFileObj;
+            try {
+                const response = await uploadFile(posterFile);
+                console.log('Poster uploaded response:', response);
+                // Lưu URL trả về từ server
+                formData.posterPath = response.url;
+            } catch (error) {
+                console.error('Error uploading poster:', error);
+                formData.posterPath = null;
+            }
+        } else {
+            formData.posterPath = null;
+        }
 
-
-
-
-
-//             // Fix createMovie function to properly handle form data:
-// export const createMovie = async (formData) => {
-//     try {
-//         // Simplify date handling
-//         let releaseDate = null;
-//         if (formData.releaseDate) {
-//             // For Ant Design DatePicker, use moment or dayjs object's format method
-//             releaseDate = formData.releaseDate.format ? 
-//                           formData.releaseDate.format('YYYY-MM-DD') : 
-//                           formData.releaseDate;
-//         }
-
-//         // Correctly extract file URLs from Upload component
-//         const posterPath = formData.poster && formData.poster.length > 0 ? 
-//                           formData.poster[0].url || formData.poster[0].response?.url || '' : 
-//                           '';
+        // Upload và lấy URL ảnh backdrop
+        if (values.backdropPath && values.backdropPath.length > 0) {
+            const backdropFile = values.backdropPath[0].originFileObj;
+            try {
+                const response = await uploadFile(backdropFile);
+                console.log('Backdrop uploaded response:', response);
+                // Lưu URL trả về từ server
+                formData.backdropPath = response.url;
+            } catch (error) {
+                console.error('Error uploading backdrop:', error);
+                formData.backdropPath = null;
+            }
+        } else {
+            formData.backdropPath = null;
+        }
         
-//         const backdropPath = formData.backdrop && formData.backdrop.length > 0 ? 
-//                            formData.backdrop[0].url || formData.backdrop[0].response?.url || '' : 
-//                            '';
+        console.log('Final form data to submit:', formData);
+        onSubmit(formData);
+        form.resetFields();
+        setUploadedFiles({});
+    } catch (error) {
+        console.log('Validation Failed: ', error);
+    } finally {
+        setUploadLoading(false);
+    }
+};
 
+
+// export const uploadFile = async (file) => {
+//     const formData = new FormData();
+//     formData.append('file', file);
+    
+//     // Lấy token mới nhất
+//     const TOKEN = localStorage.getItem('token');
+    
+//     try {
+//         console.log('Uploading file:', file.name);
 //         const response = await axios.post(
-//             `${API_URL}/movie/create`,
-//             {
-//                 title: formData.title,
-//                 overview: formData.overview,
-//                 releaseDate: releaseDate,
-//                 poster_path: posterPath,
-//                 backdrop_path: backdropPath,
-//                 vote_average: formData.voteAverage || 0,
-//                 vote_count: formData.voteCount || 0,
-//                 genre_ids: formData.category ? [formData.category] : [],
-//             },
+//             `${API_URL}/storage/upload`,
+//             formData,
 //             {
 //                 headers: {
 //                     Authorization: `Bearer ${TOKEN}`,
-//                     'Content-Type': 'application/json',
+//                     'Content-Type': 'multipart/form-data',
 //                 },
 //             },
 //         );
-
-//         console.log('Movie Created:', response.data);
+        
+//         console.log('Upload response:', response.data);
+        
+//         // Trả về trực tiếp response.data mà không cần gọi getFileInfo()
 //         return response.data;
-
 //     } catch (error) {
-//         console.error('Error creating movie:', error.response ? error.response.data : error);
+//         console.error('File upload failed: ', error);
 //         throw error;
 //     }
 // };

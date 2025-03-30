@@ -13,6 +13,7 @@ import {
     Col,
     Button,
 } from 'antd';
+import { uploadFile } from '~/service/admin/uploadFile';
 
 const { TextArea } = Input;
 
@@ -28,33 +29,82 @@ function PopupModal({
 }) {
     const [componentDisabled, setComponentDisabled] = useState(false);
     const [form] = Form.useForm();
+    const [uploadedFiles, setUploadedFiles] = useState({});
+    const [uploadLoading, setUploadLoading] = useState(false);
 
-    const handleOk = () => {
-        form.validateFields()
-            .then((values) => {
-                // Đảm bảo genres là một mảng
-                if (values.genres && !Array.isArray(values.genres)) {
-                    values.genres = [values.genres];
+    const handleOk = async () => {
+        setUploadLoading(true);
+
+        try {
+            const values = await form.validateFields();
+            const formData = { ...values }; // Copy of values
+
+            console.log('Values: >>> ', values);
+
+            // Process poster and backdrop upload if exists
+            if (values.posterPath && values.posterPath.length > 0) {
+                const posterFile = values.posterPath[0].originFileObj;
+
+                try {
+                    const response = await uploadFile(posterFile);
+                    console.log('Poster uploaded response:', response);
+                    // Save URL return frm server
+                    formData.posterPath = response.url;
+                } catch (error) {
+                    console.error('Error uploading poster: ', error);
+                    formData.posterPath = null;
                 }
+            } else {
+                values.posterPath = null;
+            }
 
-                if (values.posterPath && values.posterPath.length > 0) {
-                    values.posterPath = 'đường_dẫn_sau_khi_xử_lý';
+            if (values.backdropPath && values.backdropPath.length > 0) {
+                const backdropFile = values.backdropPath[0].originFileObj;
+
+                try {
+                    const response = await uploadFile(backdropFile);
+                    console.log('Backdrop uploaded response: ', response);
+
+                    formData.backdropPath = response.url;
+                } catch (error) {
+                    console.error('Error uploading backdrop:', error);
+                    formData.backdropPath = null;
                 }
+            } else {
+                values.backdropPath = null;
+            }
+            // Ensure genres is an array
+            if (values.genres && !Array.isArray(values.genres)) {
+                values.genres = [values.genres];
+            }
 
-                if (values.backdropPath && values.backdropPath.length > 0) {
-                    values.backdropPath = 'đường_dẫn_sau_khi_xử_lý';
-                }
-
-                onSubmit(values); // Gửi dữ liệu lên component cha
-                form.resetFields();
-            })
-            .catch((errorInfo) => {
-                console.log('Validation Failed:', errorInfo);
-            });
+            console.log('Final form data to submit:', formData);
+            onSubmit(formData);
+            form.resetFields();
+            setUploadedFiles({});
+        } catch (error) {
+            console.log('Validation Failed: ', error);
+        } finally {
+            setUploadLoading(false);
+        }
     };
 
-    // Render từng field theo kiểu của nó
-    const renderField = (field) => {
+    const handleCancel = () => {
+        form.resetFields();
+        setUploadedFiles({});
+        setIsModalOpen(false);
+    };
+
+    // Custom upload button for images
+    const uploadButton = (
+        <button type="button" style={{ border: 0, background: 'none' }}>
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    // Render each field based on its type
+    const renderField = (field, isFullWidth) => {
         switch (field.type) {
             case 'text':
                 return (
@@ -141,14 +191,32 @@ function PopupModal({
                         label={field.label}
                         name={field.name}
                         valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        style={{ marginLeft: '50px' }}
+                        getValueFromEvent={(e) => {
+                            if (Array.isArray(e)) {
+                                return e;
+                            }
+                            return e?.fileList;
+                        }}
+                        style={{ marginLeft: isFullWidth ? '0' : '50px' }}
                     >
                         <Upload
                             // action="/upload.do"
                             listType="picture-card"
                             beforeUpload={() => false}
+                            maxCount={1} // Allow only one file
+                            accept="image/*" // Accept only images
+                            onPreview={(file) => {
+                                if (file.url) {
+                                    window.open(file.url);
+                                } else if (file.originFileObj) {
+                                    const objectUrl = URL.createObjectURL(
+                                        file.originFileObj,
+                                    );
+                                    window.open(objectUrl);
+                                }
+                            }}
                         >
+                            {uploadButton}
                             <button
                                 type="button"
                                 style={{ border: 0, background: 'none' }}
@@ -190,13 +258,18 @@ function PopupModal({
             title={title}
             open={isModalOpen}
             onOk={handleOk}
-            onCancel={() => setIsModalOpen(false)}
+            onCancel={handleCancel}
             width={700}
             footer={[
-                <Button key="cancel" onClick={() => setIsModalOpen(false)}>
+                <Button key="cancel" onClick={handleCancel}>
                     Cancel
                 </Button>,
-                <Button key="submit" type="primary" onClick={handleOk}>
+                <Button
+                    key="submit"
+                    type="primary"
+                    onClick={handleOk}
+                    loading={uploadLoading}
+                >
                     Submit
                 </Button>,
             ]}
@@ -223,31 +296,3 @@ function PopupModal({
 }
 
 export default PopupModal;
-
-// // Sắp xếp các field vào các hàng (2 field cùng type một hàng nếu có thể)
-// const groupedFields = [];
-// let row = [];
-// let prevType = null;
-
-// fields.forEach((field) => {
-//     if (prevType !== field.type || row.length >= 2) {
-//         if (row.length > 0) {
-//             groupedFields.push([...row]);
-//         }
-//         row = [];
-//     }
-//         // Nếu kiểu field (type) khác với kiểu của field trước đó (prevType) hoặc
-//         // Nếu hàng hiện tại đã có đủ 2 fields (row.length >= 2)
-//         // ➡ Thì bắt đầu một hàng mới:
-//             // Lưu hàng cũ vào groupedFields (nếu có).
-//             // Reset row về mảng rỗng để bắt đầu hàng mới.
-
-//     row.push(field); // Thêm field hiện tại vào row.
-
-//     prevType = field.type; // Cập nhật prevType để theo dõi kiểu field hiện tại.
-// });
-
-// // Nếu vẫn còn row chưa được thêm vào groupedFields, thì thêm nó vào.
-// if (row.length > 0) {
-//     groupedFields.push([...row]);
-// }

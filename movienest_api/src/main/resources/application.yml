@@ -9,6 +9,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 500KB
+      max-request-size: 500KB
 
 jwt:
   secret: QQU0Alvur6b2dBvD5pcC4C3mlRgSm9OUTfrGJMFtFlU=
