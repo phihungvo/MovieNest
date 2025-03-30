@@ -89,7 +89,7 @@ function Movie() {
         { label: 'Vote Count', name: 'voteCount', type: 'number' },
         {
             label: 'Genres',
-            name: 'category',
+            name: 'genres',
             type: 'select',
             options:
                 Array.isArray(genresSources) && genresSources.length > 0
@@ -100,8 +100,8 @@ function Movie() {
                     : [],
         },
         { label: 'Overview', name: 'overview', type: 'textarea' },
-        { label: 'Poster', name: 'poster', type: 'upload' },
-        { label: 'Backdrop', name: 'backdrop', type: 'upload' },
+        { label: 'Poster', name: 'posterPath', type: 'upload' },
+        { label: 'Backdrop', name: 'backdropPath', type: 'upload' },
         {
             label: 'Release Date',
             name: 'releaseDate',
@@ -124,7 +124,7 @@ function Movie() {
         setLoading(true);
         try {
             const response = await getAllMovies({ page, pageSize });
-            console.log('Movies Data:', response);
+            // console.log('Movies Data:', response);
             const movieList = response.content;
 
             if (Array.isArray(movieList)) {
@@ -151,6 +151,11 @@ function Movie() {
     const handleCreateMovie = async (formData) => {
         try {
             console.log('Form data submitted:', formData); // Add this to debug
+
+            if (!formData.genres) formData.genres = [];
+            if (!formData.posterPath) formData.posterPath = null;
+            if (!formData.backdropPath) formData.backdropPath = null;
+
             const response = await createMovie(formData);
 
             handleGetAllMovies();

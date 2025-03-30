@@ -41,10 +41,10 @@ const sideBar = [
         url: '/admin/movie'
     },
     {
-        title: 'Calendar',
+        title: 'Trailer',
         color: '#e91e63',
         icon: <CalendarOutlined />,
-        url: '/auth/login'
+        url: '/auth/trailer'
     },
     {
         title: 'Charts',

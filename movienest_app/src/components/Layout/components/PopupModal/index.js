@@ -32,6 +32,19 @@ function PopupModal({
     const handleOk = () => {
         form.validateFields()
             .then((values) => {
+                // Đảm bảo genres là một mảng
+                if (values.genres && !Array.isArray(values.genres)) {
+                    values.genres = [values.genres];
+                }
+
+                if (values.posterPath && values.posterPath.length > 0) {
+                    values.posterPath = 'đường_dẫn_sau_khi_xử_lý';
+                }
+
+                if (values.backdropPath && values.backdropPath.length > 0) {
+                    values.backdropPath = 'đường_dẫn_sau_khi_xử_lý';
+                }
+
                 onSubmit(values); // Gửi dữ liệu lên component cha
                 form.resetFields();
             })

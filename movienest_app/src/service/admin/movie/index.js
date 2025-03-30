@@ -17,7 +17,7 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
                 'Content-Type': 'application/json',
             },
         });
-        console.log("Token: ", TOKEN)
+        // console.log("Token: ", TOKEN)
         return response.data;
     } catch (error) {
         console.error(
