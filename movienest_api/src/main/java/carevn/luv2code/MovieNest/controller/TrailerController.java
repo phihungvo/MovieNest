@@ -3,6 +3,7 @@ package carevn.luv2code.MovieNest.controller;
 import carevn.luv2code.MovieNest.dto.TrailerDTO;
 import carevn.luv2code.MovieNest.entity.Trailer;
 import carevn.luv2code.MovieNest.service.TrailerService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class TrailerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createTrailer(@RequestBody TrailerDTO trailerDTO) {
+    public ResponseEntity<Void> createTrailer(@Valid @RequestBody TrailerDTO trailerDTO) {
         trailerService.createTrailer(trailerDTO);
         return ResponseEntity.ok().build();
     }

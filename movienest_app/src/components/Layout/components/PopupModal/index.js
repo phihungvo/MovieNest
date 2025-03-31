@@ -12,7 +12,9 @@ import {
     Row,
     Col,
     Button,
+    message,
 } from 'antd';
+import moment from 'moment';
 import { uploadFile } from '~/service/admin/uploadFile';
 
 const { TextArea } = Input;
@@ -41,41 +43,28 @@ function PopupModal({
 
             console.log('Values: >>> ', values);
 
-            // Process poster and backdrop upload if exists
-            if (values.posterPath && values.posterPath.length > 0) {
-                const posterFile = values.posterPath[0].originFileObj;
+            // Xử lý các trường file (nếu có)
+            const fileFields = ['posterPath', 'backdropPath'];
+            for (const field of fileFields) {
+                if (values[field] && values[field].length > 0) {
+                    const file = values[field][0].originFileObj;
 
-                try {
-                    const response = await uploadFile(posterFile);
-                    console.log('Poster uploaded response:', response);
-                    // Save URL return frm server
-                    formData.posterPath = response.url;
-                } catch (error) {
-                    console.error('Error uploading poster: ', error);
-                    formData.posterPath = null;
+                    try {
+                        const response = await uploadFile(file);
+                        console.log(`${field} uploaded response:`, response);
+                        formData[field] = response.url;
+                    } catch (error) {
+                        console.error(`Error uploading ${field}:`, error);
+                        formData[field] = null;
+                    }
+                } else {
+                    formData[field] = null; // Nếu không có file, đặt null
                 }
-            } else {
-                values.posterPath = null;
-            }
-
-            if (values.backdropPath && values.backdropPath.length > 0) {
-                const backdropFile = values.backdropPath[0].originFileObj;
-
-                try {
-                    const response = await uploadFile(backdropFile);
-                    console.log('Backdrop uploaded response: ', response);
-
-                    formData.backdropPath = response.url;
-                } catch (error) {
-                    console.error('Error uploading backdrop:', error);
-                    formData.backdropPath = null;
-                }
-            } else {
-                values.backdropPath = null;
             }
             // Ensure genres is an array
             if (values.genres && !Array.isArray(values.genres)) {
                 values.genres = [values.genres];
+                console.log('values.genres: ', values.genres);
             }
 
             console.log('Final form data to submit:', formData);
@@ -123,10 +112,14 @@ function PopupModal({
                         key={field.name}
                         label={field.label}
                         name={field.name}
-                        rules={field.rules}
                         style={{ display: 'flex', justifyContent: 'center' }}
                     >
-                        <DatePicker style={{ width: '100%' }} />
+                        <DatePicker
+                            style={{ width: '100%' }}
+                            disabledDate={(current) =>
+                                current && current < moment().startOf('day')
+                            }
+                        />
                     </Form.Item>
                 );
             case 'number':

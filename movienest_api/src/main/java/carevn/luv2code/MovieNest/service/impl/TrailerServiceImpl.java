@@ -3,6 +3,7 @@ package carevn.luv2code.MovieNest.service.impl;
 import carevn.luv2code.MovieNest.dto.TrailerDTO;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.Trailer;
+import carevn.luv2code.MovieNest.enums.TrailerType;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.TrailerMapper;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,9 +38,19 @@ public class TrailerServiceImpl implements TrailerService {
 
     @Override
     public void createTrailer(TrailerDTO trailerDTO) {
+        boolean existedTrailer = trailerRepository.existsByTitle(trailerDTO.getTitle());
+
+        if (!EnumSet.allOf(TrailerType.class).contains(trailerDTO.getTrailerType())){
+            throw new AppException(ErrorCode.INVALID_TRAILER_TYPE);
+        }
+
+        if (existedTrailer) {
+            throw new AppException(ErrorCode.TRAILER_EXISTED);
+        }
+
         Trailer trailer = trailerMapper.toEntity(trailerDTO);
         Movie movie = movieRepository.findById(trailerDTO.getMovieId())
-                .orElseThrow(() -> new AppException(ErrorCode.TRAILER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
 
         trailer.setMovie(movie);
         trailerRepository.save(trailer);

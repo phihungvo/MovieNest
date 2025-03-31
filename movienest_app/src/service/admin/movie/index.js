@@ -3,7 +3,6 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
-
     const TOKEN = localStorage.getItem('token');
 
     try {
@@ -18,7 +17,7 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
                 'Content-Type': 'application/json',
             },
         });
-        // console.log("Token: ", TOKEN)
+
         return response.data;
     } catch (error) {
         console.error(
@@ -30,8 +29,9 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
 };
 
 export const createMovie = async (formData) => {
-
     const TOKEN = localStorage.getItem('token');
+
+    console.log('form data: ', formData);
 
     try {
         // Simplify date handling
@@ -42,20 +42,7 @@ export const createMovie = async (formData) => {
                 : formData.releaseDate;
         }
 
-        // Correctly extract file URLs from Upload component
-        const posterPath =
-            formData.poster && formData.poster.length > 0
-                ? formData.poster[0].name ||
-                  formData.poster[0].response?.name ||
-                  ''
-                : '';
-
-        const backdropPath =
-            formData.backdrop && formData.backdrop.length > 0
-                ? formData.backdrop[0].name ||
-                  formData.backdrop[0].response?.name ||
-                  ''
-                : '';
+        console.log('Release date: ', releaseDate);
 
         const response = await axios.post(
             `${API_URL}/movie/create`,
@@ -63,11 +50,12 @@ export const createMovie = async (formData) => {
                 title: formData.title,
                 overview: formData.overview,
                 releaseDate: releaseDate,
-                posterPath: posterPath,
-                backdropPath: backdropPath,
+                posterPath: formData.posterPath,
+                backdropPath: formData.backdropPath,
                 vote_average: formData.voteAverage || 0,
                 vote_count: formData.voteCount || 0,
-                genre_ids: formData.category ? [formData.category] : [],
+                genres: formData.genres ? [formData.genres] : [],
+                trailers: formData.trailers ? [formData.trailers] : [],
             },
             {
                 headers: {

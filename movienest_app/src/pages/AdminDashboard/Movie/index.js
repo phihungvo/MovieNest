@@ -222,7 +222,7 @@ function Movie() {
             <div className={cx('movie-container')}>
                 <SmartTable
                     columns={columns}
-                    movieSources={movieSources}
+                    dataSources={movieSources}
                     loading={loading}
                     pagination={pagination}
                     onTableChange={handleTableChange}

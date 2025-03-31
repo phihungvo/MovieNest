@@ -14,4 +14,6 @@ public interface TrailerRepository extends JpaRepository<Trailer, UUID> {
     List<Trailer> findByMovieId(UUID movieId);
 
     Page<Trailer> findAll(Pageable pageable);
+
+    boolean existsByTitle(String title);
 }

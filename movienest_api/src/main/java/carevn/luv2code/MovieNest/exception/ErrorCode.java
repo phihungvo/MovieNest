@@ -24,6 +24,9 @@ public enum ErrorCode {
     TRAILER_NOT_FOUND(1011, "Trailer not found", HttpStatus.NOT_FOUND),
     FILE_NOT_FOUND(1012, "File not found", HttpStatus.NOT_FOUND),
     MAX_UPLOAD_SIZE_EXCEEDED(1013, "File upload size exceeds the allowed limit", HttpStatus.BAD_REQUEST),
+    TRAILER_EXISTED(1014, "Trailer already exists", HttpStatus.CONFLICT),
+    MOVIE_NOT_EXISTED(1015, "Movie not existed", HttpStatus.NOT_FOUND),
+    INVALID_TRAILER_TYPE(1016, "Invalid trailer type", HttpStatus.BAD_REQUEST),
     ;
 
     int code;

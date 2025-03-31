@@ -44,7 +44,7 @@ const sideBar = [
         title: 'Trailer',
         color: '#e91e63',
         icon: <CalendarOutlined />,
-        url: '/auth/trailer'
+        url: '/admin/trailer'
     },
     {
         title: 'Charts',
