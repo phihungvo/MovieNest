@@ -1,97 +1,388 @@
-import React from "react";
-import { Modal, Form, Input, DatePicker, InputNumber, Select, Upload, Rate } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import {
+    DatePicker,
+    Form,
+    Input,
+    InputNumber,
+    Rate,
+    Select,
+    Upload,
+    Modal,
+    Row,
+    Col,
+    Button,
+    message,
+} from 'antd';
+import moment from 'moment';
+import { uploadFile } from '~/service/admin/uploadFile';
 
 const { TextArea } = Input;
 
-const normFile = (e) => (Array.isArray(e) ? e : e?.fileList);
-
-function GenericModalForm({ isModalOpen, setIsModalOpen, title, fields, onSubmit }) {
-    const [form] = Form.useForm();
+function PopupModal({
+    isModalOpen,
+    setIsModalOpen,
+    title,
+    genresSources,
+    fields,
+    onSubmit,
+    initialValues,
+    isDeleteMode,
+    formInstance,
+}) {
+    const [componentDisabled, setComponentDisabled] = useState(false);
+    const [uploadLoading, setUploadLoading] = useState(false);
+    
+    // Sử dụng form instance được truyền từ component cha
+    const form = formInstance || Form.useForm()[0];
+    
+    // Xử lý khi form có giá trị ban đầu từ prop initialValues
+    useEffect(() => {
+        if (initialValues && !isDeleteMode) {
+            // Form đã được set giá trị từ component cha (Movie.jsx)
+            console.log('Modal received initialValues:', initialValues);
+        }
+    }, [initialValues, isDeleteMode]);
 
     const handleOk = async () => {
+        setUploadLoading(true);
+
         try {
-            const values = await form.validateFields();
-            onSubmit(values);
-            setIsModalOpen(false);
+            if (isDeleteMode) {
+                // Nếu là delete mode, không cần validate form
+                onSubmit(initialValues);
+            } else {
+                // Validate và lấy giá trị từ form
+                const values = await form.validateFields();
+                const formData = { ...values };
+
+                console.log('Values from form:', values);
+
+                // Xử lý các trường file (nếu có)
+                const fileFields = ['posterPath', 'backdropPath'];
+                for (const field of fileFields) {
+                    if (values[field] && values[field].length > 0) {
+                        // Kiểm tra nếu file đã có URL (trường hợp edit)
+                        if (values[field][0].url) {
+                            formData[field] = values[field][0].url;
+                        } else if (values[field][0].originFileObj) {
+                            // Nếu là file mới upload
+                            const file = values[field][0].originFileObj;
+                            try {
+                                const response = await uploadFile(file);
+                                console.log(`${field} uploaded response:`, response);
+                                formData[field] = response.url;
+                            } catch (error) {
+                                console.error(`Error uploading ${field}:`, error);
+                                formData[field] = null;
+                            }
+                        }
+                    } else {
+                        formData[field] = null;
+                    }
+                }
+                
+                // Xử lý ngày tháng
+                if (formData.releaseDate) {
+                    formData.releaseDate = formData.releaseDate.format('YYYY-MM-DD');
+                }
+                
+                // Ensure genres is an array
+                if (formData.genres && !Array.isArray(formData.genres)) {
+                    formData.genres = [formData.genres];
+                }
+                
+                // Nếu đang edit, giữ lại ID
+                if (initialValues && initialValues.id) {
+                    formData.id = initialValues.id;
+                }
+
+                console.log('Final form data to submit:', formData);
+                onSubmit(formData);
+            }
         } catch (error) {
-            console.log("Validation Failed:", error);
+            console.log('Validation Failed: ', error);
+        } finally {
+            setUploadLoading(false);
         }
     };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    // Custom upload button for images
+    const uploadButton = (
+        <button type="button" style={{ border: 0, background: 'none' }}>
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    // Render each field based on its type
+    const renderField = (field, isFullWidth) => {
+        switch (field.type) {
+            case 'text':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <Input />
+                    </Form.Item>
+                );
+            case 'date':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <DatePicker
+                            style={{ width: '100%' }}
+                            disabledDate={(current) =>
+                                current && current < moment().startOf('day')
+                            }
+                        />
+                    </Form.Item>
+                );
+            case 'number':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <InputNumber style={{ width: '100%' }} />
+                    </Form.Item>
+                );
+
+            case 'select':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <Select mode="multiple">
+                            {genresSources &&
+                                genresSources.map((genre) => (
+                                    <Select.Option
+                                        key={genre.id}
+                                        value={genre.id}
+                                    >
+                                        {genre.name}
+                                    </Select.Option>
+                                ))}
+                        </Select>
+                    </Form.Item>
+                );
+            case 'rate':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                    >
+                        <Rate />
+                    </Form.Item>
+                );
+            case 'textarea':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <TextArea rows={3} />
+                    </Form.Item>
+                );
+            case 'upload':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                    >
+                        <Upload
+                            listType="picture-card"
+                            beforeUpload={() => false}
+                            maxCount={1}
+                            accept="image/*"
+                            onPreview={(file) => {
+                                if (file.url) {
+                                    window.open(file.url);
+                                } else if (file.originFileObj) {
+                                    const objectUrl = URL.createObjectURL(
+                                        file.originFileObj,
+                                    );
+                                    window.open(objectUrl);
+                                }
+                            }}
+                        >
+                            {uploadButton}
+                        </Upload>
+                    </Form.Item>
+                );
+            default:
+                return null;
+        }
+    };
+
+    // Helper function để xử lý upload
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
+    };
+
+    // Render delete modal
+    if (isDeleteMode) {
+        return (
+            <Modal
+                title={title}
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>
+                        Cancel
+                    </Button>,
+                    <Button
+                        key="submit"
+                        type="primary"
+                        danger
+                        onClick={handleOk}
+                    >
+                        Delete
+                    </Button>,
+                ]}
+            >
+                <p>Are you sure you want to delete the movie "{initialValues?.title}"?</p>
+                <p>This action cannot be undone.</p>
+            </Modal>
+        );
+    }
+
+    // Sắp xếp các field vào các hàng (2 field cùng type một hàng nếu có thể)
+    const groupedFields = [];
+    let row = [];
+    let prevType = null;
+
+    fields.forEach((field) => {
+        if (prevType !== field.type || row.length >= 2) {
+            if (row.length > 0) {
+                groupedFields.push([...row]);
+            }
+            row = [];
+        }
+        row.push(field);
+        prevType = field.type;
+    });
+
+    // Thêm row cuối cùng vào groupedFields
+    if (row.length > 0) {
+        groupedFields.push([...row]);
+    }
 
     return (
         <Modal
             title={title}
             open={isModalOpen}
-            onOk={handleOk}
-            onCancel={() => setIsModalOpen(false)}
+            onCancel={handleCancel}
             width={700}
+            footer={[
+                <Button key="cancel" onClick={handleCancel}>
+                    Cancel
+                </Button>,
+                <Button
+                    key="submit"
+                    type="primary"
+                    onClick={handleOk}
+                    loading={uploadLoading}
+                >
+                    Submit
+                </Button>,
+            ]}
         >
-            <Form form={form} layout="vertical">
-                {fields.map((field) => {
-                    switch (field.type) {
-                        case "text":
+            <Form form={form} layout="horizontal" disabled={componentDisabled}>
+                {groupedFields.map((row, rowIndex) => (
+                    <Row key={rowIndex} gutter={[16, 16]}>
+                        {row.map((field) => {
+                            const isFullWidth = row.length === 1;
                             return (
-                                <Form.Item key={field.name} label={field.label} name={field.name} rules={field.rules}>
-                                    <Input />
-                                </Form.Item>
+                                <Col
+                                    span={isFullWidth ? 24 : 12}
+                                    key={field.name}
+                                >
+                                    {renderField(field, isFullWidth)}
+                                </Col>
                             );
-                        case "date":
-                            return (
-                                <Form.Item key={field.name} label={field.label} name={field.name} rules={field.rules}>
-                                    <DatePicker style={{ width: "100%" }} />
-                                </Form.Item>
-                            );
-                        case "number":
-                            return (
-                                <Form.Item key={field.name} label={field.label} name={field.name} rules={field.rules}>
-                                    <InputNumber style={{ width: "100%" }} />
-                                </Form.Item>
-                            );
-                        case "select":
-                            return (
-                                <Form.Item key={field.name} label={field.label} name={field.name} rules={field.rules}>
-                                    <Select>
-                                        {field.options.map((option) => (
-                                            <Select.Option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </Select.Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
-                            );
-                        case "rate":
-                            return (
-                                <Form.Item key={field.name} label={field.label} name={field.name}>
-                                    <Rate />
-                                </Form.Item>
-                            );
-                        case "textarea":
-                            return (
-                                <Form.Item key={field.name} label={field.label} name={field.name} rules={field.rules}>
-                                    <TextArea rows={3} />
-                                </Form.Item>
-                            );
-                        case "upload":
-                            return (
-                                <Form.Item key={field.name} label={field.label} name={field.name} valuePropName="fileList" getValueFromEvent={normFile}>
-                                    <Upload action="/upload.do" listType="picture-card">
-                                        <button type="button" style={{ border: 0, background: "none" }}>
-                                            <PlusOutlined />
-                                            <div style={{ marginTop: 8 }}>Upload</div>
-                                        </button>
-                                    </Upload>
-                                </Form.Item>
-                            );
-                        default:
-                            return null;
-                    }
-                })}
+                        })}
+                    </Row>
+                ))}
             </Form>
         </Modal>
     );
 }
 
-export default GenericModalForm;
+export default PopupModal;
+
+
+export const createMovie = async (formData) => {
+    const TOKEN = localStorage.getItem('token');
+
+    console.log('form data: ', formData);
+
+    try {
+        // Simplify date handling
+        let releaseDate = null;
+        if (formData.releaseDate) {
+            releaseDate = formData.releaseDate.format
+                ? formData.releaseDate.format('YYYY-MM-DD')
+                : formData.releaseDate;
+        }
+
+        console.log('Release date: ', releaseDate);
+
+        const response = await axios.post(
+            `${API_URL}/movie/create`,
+            {
+                title: formData.title,
+                overview: formData.overview,
+                releaseDate: releaseDate,
+                posterPath: formData.posterPath,
+                backdropPath: formData.backdropPath,
+                vote_average: formData.voteAverage || 0,
+                vote_count: formData.voteCount || 0,
+                genres: formData.genres ? [formData.genres] : [],
+                trailers: formData.trailers ? [formData.trailers] : [],
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+
+        console.log('Movie Created:', response.data);
+        return response.data; 
+    } catch (error) {
+        console.error(
+            'Error creating movie:',
+            error.response ? error.response.data : error,
+        );
+        throw error; 
+    }
+};
 
 

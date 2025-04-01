@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import {
     DatePicker,
@@ -19,8 +19,6 @@ import { uploadFile } from '~/service/admin/uploadFile';
 
 const { TextArea } = Input;
 
-const normFile = (e) => (Array.isArray(e) ? e : e?.fileList);
-
 function PopupModal({
     isModalOpen,
     setIsModalOpen,
@@ -28,49 +26,88 @@ function PopupModal({
     genresSources,
     fields,
     onSubmit,
+    initialValues,
+    isDeleteMode,
+    formInstance,
 }) {
     const [componentDisabled, setComponentDisabled] = useState(false);
-    const [form] = Form.useForm();
-    const [uploadedFiles, setUploadedFiles] = useState({});
     const [uploadLoading, setUploadLoading] = useState(false);
+
+    // Sử dụng form instance được truyền từ component cha
+    // const form = formInstance || Form.useForm()[0];÷
+    const form = formInstance;
+
+    // Xử lý khi form có giá trị ban đầu từ prop initialValues
+    useEffect(() => {
+        if (initialValues && !isDeleteMode) {
+            // Form đã được set giá trị từ component cha (Movie.jsx)
+            console.log('Modal received initialValues:', initialValues);
+        }
+    }, [initialValues, isDeleteMode]);
 
     const handleOk = async () => {
         setUploadLoading(true);
 
         try {
-            const values = await form.validateFields();
-            const formData = { ...values }; // Copy of values
+            if (isDeleteMode) {
+                // Nếu là delete mode, không cần validate form
+                onSubmit(initialValues);
+            } else {
+                // Validate và lấy giá trị từ form
+                const values = await form.validateFields();
+                const formData = { ...values };
 
-            console.log('Values: >>> ', values);
+                console.log('Values from form:', values);
 
-            // Xử lý các trường file (nếu có)
-            const fileFields = ['posterPath', 'backdropPath'];
-            for (const field of fileFields) {
-                if (values[field] && values[field].length > 0) {
-                    const file = values[field][0].originFileObj;
-
-                    try {
-                        const response = await uploadFile(file);
-                        console.log(`${field} uploaded response:`, response);
-                        formData[field] = response.url;
-                    } catch (error) {
-                        console.error(`Error uploading ${field}:`, error);
+                // Xử lý các trường file (nếu có)
+                const fileFields = ['posterPath', 'backdropPath'];
+                for (const field of fileFields) {
+                    if (values[field] && values[field].length > 0) {
+                        // Kiểm tra nếu file đã có URL (trường hợp edit)
+                        if (values[field][0].url) {
+                            formData[field] = values[field][0].url;
+                        } else if (values[field][0].originFileObj) {
+                            // Nếu là file mới upload
+                            const file = values[field][0].originFileObj;
+                            try {
+                                const response = await uploadFile(file);
+                                console.log(
+                                    `${field} uploaded response:`,
+                                    response,
+                                );
+                                formData[field] = response.url;
+                            } catch (error) {
+                                console.error(
+                                    `Error uploading ${field}:`,
+                                    error,
+                                );
+                                formData[field] = null;
+                            }
+                        }
+                    } else {
                         formData[field] = null;
                     }
-                } else {
-                    formData[field] = null; // Nếu không có file, đặt null
                 }
-            }
-            // Ensure genres is an array
-            if (values.genres && !Array.isArray(values.genres)) {
-                values.genres = [values.genres];
-                console.log('values.genres: ', values.genres);
-            }
 
-            console.log('Final form data to submit:', formData);
-            onSubmit(formData);
-            form.resetFields();
-            setUploadedFiles({});
+                // Xử lý ngày tháng
+                if (formData.releaseDate) {
+                    formData.releaseDate =
+                        formData.releaseDate.format('YYYY-MM-DD');
+                }
+
+                // Ensure genres is an array
+                if (formData.genres && !Array.isArray(formData.genres)) {
+                    formData.genres = [formData.genres];
+                }
+
+                // Nếu đang edit, giữ lại ID
+                if (initialValues && initialValues.id) {
+                    formData.id = initialValues.id;
+                }
+
+                console.log('Final form data to submit:', formData);
+                onSubmit(formData);
+            }
         } catch (error) {
             console.log('Validation Failed: ', error);
         } finally {
@@ -79,8 +116,6 @@ function PopupModal({
     };
 
     const handleCancel = () => {
-        form.resetFields();
-        setUploadedFiles({});
         setIsModalOpen(false);
     };
 
@@ -112,7 +147,7 @@ function PopupModal({
                         key={field.name}
                         label={field.label}
                         name={field.name}
-                        style={{ display: 'flex', justifyContent: 'center' }}
+                        rules={field.rules}
                     >
                         <DatePicker
                             style={{ width: '100%' }}
@@ -142,7 +177,7 @@ function PopupModal({
                         name={field.name}
                         rules={field.rules}
                     >
-                        <Select>
+                        <Select mode="multiple">
                             {genresSources &&
                                 genresSources.map((genre) => (
                                     <Select.Option
@@ -161,7 +196,6 @@ function PopupModal({
                         key={field.name}
                         label={field.label}
                         name={field.name}
-                        style={{ display: 'flex', justifyContent: 'center' }}
                     >
                         <Rate />
                     </Form.Item>
@@ -184,20 +218,13 @@ function PopupModal({
                         label={field.label}
                         name={field.name}
                         valuePropName="fileList"
-                        getValueFromEvent={(e) => {
-                            if (Array.isArray(e)) {
-                                return e;
-                            }
-                            return e?.fileList;
-                        }}
-                        style={{ marginLeft: isFullWidth ? '0' : '50px' }}
+                        getValueFromEvent={normFile}
                     >
                         <Upload
-                            // action="/upload.do"
                             listType="picture-card"
                             beforeUpload={() => false}
-                            maxCount={1} // Allow only one file
-                            accept="image/*" // Accept only images
+                            maxCount={1}
+                            accept="image/*"
                             onPreview={(file) => {
                                 if (file.url) {
                                     window.open(file.url);
@@ -210,13 +237,6 @@ function PopupModal({
                             }}
                         >
                             {uploadButton}
-                            <button
-                                type="button"
-                                style={{ border: 0, background: 'none' }}
-                            >
-                                <PlusOutlined />
-                                <div style={{ marginTop: 8 }}>Upload</div>
-                            </button>
                         </Upload>
                     </Form.Item>
                 );
@@ -224,6 +244,44 @@ function PopupModal({
                 return null;
         }
     };
+
+    // Helper function để xử lý upload
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
+    };
+
+    // Render delete modal
+    if (isDeleteMode) {
+        return (
+            <Modal
+                title={title}
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>
+                        Cancel
+                    </Button>,
+                    <Button
+                        key="submit"
+                        type="primary"
+                        danger
+                        onClick={handleOk}
+                    >
+                        Delete
+                    </Button>,
+                ]}
+            >
+                <p>
+                    Are you sure you want to delete the movie "
+                    {initialValues?.title}"?
+                </p>
+                <p>This action cannot be undone.</p>
+            </Modal>
+        );
+    }
 
     // Sắp xếp các field vào các hàng (2 field cùng type một hàng nếu có thể)
     const groupedFields = [];
@@ -237,11 +295,11 @@ function PopupModal({
             }
             row = [];
         }
-        row.push(field); // Thêm field hiện tại vào row.
+        row.push(field);
         prevType = field.type;
     });
 
-    // Nếu vẫn còn row chưa được thêm vào groupedFields, thì thêm nó vào.
+    // Thêm row cuối cùng vào groupedFields
     if (row.length > 0) {
         groupedFields.push([...row]);
     }
@@ -250,7 +308,6 @@ function PopupModal({
         <Modal
             title={title}
             open={isModalOpen}
-            onOk={handleOk}
             onCancel={handleCancel}
             width={700}
             footer={[

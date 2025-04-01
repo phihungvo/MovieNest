@@ -5,6 +5,7 @@ import carevn.luv2code.MovieNest.entity.Movie;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MovieService {
 
@@ -13,4 +14,8 @@ public interface MovieService {
     List<Movie> searchMovieByTitle(String keyWord);
 
     Page<Movie> findAllMovies(int page, int size);
+
+    Movie updateMovie(UUID id, MovieDTO movieDTO);
+
+    boolean deleteMovie(UUID id);
 }

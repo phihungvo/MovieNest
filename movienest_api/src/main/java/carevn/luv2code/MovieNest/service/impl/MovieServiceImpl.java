@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -96,4 +97,41 @@ public class MovieServiceImpl implements MovieService {
         Page<Movie> pageMovies = movieRepository.findAll(pageable);
         return pageMovies;
     }
+
+    @Override
+    public Movie updateMovie(UUID id, MovieDTO movieDTO) {
+        Movie movieExisted = movieRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
+
+        if(movieRepository.existsByTitle(movieDTO.getTitle())){
+            throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
+        }
+        movieExisted.setTitle(movieDTO.getTitle());
+        movieExisted.setOverview(movieDTO.getOverview());
+        movieExisted.setReleaseDate(movieDTO.getReleaseDate());
+        movieExisted.setPosterPath(movieDTO.getPosterPath());
+        movieExisted.setBackdropPath(movieDTO.getBackdropPath());
+        movieExisted.setVote_average(movieDTO.getVote_average());
+        movieExisted.setVote_count(movieDTO.getVote_count());
+        if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
+            List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
+            movieExisted.setGenres(genresList);
+        }
+
+        if (movieDTO.getTrailers() != null && !movieDTO.getTrailers().isEmpty()) {
+            List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
+            movieExisted.setTrailers(trailerList);
+        }
+        return movieRepository.save(movieExisted);
+    }
+
+    @Override
+    public boolean deleteMovie(UUID movieId) {
+        if (!movieRepository.existsById(movieId)) {
+            return false;
+        }
+        movieRepository.deleteById(movieId);
+        return true;
+    }
 }
+

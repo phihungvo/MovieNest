@@ -16,7 +16,7 @@ function SmartButton({
                 type={type}
                 icon={icon}
                 onClick={onClick}
-                style={{ width: buttonWidth, height: buttonHeight }}
+                style={{ width: buttonWidth, height: buttonHeight }}                
             >
                 {title}
             </Button>

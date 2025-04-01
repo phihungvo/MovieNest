@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 //@CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -42,4 +43,20 @@ public class MovieController {
         Page<Movie> movies = movieService.findAllMovies(page, size);
         return ResponseEntity.ok(movies);
     }
+
+    @PutMapping("/update/{movieId}")
+    public ResponseEntity<Movie> updateMovie(@PathVariable UUID movieId, @RequestBody MovieDTO movieDTO){
+        Movie movie = movieService.updateMovie(movieId, movieDTO);
+        return ResponseEntity.ok(movie);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteMovie(@RequestParam UUID movieId){
+        boolean deleted = movieService.deleteMovie(movieId);
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Movie not found");
+        }
+        return ResponseEntity.ok("Movie deleted");
+    }
+
 }

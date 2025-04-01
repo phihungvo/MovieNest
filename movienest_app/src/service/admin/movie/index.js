@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { message } from 'antd';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -24,7 +25,7 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
             'Error fetching movies:',
             error.response ? error.response.data : error.message,
         );
-        throw error; // Ném lỗi để component có thể xử lý
+        throw error;
     }
 };
 
@@ -34,7 +35,7 @@ export const createMovie = async (formData) => {
     console.log('form data: ', formData);
 
     try {
-        // Simplify date handling
+
         let releaseDate = null;
         if (formData.releaseDate) {
             releaseDate = formData.releaseDate.format
@@ -66,12 +67,92 @@ export const createMovie = async (formData) => {
         );
 
         console.log('Movie Created:', response.data);
-        return response.data; // Trả về dữ liệu phim đã tạo
+        return response.data;
     } catch (error) {
         console.error(
             'Error creating movie:',
             error.response ? error.response.data : error,
         );
-        throw error; // Ném lỗi để component có thể xử lý
+        throw error;
     }
 };
+
+// http://localhost:8080/api/movie/update?movieId=7ae4a794-e5a7-419d-a6ba-8ec0c88dfe13
+export const handleUpdateMovie = async (movieId, formData) => {
+    const TOKEN = localStorage.getItem('token');
+
+    console.log('id: ', movieId, ' formdata: ', formData);
+
+    try {
+        let releaseDate = null;
+        if (formData.releaseDate) {
+            releaseDate = formData.releaseDate.format
+                ? formData.releaseDate.format('YYYY-MM-DD')
+                : formData.releaseDate;
+        }
+
+        console.log('PUT Method');
+        const response = await axios.put(
+            `${API_URL}/movie/update/${movieId}`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+
+        console.log('response: ', response.data);
+        return response.data; // Return the data for success case
+    } catch (error) {
+        // Lấy message từ lỗi
+        const errorMessage =
+            error.response?.data?.message || 'Something went wrong';
+
+        // Hiển thị message
+        message.error(`${errorMessage}`);
+        console.error(
+            'Error updating movie:',
+            errorMessage
+        );
+        throw error;
+    }
+};
+
+// http://localhost:8080/api/movie/delete?movieId=17a1c81c-be64-4229-ac64-c4ffa4ffb5e9
+export const deleteMovie = async (movieId) => {
+    const TOKEN = localStorage.getItem("token");
+
+    console.log('Delete movie id: ', movieId);
+
+    try {
+
+        const response = await axios.delete(
+            `${API_URL}/movie/delete`,
+            {   
+                params: {
+                    movieId: movieId
+                },
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        )
+
+        console.log('response: ', response.data);
+        return response.data;
+
+    } catch (error){
+        const errorMessage =
+            error.response?.data?.message || 'Something went wrong';
+
+        message.error(`${errorMessage}`);
+        console.error(
+            'Error deleting movie:',
+            errorMessage
+        );
+        throw error;
+    }
+}
