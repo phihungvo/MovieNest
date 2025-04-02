@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { login } from '~/service/admin/user';
+import { jwtDecode } from 'jwt-decode';
+import classNames from 'classnames/bind';
+import styles from './Login.module.scss';
+import SmartButton from '~/components/Layout/components/SmartButton';
+import {
+    PhoneOutlined,
+    AppleOutlined,
+    GoogleOutlined,
+} from '@ant-design/icons';
+
+const cx = classNames.bind(styles);
 
 function Login() {
     const navigate = useNavigate();
@@ -14,15 +25,31 @@ function Login() {
             const token = await login(values.email, values.password);
 
             if (!token) {
-                message.error('Login failed. Invalid credentials.');
+                message.error('Login failed. Please check your input agains.');
                 return;
             }
 
-            message.success('Login successful!');
-
             localStorage.setItem('token', token);
 
-            navigate('/admin/movie');
+            const decodedToken = jwtDecode(token);
+            console.log('Decoded Token: ', decodedToken);
+
+            const roles = decodedToken.role || [];
+
+            console.log('role: ', roles)
+
+            localStorage.setItem(
+                'role',
+                roles.includes('ADMIN') ? 'admin' : 'user',
+            );
+
+            message.success('Login successful!');
+
+            if (roles.includes('ADMIN')) {
+                navigate('/admin/movie');
+            } else {
+                navigate('/');
+            }
         } catch (error) {
             console.error('Lỗi:', error);
 
@@ -48,62 +75,83 @@ function Login() {
     };
 
     const handleNavigate = () => {
-        navigate('/admin/register');
+        navigate('/register');
     };
 
     return (
-        <div>
-            <h1>Login Page</h1>
-            <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-            >
-                <Form.Item
-                    label="Email"
-                    name="email"
-                    rules={[
-                        { required: true, message: 'Please input your email!' },
-                    ]}
+        <div className={cx('login-container')}>
+            <div className={cx('login-box')}>
+                <h1>Chào mừng trở lại</h1>
+                <Form
+                    name="basic"
+                    className={cx('login-form')}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
                 >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your password!',
-                        },
-                    ]}
-                >
-                    <Input.Password />
-                </Form.Item>
-
-                <Form.Item name="remember" valuePropName="checked" label={null}>
-                    <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
-                <Form.Item label={null}>
-                    <Button type="primary" htmlType="submit">
-                        Login
-                    </Button>
-                    <Button
-                        type="default"
-                        onClick={handleNavigate}
-                        style={{ marginLeft: '10px' }}
+                    <Form.Item
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your email!',
+                            },
+                        ]}
                     >
-                        Register
-                    </Button>
-                </Form.Item>
-            </Form>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your password!',
+                            },
+                        ]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+
+                    <Form.Item label={null}>
+                        <Button
+                            htmlType="submit"
+                            block
+                            style={{
+                                backgroundColor: '#0ca37f',
+                                color: '#fff',
+                                padding: '16px 0',  
+                            }}
+                        >
+                            Login
+                        </Button>
+                    </Form.Item>
+
+                    <p>
+                        Chưa có tài khoản?{' '}
+                        <a onClick={() => navigate('/register')}> Đăng ký</a>{' '}
+                    </p>
+                    <div class="divider">Hoặc</div>
+
+                    <div className={cx('or-buttons')}>
+                        <SmartButton
+                            title="Tiếp tục với Google"
+                            buttonWidth={340}
+                            icon={<GoogleOutlined />}
+                        />
+                        <SmartButton
+                            title="Tiếp tục với Tài khoản Apple"
+                            buttonWidth={340}
+                            icon={<AppleOutlined />}
+                        />
+                        <SmartButton
+                            title="Tiếp tục với Điện thoại"
+                            buttonWidth={340}
+                            icon={<PhoneOutlined />}
+                        />
+                    </div>
+                </Form>
+            </div>
         </div>
     );
 }

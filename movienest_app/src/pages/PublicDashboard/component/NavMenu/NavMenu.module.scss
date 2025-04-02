@@ -1,0 +1,17 @@
+.wrapper {
+    width: auto;
+    visibility: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    row-gap: 0.5rem;
+    column-gap: 0.5rem;
+}
+
+.menu_item {
+    padding: 0 10px;
+    background-color: transparent;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}

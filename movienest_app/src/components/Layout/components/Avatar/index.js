@@ -9,7 +9,7 @@ function Avatar() {
     const navigate = useNavigate();
 
     const handleLogin = () => {
-        navigate('/admin/login'); 
+        navigate('/login'); 
     }
 
     return (

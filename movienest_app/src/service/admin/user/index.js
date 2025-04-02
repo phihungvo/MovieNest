@@ -23,7 +23,7 @@ export const login = async (email, password) => {
             return response.data.token;
         } else {
             console.error('Login failed with status:', response.status);
-            throw new Error('Invalid credentials');
+            throw new Error('Login failed. Please check your input agains.');
         }
     } catch (error) {
         console.error(
@@ -55,7 +55,7 @@ export const register = async (username, email, password) => {
             return response.data.token;
         } else {
             console.error('Register failed with status:', response.status);
-            throw new Error('Invalid credentials');
+            throw new Error('Register failed. Please check your input agains');
         }
     } catch (error) {
         console.error(

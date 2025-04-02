@@ -62,22 +62,21 @@ public class MovieServiceImpl implements MovieService {
         movie.setReleaseDate(movieDTO.getReleaseDate());
         movie.setPosterPath(movieDTO.getPosterPath());
         movie.setBackdropPath(movieDTO.getBackdropPath());
+        movie.setPopular(movieDTO.isPopular());
+        movie.setInTheater(movieDTO.isInTheater());
         movie.setVote_average(movieDTO.getVote_average());
         movie.setVote_count(movieDTO.getVote_count());
 
-        // Chỉ lấy danh sách Genres nếu có dữ liệu hợp lệ
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
             movie.setGenres(genresList);
         }
 
-        // Chỉ lấy danh sách Trailers nếu có dữ liệu hợp lệ
         if (movieDTO.getTrailers() != null && !movieDTO.getTrailers().isEmpty()) {
             List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
             movie.setTrailers(trailerList);
         }
 
-        // Lưu vào database
         movieRepository.save(movie);
         log.info("Saved movie: {}", movie.getTitle());
     }

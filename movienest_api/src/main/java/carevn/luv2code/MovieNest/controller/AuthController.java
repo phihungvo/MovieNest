@@ -3,6 +3,8 @@ package carevn.luv2code.MovieNest.controller;
 import carevn.luv2code.MovieNest.dto.requests.AuthenticationRequest;
 import carevn.luv2code.MovieNest.dto.response.AuthenticationResponse;
 import carevn.luv2code.MovieNest.dto.requests.RegisterRequest;
+import carevn.luv2code.MovieNest.entity.User;
+import carevn.luv2code.MovieNest.repository.UserRepository;
 import carevn.luv2code.MovieNest.security.AuthService;
 import carevn.luv2code.MovieNest.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,7 +25,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final AuthService authService;
-
+    private final UserRepository userRepository;
 
     @GetMapping("/user/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -50,8 +55,14 @@ public class AuthController {
                 )
         );
 
-        // Generate JWT token
-        String token = jwtService.generateToken(request.getEmail());
+        // Fetch user details
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Generate JWT token with user details
+        String token = jwtService.generateToken(userOptional.get());
 
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
@@ -62,6 +73,4 @@ public class AuthController {
         String token = authService.register(request);
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
-
-
 }

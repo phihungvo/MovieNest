@@ -1,5 +1,6 @@
 package carevn.luv2code.MovieNest.security;
 
+import carevn.luv2code.MovieNest.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -33,18 +35,21 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(String email) {
-        return generateToken(new HashMap<>(), email);
-    }
+//    public String generateToken(String email) {
+//        return generateToken(new HashMap<>(), email);
+//    }
 
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            String email
-    ) {
+    public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("role", user.getRoles().stream()
+                .map(Enum::name)
+                .collect(Collectors.toList()));
+
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
-                .setSubject(email)
+                .setClaims(claims)
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

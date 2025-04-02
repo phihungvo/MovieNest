@@ -28,6 +28,10 @@ public class MovieDTO {
 
      int vote_count;
 
+     boolean popular;
+
+     boolean inTheater;
+
      List<UUID> genres; // Danh sách thể loại
 
      List<UUID> trailers;

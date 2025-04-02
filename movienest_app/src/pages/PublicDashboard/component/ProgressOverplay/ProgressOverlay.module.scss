@@ -1,0 +1,14 @@
+
+.progress-overlay {
+    position: absolute;
+    left: 3%;
+    top: 65%;
+    background-color: black;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+:global(.ant-progress-circle .ant-progress-text) {
+    color: white !important;
+    font-weight: bold;
+}

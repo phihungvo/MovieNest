@@ -2,31 +2,16 @@ import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, Select, message, errorMsg } from 'antd';
 import { register } from '~/service/admin/user';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames/bind';
+import styles from './Register.module.scss';
+import SmartButton from '~/components/Layout/components/SmartButton';
+import {
+    PhoneOutlined,
+    AppleOutlined,
+    GoogleOutlined,
+} from '@ant-design/icons';
 
-const { Option } = Select;
-
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-    },
-};
-const tailFormItemLayout = {
-    wrapperCol: {
-        xs: {
-            span: 24,
-            offset: 0,
-        },
-        sm: {
-            span: 16,
-            offset: 8,
-        },
-    },
-};
+const cx = classNames.bind(styles);
 
 function Register() {
     const [form] = Form.useForm();
@@ -36,7 +21,7 @@ function Register() {
     const [loading, setLoading] = useState(false);
 
     const handleNavigate = () => {
-        navigate('/admin/login');
+        navigate('/login');
     };
 
     const onFinish = async (values) => {
@@ -49,7 +34,7 @@ function Register() {
             );
 
             if (!token) {
-                message.error('Register failed. Invalid credentials.');
+                message.error('Register failed. Please check your input agains.');
             }
 
             message.success('Register successful!');
@@ -78,101 +63,103 @@ function Register() {
     };
 
     return (
-        <>
-            <h2>Register</h2>
-            <Form
-                {...formItemLayout}
-                form={form}
-                name="register"
-                onFinish={onFinish}
-                initialValues={{
-                    residence: ['zhejiang', 'hangzhou', 'xihu'],
-                    prefix: '86',
-                }}
-                style={{ maxWidth: 600 }}
-                scrollToFirstError
-            >
-                <Form.Item
-                    name="username"
-                    label="Username"
-                    rules={[
-                        {
-                            type: 'text',
-                            message: 'The input is not valid Username!',
-                        },
-                        {
-                            required: true,
-                            message: 'Please input your Username!',
-                        },
-                    ]}
+        <div className={cx('register-container')}>
+            <div className={cx('register-box')}>
+                <h1>Tạo một tài khoản</h1>
+                <Form
+                    form={form}
+                    name="register"
+                    onFinish={onFinish}
+                    style={{ maxWidth: 600 }}
+                    scrollToFirstError
                 >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="email"
-                    label="E-mail"
-                    rules={[
-                        {
-                            type: 'email',
-                            message: 'The input is not valid E-mail!',
-                        },
-                        {
-                            required: true,
-                            message: 'Please input your E-mail!',
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="password"
-                    label="Password"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your password!',
-                        },
-                    ]}
-                    hasFeedback
-                >
-                    <Input.Password />
-                </Form.Item>
-
-                <Form.Item
-                    name="agreement"
-                    valuePropName="checked"
-                    rules={[
-                        {
-                            validator: (_, value) =>
-                                value
-                                    ? Promise.resolve()
-                                    : Promise.reject(
-                                          new Error('Should accept agreement'),
-                                      ),
-                        },
-                    ]}
-                    {...tailFormItemLayout}
-                >
-                    <Checkbox>
-                        I have read the <a href="">agreement</a>
-                    </Checkbox>
-                </Form.Item>
-                <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit" loading={loading}>
-                        Register
-                    </Button>
-                    <Button
-                        onClick={handleNavigate}
-                        loading={loading}
-                        style={{ marginLeft: '10px' }}
+                    <Form.Item
+                        name="username"
+                        rules={[
+                            {
+                                type: 'text',
+                                message: 'The input is not valid Username!',
+                            },
+                            {
+                                required: true,
+                                message: 'Please input your Username!',
+                            },
+                        ]}
                     >
-                        Login
-                    </Button>
-                </Form.Item>
-            </Form>
-        </>
+                        <Input placeholder="Username" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="email"
+                        rules={[
+                            {
+                                type: 'email',
+                                message: 'The input is not valid E-mail!',
+                            },
+                            {
+                                required: true,
+                                message: 'Please input your E-mail!',
+                            },
+                        ]}
+                    >
+                        <Input placeholder="Email" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your password!',
+                            },
+                        ]}
+                        hasFeedback
+                    >
+                        <Input.Password placeholder="Password" />
+                    </Form.Item>
+
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={loading}
+                            block
+                            style={{
+                                backgroundColor: '#0ca37f',
+                                color: '#fff',
+                                padding: '16px 0',
+                            }}
+                        >
+                            Register
+                        </Button>
+                        <p>
+                            Bạn đã có tài khoản?{' '}
+                            <a onClick={() => navigate('/login')}> Đăng nhập</a>
+                        </p>
+
+                        <div class="divider">Hoặc</div>
+
+                        <div className={cx('or-buttons')}>
+                            <SmartButton
+                                title="Tiếp tục với Google"
+                                buttonWidth={340}
+                                icon={<GoogleOutlined />}
+                            />
+                            <SmartButton
+                                title="Tiếp tục với Tài khoản Apple"
+                                buttonWidth={340}
+                                icon={<AppleOutlined />}
+                            />
+                            <SmartButton
+                                title="Tiếp tục với Điện thoại"
+                                buttonWidth={340}
+                                icon={<PhoneOutlined />}
+                            />
+                        </div>
+                    </Form.Item>
+                </Form>
+            </div>
+        </div>
     );
 }
 

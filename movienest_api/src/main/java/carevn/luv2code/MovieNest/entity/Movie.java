@@ -37,6 +37,10 @@ public class Movie {
 
     int vote_count;
 
+    boolean popular;
+
+    boolean inTheater;
+
     @ManyToMany
     @JoinTable(
             name = "movie_genres",

@@ -1,0 +1,69 @@
+
+.banner {
+    width: 100%;
+    height: 300px;
+    background-image: url('https://media.themoviedb.org/t/p/w3840_and_h1200_multi_faces_filter(duotone,00192f,00baff)/46FRuCeAn6TrS4F1P4F9zhyCpyo.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.content-inner {
+    position: absolute;
+    width: 1330px;
+    height: 238px;
+    color: white;
+    padding: 50px 40px;
+    font-size: 2rem;
+
+    h1 {
+        line-height: 1;
+    }
+
+    h2 {
+        margin: 0;
+    }
+}
+
+.search-inp {
+    width: 100%;
+    height: 46px;
+    color: rgba(0, 0, 0, .5);
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin-top: 52px;
+    background-color: #fff;
+    position: relative;
+    --tmdbLightGreen: 30, 213, 169;
+    --tmdbLightBlue: 1, 180, 228;
+
+    input {
+        width: 100%;
+        height: 100%;
+        // border: 1px solid red;
+        font-size: 1.5rem;
+    }
+
+    button {
+        height: 46px;
+        padding: 10px 26px;
+        background: linear-gradient(to right, rgba(var(--tmdbLightGreen), 1) 0%, rgba(var(--tmdbLightBlue), 1) 100%);
+        border-radius: 30px;
+        position: absolute;
+        top: 0px;
+        right: -1px;
+        z-index: 2;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    button:hover {
+        color: #000;
+    }
+
+
+}
