@@ -38,14 +38,14 @@ public class TrailerServiceImpl implements TrailerService {
 
     @Override
     public void createTrailer(TrailerDTO trailerDTO) {
-        boolean existedTrailer = trailerRepository.existsByTitle(trailerDTO.getTitle());
-
-        if (!EnumSet.allOf(TrailerType.class).contains(trailerDTO.getTrailerType())){
-            throw new AppException(ErrorCode.INVALID_TRAILER_TYPE);
-        }
+        boolean existedTrailer = trailerRepository.existsByTitleAndKey(trailerDTO.getTitle(), trailerDTO.getKey());
 
         if (existedTrailer) {
             throw new AppException(ErrorCode.TRAILER_EXISTED);
+        }
+
+        if (!EnumSet.allOf(TrailerType.class).contains(trailerDTO.getTrailerType())){
+            throw new AppException(ErrorCode.INVALID_TRAILER_TYPE);
         }
 
         Trailer trailer = trailerMapper.toEntity(trailerDTO);

@@ -77,7 +77,7 @@ export const findAllMovieNoPaging = async () => {
             }
         ))
 
-        console.log('Movie arr : ', moviearr)
+        // console.log('Movie arr : ', moviearr)
 
         return moviearr;
     } catch (error) {
@@ -196,7 +196,6 @@ export const deleteMovie = async (movieId) => {
         });
 
         console.log('response: ', response.data);
-        return response.data;
     } catch (error) {
         const errorMessage =
             error.response?.data?.message || 'Something went wrong';

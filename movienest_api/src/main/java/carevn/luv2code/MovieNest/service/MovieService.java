@@ -15,6 +15,8 @@ public interface MovieService {
 
     Page<Movie> findAllMovies(int page, int size);
 
+    List<Movie> findAllNoPaging();
+
     Movie updateMovie(UUID id, MovieDTO movieDTO);
 
     boolean deleteMovie(UUID id);

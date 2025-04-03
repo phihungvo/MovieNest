@@ -16,7 +16,12 @@ import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { Form, message } from 'antd';
-import { getAllTrailers, createTrailers } from '~/service/admin/trailer';
+import {
+    getAllTrailers,
+    createTrailers,
+    handleUpdateTrailer,
+    deleteTrailer,
+} from '~/service/admin/trailer';
 import { findAllMovieNoPaging } from '~/service/admin/movie';
 
 const cx = classNames.bind(styles);
@@ -35,11 +40,25 @@ function Trailer() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
 
-    const handleEditTrailer = (record) => {
+    const handleAddTrailer = () => {
+        setModalMode('create');
+        setSelectedTrailer(null);
+        form.resetFields();
+        setIsModalOpen(true);
+    };
+
+    const handleEditTrailer = async (record) => {
         console.log('Editing record: ', record);
         setSelectedTrailer(record);
         setModalMode('edit');
-        setMovieSource(findAllMovieNoPaging());
+
+        try {
+            const movies = await findAllMovieNoPaging();
+            setMovieSource(movies);
+        } catch (error) {
+            console.error('Error fetching movies:', error);
+            setMovieSource([]);
+        }
 
         const formData = {
             ...record,
@@ -48,32 +67,35 @@ function Trailer() {
 
             publishedAt: record.publishedAt ? moment(record.publishedAt) : null,
 
-            movieId: record.movie?.id,
+            trailerType: record.trailerType || record.type,
+
+            movie: record.movie
+                ? { label: record.movie.title, value: record.movie.id }
+                : null,
         };
+
+        console.log('form: ', form);
 
         form.setFieldsValue(formData);
         setIsModalOpen(true);
     };
 
-    const handleDeleteTrailer = () => {};
+    const handleDeleteTrailer = (record) => {
+        setSelectedTrailer(record);
+        setModalMode('delete');
+        setIsModalOpen(true);
+    };
 
     const handleGetAllMovie = async () => {
         try {
-            const response = await findAllMovieNoPaging();
-
-            console.log('Movie: ', response.data);
-
-            if (response) {
-                setMovieSource(response);
-            }
+            console.log('Start get all movie');
+            const movieData = await findAllMovieNoPaging();
+            setMovieSource(movieData);
+            // console.log('Movie: ', response);
         } catch (error) {
             console.error('Failed to get all genres:', error);
         }
     };
-
-    useEffect(() => {
-        handleGetAllMovie();
-    }, []);
 
     const columns = [
         {
@@ -166,8 +188,18 @@ function Trailer() {
         {
             label: 'Type',
             name: 'type',
-            type: 'text',
+            type: 'select',
             rules: [{ required: true, message: 'Type is required!' }],
+            options: [
+                'TEASER',
+                'OFFICIAL',
+                'CLIP',
+                'FEATURETTE',
+                'BTS',
+                'INTERVIEW',
+                'CUSTOM',
+                'BEHIND_THE_SCENES',
+            ],
         },
         {
             label: 'Official',
@@ -181,13 +213,13 @@ function Trailer() {
             type: 'select',
             multiple: false,
             rules: [{ required: true, message: 'Movie is required!' }],
-            options:
-                Array.isArray(movieSource) && movieSource.length > 0
-                    ? movieSource.map((movie) => ({
-                          label: movie.title,
-                          value: movie.id,
-                      }))
-                    : [],
+            // options:
+            //     Array.isArray(movieSource) && movieSource.length > 0
+            //         ? movieSource.map((movie) => ({
+            //               label: movie.title,
+            //               value: movie.id,
+            //           }))
+            //         : [],
         },
         {
             label: 'Publish At',
@@ -199,7 +231,12 @@ function Trailer() {
 
     useEffect(() => {
         handleGetAllTrailers();
+        handleGetAllMovie();
     }, []);
+
+    const handleTableChange = (pagination) => {
+        handleGetAllTrailers(pagination.current, pagination.pageSize);
+    };
 
     const handleGetAllTrailers = async (page = 1, pageSize = 5) => {
         setLoading(true);
@@ -236,22 +273,17 @@ function Trailer() {
         }
     };
 
-    const handleTableChange = (pagination) => {
-        handleGetAllTrailers(pagination.current, pagination.pageSize);
-    };
-
     const handleCreateTrailer = async (formData) => {
         try {
             console.log('Form data submitted:', formData);
 
             const response = await createTrailers(formData);
 
-            if (response) {
-                message.success('Trailer created successfully!');
-                setIsModalOpen(false);
-                form.resetFields();
-                handleGetAllTrailers(); // Refresh the trailer list
-            }
+            message.success('Trailer created successfully!');
+
+            form.resetFields();
+            handleGetAllTrailers();
+            setIsModalOpen(false);
         } catch (error) {
             console.error('Failed to create trailer:', error);
             message.error(
@@ -263,13 +295,16 @@ function Trailer() {
 
     const handleTrailerUpdate = async (formData) => {
         try {
-            //call api update here
+            const response = await handleUpdateTrailer(
+                selectedTrailer.id,
+                formData,
+            );
 
-            // Implementation for update functionality
             message.success('Trailer updated successfully!');
+
             setIsModalOpen(false);
             form.resetFields();
-            handleGetAllTrailers(); // Refresh the trailer list
+            handleGetAllTrailers();
         } catch (error) {
             console.error('Failed to update trailer.');
             message.error(
@@ -279,8 +314,15 @@ function Trailer() {
         }
     };
 
-    const handleConfirmDelete = async (formData) => {
-        // Implementation for delete functionality
+    const handleConfirmDelete = async () => {
+        try {
+            const response = await deleteTrailer(selectedTrailer.id);
+
+            handleGetAllTrailers();
+            setIsModalOpen(false);
+        } catch (error) {
+            message.error('Failed to delete trailer.');
+        }
     };
 
     const handleFormSubmit = (formData) => {
@@ -306,24 +348,16 @@ function Trailer() {
         }
     };
 
-    const handleAddNewTrailer = () => {
-        setSelectedTrailer(null);
-        setModalMode('create');
-        form.resetFields(); // Clear previous form values
-        setIsModalOpen(true);
-    };
-
     return (
         <div className={cx('trailer-wrapper')}>
             <div className={cx('trailer-header')}>
                 <h2>Trailer Management</h2>
                 <div>
-                    {/* <Button type="primary">Add new</Button> */}
                     <SmartButton
                         title="Add new"
                         icon={<PlusOutlined />}
                         type="primary"
-                        onClick={handleAddNewTrailer}
+                        onClick={handleAddTrailer}
                     />
                 </div>
             </div>
@@ -345,7 +379,7 @@ function Trailer() {
                     <SmartButton title="Excel" icon={<CloudUploadOutlined />} />
                 </div>
             </div>
-            <div className={cx('movie-container')}>
+            <div className={cx('trailer-container')}>
                 <SmartTable
                     columns={columns}
                     dataSources={trailerSources}
@@ -361,7 +395,7 @@ function Trailer() {
                     setIsModalOpen={setIsModalOpen}
                     title={getModalTitle()}
                     fields={modalMode === 'delete' ? [] : trailerModalFields}
-                    genresSources={movieSource}
+                    dataSources={movieSource}
                     onSubmit={handleFormSubmit}
                     initialValues={selectedTrailer}
                     isDeleteMode={modalMode === 'delete'}

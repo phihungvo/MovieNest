@@ -55,13 +55,12 @@ function Movie() {
         const formData = {
             ...record,
 
-            voteAverage: record.vote_average, // Chuyển từ snake_case thành camelCase
+            voteAverage: record.vote_average, 
             voteCount: record.vote_count,
 
             // Xử lý releaseDate - chuyển sang moment object cho DatePicker
             releaseDate: record.releaseDate ? moment(record.releaseDate) : null,
 
-            // Xử lý genres - chuyển sang array of IDs nếu cần
             genres: record.genres ? record.genres.map((genre) => genre.id) : [],
 
             popular: record.popular ? 'Yes' : 'No',
@@ -102,12 +101,13 @@ function Movie() {
     };
 
     const columns = [
-        { title: 'Movie Title', dataIndex: 'title', key: 'title', width: 200 },
+        { title: 'Movie Title', dataIndex: 'title', key: 'title', width: 200 ,fixed: 'left'},
         {
             title: 'Release Date',
             dataIndex: 'releaseDate',
             key: 'releaseDate',
             width: 200,
+            
             render: (date) =>
                 date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
         },
@@ -206,13 +206,13 @@ function Movie() {
             name: 'genres',
             type: 'select',
             multiple: true,
-            options:
-                Array.isArray(genresSources) && genresSources.length > 0
-                    ? genresSources.map((genre) => ({
-                          label: genre.name,
-                          value: genre.id,
-                      }))
-                    : [],
+            // options:
+            //     Array.isArray(genresSources) && genresSources.length > 0
+            //         ? genresSources.map((genre) => ({
+            //               label: genre.name,
+            //               value: genre.id,
+            //           }))
+            //         : [],
         },
         { label: 'Overview', name: 'overview', type: 'textarea' },
         { label: 'Poster', name: 'posterPath', type: 'upload' },
@@ -239,7 +239,7 @@ function Movie() {
         setLoading(true);
         try {
             const response = await getAllMovies({ page, pageSize });
-            console.log('Movies Data:', response);
+            // console.log('Movies Data:', response);
             const movieList = response.content;
 
             if (Array.isArray(movieList)) {
@@ -291,12 +291,6 @@ function Movie() {
                 selectedMovie.id,
                 formData,
             );
-
-            if (!response || response.error) {
-                const errorMessage = response?.error || 'Movie update failed!';
-                message.error(`Error: ${errorMessage}`);
-                return;
-            }
 
             message.success('Movie updated successfully!');
             handleGetAllMovies();
@@ -409,7 +403,7 @@ function Movie() {
                     setIsModalOpen={setIsModalOpen}
                     title={getModalTitle()}
                     fields={modalMode === 'delete' ? [] : movieModalFields}
-                    genresSources={genresSources}
+                    dataSources={genresSources}
                     onSubmit={handleFormSubmit}
                     initialValues={selectedMovie}
                     isDeleteMode={modalMode === 'delete'}

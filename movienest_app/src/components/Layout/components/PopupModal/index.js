@@ -23,7 +23,7 @@ function PopupModal({
     isModalOpen,
     setIsModalOpen,
     title,
-    genresSources,
+    dataSources,
     fields,
     onSubmit,
     initialValues,
@@ -76,7 +76,7 @@ function PopupModal({
                     formData.inTheater = formData.inTheater === 'Yes';
                 }
 
-                if(formData.official){
+                if (formData.official) {
                     formData.official = formData.official === 'Yes';
                 }
 
@@ -199,15 +199,23 @@ function PopupModal({
                         rules={field.rules}
                     >
                         <Select mode={field.multiple ? 'multiple' : undefined}>
-                            {genresSources &&
-                                genresSources.map((genre) => (
-                                    <Select.Option
-                                        key={genre.id}
-                                        value={genre.id}
-                                    >
-                                        {genre.name}
-                                    </Select.Option>
-                                ))}
+                            {field.options
+                                ? field.options.map((option) => (
+                                      <Select.Option
+                                          key={option}
+                                          value={option}
+                                      >
+                                          {option}
+                                      </Select.Option>
+                                  ))
+                                : dataSources?.map((genre) => (
+                                      <Select.Option
+                                          key={genre.id}
+                                          value={genre.id}
+                                      >
+                                          {genre.name}
+                                      </Select.Option>
+                                  ))}
                         </Select>
                     </Form.Item>
                 );

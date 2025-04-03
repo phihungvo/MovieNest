@@ -3,6 +3,7 @@ import { useAuth } from "./AuthContext";
 
 const PrivateRoute = ({ element, role }) => {
   const { user } = useAuth();
+  const { isDarkMode } = useAuth();
 
   // Check user login ?
   if (!user || !user.token) {

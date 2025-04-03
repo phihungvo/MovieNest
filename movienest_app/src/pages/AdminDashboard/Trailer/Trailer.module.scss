@@ -8,7 +8,7 @@
     overflow-x: auto;
 }
 
-.card-header {
+.trailer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,6 +21,6 @@
     padding-top: 19px;
 }
 .features {
-    display: flex; /* Hoặc display: grid */
-    gap: 10px; /* Khoảng cách giữa các phần tử */
+    display: flex; 
+    gap: 10px;
 }

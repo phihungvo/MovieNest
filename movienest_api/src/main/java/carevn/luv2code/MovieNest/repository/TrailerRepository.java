@@ -4,6 +4,7 @@ import carevn.luv2code.MovieNest.entity.Trailer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface TrailerRepository extends JpaRepository<Trailer, UUID> {
     Page<Trailer> findAll(Pageable pageable);
 
     boolean existsByTitle(String title);
+
+    boolean existsByTitleAndKey(String title, String key);
+
 }

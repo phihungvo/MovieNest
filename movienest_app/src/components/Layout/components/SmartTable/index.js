@@ -42,7 +42,7 @@ function SmartTable({columns, dataSources, loading, pagination, onTableChange}) 
                     pageSizeOptions: ['5', '10', '20'],
                 }}
                 onChange={onTableChange}
-                scroll={{ x: 'max-content', y: 55 * 5 }}
+                scroll={{ x: 'max-content'}}
             />
         </div>
     );

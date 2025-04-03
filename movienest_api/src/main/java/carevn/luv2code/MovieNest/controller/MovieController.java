@@ -44,6 +44,12 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
 
+    @GetMapping("/findAllNoPaging")
+    public ResponseEntity<List<Movie>> findAllNoPaging(){
+        List<Movie> movies = movieService.findAllNoPaging();
+        return ResponseEntity.ok(movies);
+    }
+
     @PutMapping("/update/{movieId}")
     public ResponseEntity<Movie> updateMovie(@PathVariable UUID movieId, @RequestBody MovieDTO movieDTO){
         Movie movie = movieService.updateMovie(movieId, movieDTO);

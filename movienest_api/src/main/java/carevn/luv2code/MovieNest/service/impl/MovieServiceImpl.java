@@ -98,13 +98,19 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public List<Movie> findAllNoPaging() {
+        return movieRepository.findAll();
+    }
+
+    @Override
     public Movie updateMovie(UUID id, MovieDTO movieDTO) {
         Movie movieExisted = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
 
-        if(movieRepository.existsByTitle(movieDTO.getTitle())){
-            throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
-        }
+//        if(movieRepository.existsByTitle(movieDTO.getTitle())){
+//            throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
+//        }
+
         movieExisted.setTitle(movieDTO.getTitle());
         movieExisted.setOverview(movieDTO.getOverview());
         movieExisted.setReleaseDate(movieDTO.getReleaseDate());
