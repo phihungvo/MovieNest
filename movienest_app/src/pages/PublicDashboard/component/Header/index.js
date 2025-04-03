@@ -15,17 +15,18 @@ import {
 import SearchMovie from '../Search/index';
 import { useDebounce } from '~/hooks';
 import { searchMovies, getDetailtMovie } from '~/service/user/home';
-import Poster from '../Poster';
-import SkeletonComponent from '../Skeleton';
+import { useNavigate } from 'react-router-dom';
+import { searchMovieByKeyWord } from '~/service/admin/movie';
 
 const cx = classNames.bind(styles);
 
 function Header() {
     const trendingStates = ['Today', 'This Week'];
-
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    
     // const [selectedState, setSelectedState] = useState(trendingStates[0]);
 
     const debounced = useDebounce(searchValue, 400);
@@ -51,7 +52,7 @@ function Header() {
 
         const fetchMovies = async () => {
             try {
-                const results = await searchMovies(debounced);
+                const results = await searchMovieByKeyWord(debounced);
                 setSearchResult(results);
                 setLoading(false);
                 console.log('Success when get movies.', results);
@@ -70,6 +71,10 @@ function Header() {
         {title: 'People', path: '/people'},
         {title: 'More', path: '/more'}
     ]
+
+    const handleLogin = () => {
+        navigate('/login'); 
+    }
 
     return (
         <>
@@ -98,7 +103,7 @@ function Header() {
                                 <div className={cx('count')}> 1 </div>
                             </div>
                             <Tippy content="Hồ sơ và cài đặt!">
-                                <div className={cx('icon')}>
+                                <div className={cx('icon')} onClick={() => handleLogin()}>
                                     <img src="https://haycafe.vn/wp-content/uploads/2022/10/Hinh-anh-gai-xinh-Viet-Nam-cuoi-tuoi-tan.jpg" />
                                 </div>
                             </Tippy>

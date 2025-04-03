@@ -9,7 +9,6 @@ const TOKEN = localStorage.getItem("token");
 // http://localhost:8080/api/admin/findAll
 export const getAllGenres = async () => {
     try {
-        
         const response = await axios.get(`${API_URL}/genres/findAll`, {
             withCredentials: true,
             headers: {
@@ -18,7 +17,6 @@ export const getAllGenres = async () => {
             },
         });
         
-        // console.log('Genres data: ', response.data, ` with token ${TOKEN}`)
         return response.data;
     } catch (error) {
         console.error(

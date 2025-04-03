@@ -18,8 +18,8 @@ function SearchMovie({ movieData }) {
     // };
 
     const handleSelectMovie = (movie) => {
-        console.log("Navigating to:", `/search/result?name=${movie.original_name}`);
-        navigate(`/search/result?name=${movie.original_name}`);
+        console.log("Navigating to:", `/search/result?name=${movie.title}`);
+        navigate(`/search/result?name=${movie.title}`);
     };
 
     return (
@@ -40,7 +40,7 @@ function SearchMovie({ movieData }) {
                         >
                             <Typography.Text>
                                 <FontAwesomeIcon icon={faMagnifyingGlass} />
-                            </Typography.Text> {movie.original_name}
+                            </Typography.Text> {movie.title}
                         </List.Item>
                     )}
                 />

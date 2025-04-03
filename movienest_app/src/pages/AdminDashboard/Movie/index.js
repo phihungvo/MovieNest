@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { Form, message } from 'antd';
@@ -11,9 +10,14 @@ import {
     DeleteOutlined,
     EditOutlined,
 } from '@ant-design/icons';
-
+import { Select } from 'antd';
 import styles from './Movie.module.scss';
-import { getAllMovies, createMovie, handleUpdateMovie, deleteMovie } from '~/service/admin/movie';
+import {
+    getAllMovies,
+    createMovie,
+    handleUpdateMovie,
+    deleteMovie,
+} from '~/service/admin/movie';
 import { getAllGenres } from '~/service/admin/genres';
 import SmartTable from '~/components/Layout/components/SmartTable';
 import SmartInput from '~/components/Layout/components/SmartInput';
@@ -51,11 +55,17 @@ function Movie() {
         const formData = {
             ...record,
 
+            voteAverage: record.vote_average, // Chuyển từ snake_case thành camelCase
+            voteCount: record.vote_count,
+
             // Xử lý releaseDate - chuyển sang moment object cho DatePicker
             releaseDate: record.releaseDate ? moment(record.releaseDate) : null,
 
             // Xử lý genres - chuyển sang array of IDs nếu cần
             genres: record.genres ? record.genres.map((genre) => genre.id) : [],
+
+            popular: record.popular ? 'Yes' : 'No',
+            inTheater: record.inTheater ? 'Yes' : 'No',
 
             // Xử lý posterPath và backdropPath nếu có ảnh
             posterPath: record.posterPath
@@ -81,7 +91,7 @@ function Movie() {
                 : [],
         };
 
-        form.setFieldValue(formData);
+        form.setFieldsValue(formData);
         setIsModalOpen(true);
     };
 
@@ -92,7 +102,7 @@ function Movie() {
     };
 
     const columns = [
-        { title: 'Movie Title', dataIndex: 'title', key: 'title', width: 250 },
+        { title: 'Movie Title', dataIndex: 'title', key: 'title', width: 200 },
         {
             title: 'Release Date',
             dataIndex: 'releaseDate',
@@ -127,6 +137,20 @@ function Movie() {
             width: 120,
         },
         {
+            title: 'Popular',
+            dataIndex: 'popular',
+            key: 'popular',
+            width: 100,
+            render: (popular) => (popular ? 'Yes' : 'No'),
+        },
+        {
+            title: 'In Theater',
+            dataIndex: 'inTheater',
+            key: 'inTheater',
+            width: 100,
+            render: (inTheater) => (inTheater ? 'Yes' : 'No'),
+        },
+        {
             title: 'Genres',
             dataIndex: 'genres',
             key: 'genres',
@@ -137,28 +161,31 @@ function Movie() {
         },
         {
             title: 'Actions',
+            fixed: 'right',
+            width: 200,
             render: (_, record) => (
                 <>
                     <SmartButton
                         title="Edit"
                         type="primary"
                         icon={<EditOutlined />}
+                        buttonWidth={80}
                         onClick={() => handleEditMovie(record)}
                     />
                     <SmartButton
                         title="Delete"
                         type="danger"
                         icon={<DeleteOutlined />}
+                        buttonWidth={80}
                         onClick={() => handleDeleteMovie(record)}
-                        style={{ marginLeft: '8px' }}
+                        // style={{ marginLeft: '8px' }}
                     />
                 </>
             ),
         },
     ];
 
-
-    const movieFields = [
+    const movieModalFields = [
         {
             label: 'Title',
             name: 'title',
@@ -168,9 +195,17 @@ function Movie() {
         { label: 'Vote Average', name: 'voteAverage', type: 'number' },
         { label: 'Vote Count', name: 'voteCount', type: 'number' },
         {
+            label: 'Popular',
+            name: 'popular',
+            type: 'yesno',
+            options: ['Yes', 'No'],
+        },
+        { label: 'In Theater', name: 'inTheater', type: 'yesno' },
+        {
             label: 'Genres',
             name: 'genres',
             type: 'select',
+            multiple: true,
             options:
                 Array.isArray(genresSources) && genresSources.length > 0
                     ? genresSources.map((genre) => ({
@@ -252,7 +287,10 @@ function Movie() {
 
     const handleMovieUpdate = async (formData) => {
         try {
-            const response = await handleUpdateMovie(selectedMovie.id, formData);
+            const response = await handleUpdateMovie(
+                selectedMovie.id,
+                formData,
+            );
 
             if (!response || response.error) {
                 const errorMessage = response?.error || 'Movie update failed!';
@@ -270,10 +308,9 @@ function Movie() {
 
     const handleConfirmDelete = async () => {
         try {
-
             const response = await deleteMovie(selectedMovie.id);
 
-            console.log('response: ', response)
+            console.log('response: ', response);
             if (!response || response.error) {
                 const errorMessage = response?.error || 'Movie delete failed!';
                 message.error(`Error: ${errorMessage}`);
@@ -301,6 +338,7 @@ function Movie() {
     const handleGetAllGenres = async () => {
         try {
             const response = await getAllGenres();
+            console.log('Genres ', response);
             if (response) {
                 setGenresSources(response);
             } else {
@@ -365,17 +403,18 @@ function Movie() {
                 />
             </div>
 
-            { isModalOpen && (
-                <PopupModal 
+            {isModalOpen && (
+                <PopupModal
                     isModalOpen={isModalOpen}
                     setIsModalOpen={setIsModalOpen}
                     title={getModalTitle()}
-                    fields={modalMode === 'delete' ? [] : movieFields}
+                    fields={modalMode === 'delete' ? [] : movieModalFields}
                     genresSources={genresSources}
                     onSubmit={handleFormSubmit}
                     initialValues={selectedMovie}
                     isDeleteMode={modalMode === 'delete'}
                     formInstance={form}
+                    uploadFileFields = {['posterPath', 'backdropPath']}
                 />
             )}
         </div>

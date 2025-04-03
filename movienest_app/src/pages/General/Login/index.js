@@ -11,12 +11,13 @@ import {
     AppleOutlined,
     GoogleOutlined,
 } from '@ant-design/icons';
+import { useAuth } from '~/routes/AuthContext'; 
 
 const cx = classNames.bind(styles);
 
 function Login() {
     const navigate = useNavigate();
-
+    const { login: authLogin } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const onFinish = async (values) => {
@@ -25,7 +26,7 @@ function Login() {
             const token = await login(values.email, values.password);
 
             if (!token) {
-                message.error('Login failed. Please check your input agains.');
+                message.error('Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.');
                 return;
             }
 
@@ -35,18 +36,24 @@ function Login() {
             console.log('Decoded Token: ', decodedToken);
 
             const roles = decodedToken.role || [];
-
-            console.log('role: ', roles)
+            const isAdmin = roles.includes('ADMIN')
 
             localStorage.setItem(
                 'role',
-                roles.includes('ADMIN') ? 'admin' : 'user',
+                isAdmin ? 'admin' : 'user',
             );
 
-            message.success('Login successful!');
+            authLogin({
+                token,
+                role: isAdmin ? 'admin' : 'user',
+                roles: roles
+            })
 
-            if (roles.includes('ADMIN')) {
-                navigate('/admin/movie');
+            message.success('Đăng nhập thành công!');
+
+            
+            if (isAdmin) {
+                navigate('/admin/trailer');
             } else {
                 navigate('/');
             }
@@ -72,10 +79,6 @@ function Login() {
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
-    };
-
-    const handleNavigate = () => {
-        navigate('/register');
     };
 
     return (

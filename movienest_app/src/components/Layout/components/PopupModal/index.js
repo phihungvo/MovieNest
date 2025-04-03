@@ -29,12 +29,12 @@ function PopupModal({
     initialValues,
     isDeleteMode,
     formInstance,
+    uploadFileFields = [],
 }) {
     const [componentDisabled, setComponentDisabled] = useState(false);
     const [uploadLoading, setUploadLoading] = useState(false);
 
     // Sử dụng form instance được truyền từ component cha
-    // const form = formInstance || Form.useForm()[0];÷
     const form = formInstance;
 
     // Xử lý khi form có giá trị ban đầu từ prop initialValues
@@ -59,33 +59,55 @@ function PopupModal({
 
                 console.log('Values from form:', values);
 
+                if (formData.voteAverage !== undefined) {
+                    formData.vote_average = formData.voteAverage;
+                    delete formData.voteAverage;
+                }
+
+                if (formData.voteCount !== undefined) {
+                    formData.vote_count = formData.voteCount;
+                    delete formData.voteCount;
+                }
+
+                if (formData.popular) {
+                    formData.popular = formData.popular === 'Yes';
+                }
+                if (formData.inTheater) {
+                    formData.inTheater = formData.inTheater === 'Yes';
+                }
+
+                if(formData.official){
+                    formData.official = formData.official === 'Yes';
+                }
+
                 // Xử lý các trường file (nếu có)
-                const fileFields = ['posterPath', 'backdropPath'];
-                for (const field of fileFields) {
-                    if (values[field] && values[field].length > 0) {
-                        // Kiểm tra nếu file đã có URL (trường hợp edit)
-                        if (values[field][0].url) {
-                            formData[field] = values[field][0].url;
-                        } else if (values[field][0].originFileObj) {
-                            // Nếu là file mới upload
-                            const file = values[field][0].originFileObj;
-                            try {
-                                const response = await uploadFile(file);
-                                console.log(
-                                    `${field} uploaded response:`,
-                                    response,
-                                );
-                                formData[field] = response.url;
-                            } catch (error) {
-                                console.error(
-                                    `Error uploading ${field}:`,
-                                    error,
-                                );
-                                formData[field] = null;
+                if (uploadFileFields.length > 0) {
+                    for (const field of uploadFileFields) {
+                        if (values[field] && values[field].length > 0) {
+                            // Kiểm tra nếu file đã có URL (trường hợp edit)
+                            if (values[field][0].url) {
+                                formData[field] = values[field][0].url;
+                            } else if (values[field][0].originFileObj) {
+                                // Nếu là file mới upload
+                                const file = values[field][0].originFileObj;
+                                try {
+                                    const response = await uploadFile(file);
+                                    console.log(
+                                        `${field} uploaded response:`,
+                                        response,
+                                    );
+                                    formData[field] = response.url;
+                                } catch (error) {
+                                    console.error(
+                                        `Error uploading ${field}:`,
+                                        error,
+                                    );
+                                    formData[field] = null;
+                                }
                             }
+                        } else {
+                            formData[field] = null;
                         }
-                    } else {
-                        formData[field] = null;
                     }
                 }
 
@@ -168,7 +190,6 @@ function PopupModal({
                         <InputNumber style={{ width: '100%' }} />
                     </Form.Item>
                 );
-
             case 'select':
                 return (
                     <Form.Item
@@ -177,7 +198,7 @@ function PopupModal({
                         name={field.name}
                         rules={field.rules}
                     >
-                        <Select mode="multiple">
+                        <Select mode={field.multiple ? 'multiple' : undefined}>
                             {genresSources &&
                                 genresSources.map((genre) => (
                                     <Select.Option
@@ -187,6 +208,20 @@ function PopupModal({
                                         {genre.name}
                                     </Select.Option>
                                 ))}
+                        </Select>
+                    </Form.Item>
+                );
+            case 'yesno':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <Select>
+                            <Select.Option value="Yes">Yes</Select.Option>
+                            <Select.Option value="No">No</Select.Option>
                         </Select>
                     </Form.Item>
                 );

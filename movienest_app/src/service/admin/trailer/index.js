@@ -35,7 +35,7 @@ export const getAllTrailers = async ({ page = 0, pageSize = 5 }) => {
 export const createTrailers = async (formData) => {
     const TOKEN = localStorage.getItem('token');
 
-    console.log('form data: ', formData);
+    console.log('form data >>????___: ', formData);
 
     try {
         let publishedAt = null;
@@ -51,9 +51,9 @@ export const createTrailers = async (formData) => {
                 title: formData.title,
                 key: formData.key,
                 site: formData.site,
-                trailerType: formData.trailerType,
+                trailerType: formData.type,
                 official: formData.official,
-                movieId: formData.movieId,
+                movieId: formData.movies,
                 publishedAt: publishedAt,
             },
             {
