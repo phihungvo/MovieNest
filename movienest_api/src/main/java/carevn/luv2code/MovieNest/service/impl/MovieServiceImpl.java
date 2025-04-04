@@ -1,12 +1,14 @@
 package carevn.luv2code.MovieNest.service.impl;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
+import carevn.luv2code.MovieNest.entity.Comment;
 import carevn.luv2code.MovieNest.entity.Genres;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.Trailer;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.MovieMapper;
+import carevn.luv2code.MovieNest.repository.CommentRepository;
 import carevn.luv2code.MovieNest.repository.GenresRepository;
 import carevn.luv2code.MovieNest.repository.MovieRepository;
 import carevn.luv2code.MovieNest.repository.TrailerRepository;
@@ -36,16 +38,17 @@ public class MovieServiceImpl implements MovieService {
 
     private final TrailerRepository trailerRepository;
 
-//    private final MovieMapper movieMapper;
+    private final CommentRepository commentRepository;
 
     public MovieServiceImpl(MovieRepository movieRepository,
                             GenresRepository genresRepository,
-                            TrailerRepository trailerRepository
+                            TrailerRepository trailerRepository,
+                            CommentRepository commentRepository
                             ) {
         this.movieRepository = movieRepository;
         this.genresRepository = genresRepository;
         this.trailerRepository = trailerRepository;
-
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -64,8 +67,10 @@ public class MovieServiceImpl implements MovieService {
         movie.setBackdropPath(movieDTO.getBackdropPath());
         movie.setPopular(movieDTO.isPopular());
         movie.setInTheater(movieDTO.isInTheater());
-        movie.setVote_average(movieDTO.getVote_average());
-        movie.setVote_count(movieDTO.getVote_count());
+        movie.setVoteAverage(movieDTO.getVoteAverage());
+        movie.setVoteCount(movieDTO.getVoteCount());
+        movie.setAdult(movieDTO.isAdult());
+        movie.setPopularity(movieDTO.getPopularity());
 
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
@@ -76,6 +81,11 @@ public class MovieServiceImpl implements MovieService {
             List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
             movie.setTrailers(trailerList);
         }
+
+//        if (movieDTO.getComments() != null && !movieDTO.getComments().isEmpty()) {
+//            List<Comment> commentList = commentRepository.findAllById(movieDTO.getComments());
+//            movie.setComments(commentList);
+//        }
 
         movieRepository.save(movie);
         log.info("Saved movie: {}", movie.getTitle());
@@ -116,8 +126,13 @@ public class MovieServiceImpl implements MovieService {
         movieExisted.setReleaseDate(movieDTO.getReleaseDate());
         movieExisted.setPosterPath(movieDTO.getPosterPath());
         movieExisted.setBackdropPath(movieDTO.getBackdropPath());
-        movieExisted.setVote_average(movieDTO.getVote_average());
-        movieExisted.setVote_count(movieDTO.getVote_count());
+        movieExisted.setVoteAverage(movieDTO.getVoteAverage());
+        movieExisted.setPopular(movieDTO.isPopular());
+        movieExisted.setInTheater(movieDTO.isInTheater());
+        movieExisted.setVoteCount(movieDTO.getVoteCount());
+        movieExisted.setAdult(movieDTO.isAdult());
+        movieExisted.setPopularity(movieDTO.getPopularity());
+
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
             movieExisted.setGenres(genresList);
@@ -127,6 +142,7 @@ public class MovieServiceImpl implements MovieService {
             List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
             movieExisted.setTrailers(trailerList);
         }
+
         return movieRepository.save(movieExisted);
     }
 

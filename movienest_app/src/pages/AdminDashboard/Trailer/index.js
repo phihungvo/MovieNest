@@ -48,7 +48,7 @@ function Trailer() {
     };
 
     const handleEditTrailer = async (record) => {
-        console.log('Editing record: ', record);
+        // console.log('Editing record: ', record);
         setSelectedTrailer(record);
         setModalMode('edit');
 
@@ -88,7 +88,7 @@ function Trailer() {
 
     const handleGetAllMovie = async () => {
         try {
-            console.log('Start get all movie');
+            // console.log('Start get all movie');
             const movieData = await findAllMovieNoPaging();
             setMovieSource(movieData);
             // console.log('Movie: ', response);
@@ -123,7 +123,7 @@ function Trailer() {
             dataIndex: 'official',
             key: 'official',
             width: 100,
-            // render: (official) => (official ? 'YES' : 'NO'),
+            render: (official) => (official ? 'YES' : 'NO'),
         },
         // { title: 'Movie', dataIndex: 'movie', key: 'movie', width: 250 },
         {
@@ -187,9 +187,9 @@ function Trailer() {
         },
         {
             label: 'Type',
-            name: 'type',
+            name: 'trailerType',
             type: 'select',
-            rules: [{ required: true, message: 'Type is required!' }],
+            rules: [{ required: true, message: 'Trailer Type is required!' }],
             options: [
                 'TEASER',
                 'OFFICIAL',
@@ -209,7 +209,7 @@ function Trailer() {
         },
         {
             label: 'Movies',
-            name: 'movies',
+            name: 'movie',
             type: 'select',
             multiple: false,
             rules: [{ required: true, message: 'Movie is required!' }],
@@ -264,7 +264,7 @@ function Trailer() {
                 setTrailerSources([]);
             }
 
-            console.log('All trailers: ', response);
+            // console.log('All trailers: ', response);
         } catch (error) {
             console.error('Error fetching trailers', error);
             setTrailerSources([]);

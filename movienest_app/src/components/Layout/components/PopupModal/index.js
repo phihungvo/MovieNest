@@ -59,15 +59,15 @@ function PopupModal({
 
                 console.log('Values from form:', values);
 
-                if (formData.voteAverage !== undefined) {
-                    formData.vote_average = formData.voteAverage;
-                    delete formData.voteAverage;
-                }
+                // if (formData.voteAverage !== undefined) {
+                //     formData.voteAverage = formData.voteAverage;
+                //     delete formData.voteAverage;
+                // }
 
-                if (formData.voteCount !== undefined) {
-                    formData.vote_count = formData.voteCount;
-                    delete formData.voteCount;
-                }
+                // if (formData.voteCount !== undefined) {
+                //     formData.voteCount = formData.voteCount;
+                //     delete formData.voteCount;
+                // }
 
                 if (formData.popular) {
                     formData.popular = formData.popular === 'Yes';
@@ -78,6 +78,10 @@ function PopupModal({
 
                 if (formData.official) {
                     formData.official = formData.official === 'Yes';
+                }
+
+                if(formData.adult){
+                    formData.adult = formData.adult === 'Yes';
                 }
 
                 // Xử lý các trường file (nếu có)

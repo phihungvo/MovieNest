@@ -1,5 +1,6 @@
 package carevn.luv2code.MovieNest.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -33,22 +34,30 @@ public class Movie {
     @Column(name = "backdrop_path")
     String backdropPath;
 
-    float vote_average;
+    float voteAverage;
 
-    int vote_count;
+    int voteCount;
 
     boolean popular;
 
     boolean inTheater;
 
+    boolean adult;
+
+    float popularity;
+
     @ManyToMany
     @JoinTable(
             name = "movie_genres",
-            joinColumns =@JoinColumn(name = "movie_id"),
+            joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genres_id")
     )
-    List<Genres> genres; // Danh sách thể loại
+    List<Genres> genres;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Trailer> trailers;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Comment> comments;
 }

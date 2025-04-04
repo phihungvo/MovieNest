@@ -18,9 +18,9 @@ export const getAllTrailers = async ({ page = 0, pageSize = 5 }) => {
                 'Content-Type': 'application/json',
             },
         });
-        console.log('Response>s>> : ', response);
+        // console.log('Response>s>> : ', response);
 
-        console.log('Fetching trailers>>> : ', response.data);
+        // console.log('Fetching trailers>>> : ', response.data);
         return response.data;
     } catch (error) {
         message.error(

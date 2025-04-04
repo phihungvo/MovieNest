@@ -15,6 +15,7 @@ import {
     ShopOutlined,
     InboxOutlined,
     SendOutlined,
+    CommentOutlined,
 } from '@ant-design/icons';
 
 const cx = classNames.bind(styles)
@@ -47,9 +48,10 @@ const sideBar = [
         url: '/admin/trailer'
     },
     {
-        title: 'Charts',
+        title: 'Comment',
         color: '#01a9f4',
-        icon: <PieChartOutlined />
+        icon: <CommentOutlined />,
+        url: '/admin/comment'
     },
     {
         title: 'Settings',

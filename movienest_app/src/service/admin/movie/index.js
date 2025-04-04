@@ -92,7 +92,7 @@ export const findAllMovieNoPaging = async () => {
 export const createMovie = async (formData) => {
     const TOKEN = localStorage.getItem('token');
 
-    console.log('form data: ', formData);
+    console.log('form data create movie: ', formData);
 
     try {
         let releaseDate = null;
@@ -112,12 +112,15 @@ export const createMovie = async (formData) => {
                 releaseDate: releaseDate,
                 posterPath: formData.posterPath,
                 backdropPath: formData.backdropPath,
-                vote_average: formData.vote_average || 0,
-                vote_count: formData.vote_count || 0,
+                voteAverage: formData.voteAverage || 0,
+                voteCount: formData.voteCount || 0,
+                popularity: formData.popularity || 0,
                 popular: formData.popular,
+                adult: formData.adult,
                 inTheater: formData.inTheater,
                 genres: formData.genres,
                 trailers: formData.trailers || [],
+                comments: formData.comments || [],
             },
             {
                 headers: {

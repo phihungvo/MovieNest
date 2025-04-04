@@ -1,5 +1,6 @@
 package carevn.luv2code.MovieNest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,16 +25,23 @@ public class MovieDTO {
 
      String backdropPath;
 
-     float vote_average;
+     float voteAverage;
 
-     int vote_count;
+     int voteCount;
 
      boolean popular;
 
      boolean inTheater;
 
+     boolean adult;
+
+     float popularity;
+
      List<UUID> genres; // Danh sách thể loại
 
      List<UUID> trailers;
+
+     @JsonIgnore
+     List<UUID> comments;
 
 }

@@ -55,8 +55,8 @@ function Movie() {
         const formData = {
             ...record,
 
-            voteAverage: record.vote_average, 
-            voteCount: record.vote_count,
+            voteAverage: record.voteAverage, 
+            voteCount: record.voteCount,
 
             // Xử lý releaseDate - chuyển sang moment object cho DatePicker
             releaseDate: record.releaseDate ? moment(record.releaseDate) : null,
@@ -65,6 +65,7 @@ function Movie() {
 
             popular: record.popular ? 'Yes' : 'No',
             inTheater: record.inTheater ? 'Yes' : 'No',
+            adult: record.adult ? 'Yes' : 'No',
 
             // Xử lý posterPath và backdropPath nếu có ảnh
             posterPath: record.posterPath
@@ -125,29 +126,42 @@ function Movie() {
             ),
         },
         {
+            title: 'Adult',
+            dataIndex: 'adult',
+            key: 'adult',
+            width: 70,
+            render: (adult) => (adult ? 'Yes' : 'No'),
+        },
+        {
             title: 'Vote Average',
-            dataIndex: 'vote_average',
-            key: 'vote_average',
-            width: 100,
+            dataIndex: 'voteAverage',
+            key: 'voteAverage',
+            width: 80,
         },
         {
             title: 'Vote Count',
-            dataIndex: 'vote_count',
-            key: 'vote_count',
-            width: 120,
+            dataIndex: 'voteCount',
+            key: 'voteCount',
+            width: 80,
         },
         {
             title: 'Popular',
             dataIndex: 'popular',
             key: 'popular',
-            width: 100,
+            width: 80,
             render: (popular) => (popular ? 'Yes' : 'No'),
+        },
+        {
+            title: 'Popularity',
+            dataIndex: 'popularity',
+            key: 'popularity',
+            width: 80,
         },
         {
             title: 'In Theater',
             dataIndex: 'inTheater',
             key: 'inTheater',
-            width: 100,
+            width: 80,
             render: (inTheater) => (inTheater ? 'Yes' : 'No'),
         },
         {
@@ -194,12 +208,20 @@ function Movie() {
         },
         { label: 'Vote Average', name: 'voteAverage', type: 'number' },
         { label: 'Vote Count', name: 'voteCount', type: 'number' },
+        { label: 'Popularity', name: 'popularity', type: 'number' },
         {
             label: 'Popular',
             name: 'popular',
             type: 'yesno',
             options: ['Yes', 'No'],
         },
+        {
+            label: 'Adult', 
+            name: 'adult',
+            type: 'yesno',
+            options: ['Yes', 'No'],
+        },
+
         { label: 'In Theater', name: 'inTheater', type: 'yesno' },
         {
             label: 'Genres',
