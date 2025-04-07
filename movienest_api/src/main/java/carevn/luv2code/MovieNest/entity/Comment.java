@@ -1,3 +1,4 @@
+
 package carevn.luv2code.MovieNest.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

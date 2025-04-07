@@ -56,7 +56,8 @@
                                  "/api/storage/**",
                                  "/api/genres/**",
                                  "/api/trailers/**",
-                                 "/api/comment/**"
+                                 "/api/comment/**",
+                                 "/api/actor/**"
                          ).hasRole("ADMIN")
 
                          // Moderator endpoints

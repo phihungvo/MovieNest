@@ -4,10 +4,12 @@ import carevn.luv2code.MovieNest.dto.MovieDTO;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.service.MovieService;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +44,16 @@ public class MovieController {
     ){
         Page<Movie> movies = movieService.findAllMovies(page, size);
         return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/this-week")
+    public ResponseEntity<List<Movie>> getMoviesThisWeek(){
+        return new ResponseEntity<>(movieService.getMoviesThisWeek(), HttpStatus.OK);
+    }
+
+    @GetMapping("/today")
+    public ResponseEntity<List<Movie>> getMoviesToday(){
+        return new ResponseEntity<>(movieService.getMoviesToday(), HttpStatus.OK);
     }
 
     @GetMapping("/findAllNoPaging")

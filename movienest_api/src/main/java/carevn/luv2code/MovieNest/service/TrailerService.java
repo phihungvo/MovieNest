@@ -13,6 +13,8 @@ public interface TrailerService {
 
     Page<Trailer> findAllTrailers(int page, int size);
 
+    List<Trailer> findAllTrailersNoPagination();
+
     List<Trailer> getTrailersByMovieId(UUID movieId);
 
     Trailer getTrailerById(UUID trailerId);

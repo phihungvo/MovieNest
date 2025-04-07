@@ -63,6 +63,10 @@ public class TrailerServiceImpl implements TrailerService {
         return trailerPage;
     }
 
+    @Override
+    public List<Trailer> findAllTrailersNoPagination() {
+        return trailerRepository.findAll();
+    }
 
     @Override
     public List<Trailer> getTrailersByMovieId(UUID movieId) {

@@ -17,7 +17,7 @@ export const login = async (email, password) => {
             },
         );
 
-        console.log('Login Response:', response.data);
+        // console.log('Login Response:', response.data);
 
         if (response.status === 200) {
             return response.data.token;

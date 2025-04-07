@@ -36,6 +36,11 @@ public class TrailerController {
         return ResponseEntity.ok(trailer);
     }
 
+    @GetMapping("/getAllNoPaging")
+    public ResponseEntity<List<Trailer>> getAllNoPagingTrailers(){
+        return ResponseEntity.ok(trailerService.findAllTrailersNoPagination());
+    }
+
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<Trailer>> getTrailersByMovieId(@PathVariable("movieId") UUID movieid) {
         return ResponseEntity.ok(trailerService.getTrailersByMovieId(movieid));

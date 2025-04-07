@@ -23,12 +23,14 @@ import SmartTable from '~/components/Layout/components/SmartTable';
 import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
+import { getAllTrailers, getAllTrailerNoPaging } from '~/service/admin/trailer';
 
 const cx = classNames.bind(styles);
 
 function Movie() {
     const [movieSources, setMovieSources] = useState([]);
     const [genresSources, setGenresSources] = useState([]);
+    const [trailerSources, setTrailerSources] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pagination, setPagination] = useState({
         current: 1,
@@ -55,7 +57,7 @@ function Movie() {
         const formData = {
             ...record,
 
-            voteAverage: record.voteAverage, 
+            voteAverage: record.voteAverage,
             voteCount: record.voteCount,
 
             // Xử lý releaseDate - chuyển sang moment object cho DatePicker
@@ -102,13 +104,19 @@ function Movie() {
     };
 
     const columns = [
-        { title: 'Movie Title', dataIndex: 'title', key: 'title', width: 200 ,fixed: 'left'},
+        {
+            title: 'Movie Title',
+            dataIndex: 'title',
+            key: 'title',
+            width: 200,
+            fixed: 'left',
+        },
         {
             title: 'Release Date',
             dataIndex: 'releaseDate',
             key: 'releaseDate',
             width: 200,
-            
+
             render: (date) =>
                 date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
         },
@@ -174,6 +182,15 @@ function Movie() {
                     : 'N/A',
         },
         {
+            title: 'Trailers',
+            dataIndex: 'trailers',
+            key: 'trailers',
+            render: (trailers) =>
+                trailers && trailers.length > 0
+                    ? trailers.map((trailer) => trailer.title).join(', ')
+                    : 'N/A',
+        },
+        {
             title: 'Actions',
             fixed: 'right',
             width: 200,
@@ -216,7 +233,7 @@ function Movie() {
             options: ['Yes', 'No'],
         },
         {
-            label: 'Adult', 
+            label: 'Adult',
             name: 'adult',
             type: 'yesno',
             options: ['Yes', 'No'],
@@ -236,6 +253,12 @@ function Movie() {
             //           }))
             //         : [],
         },
+        {
+            label: 'Trailers',
+            name: 'trailers',
+            type: 'select',
+            multiple: true,
+        },
         { label: 'Overview', name: 'overview', type: 'textarea' },
         { label: 'Poster', name: 'posterPath', type: 'upload' },
         { label: 'Backdrop', name: 'backdropPath', type: 'upload' },
@@ -251,6 +274,7 @@ function Movie() {
     useEffect(() => {
         handleGetAllMovies();
         handleGetAllGenres();
+        handleGetAllTrailers();
     }, []);
 
     const handleTableChange = (pagination) => {
@@ -365,6 +389,31 @@ function Movie() {
         }
     };
 
+    const handleGetAllTrailers = async () => {
+        try {
+            const response = await getAllTrailerNoPaging();
+
+            const trailerList = response;
+
+            setTrailerSources(trailerList);
+            // if (Array.isArray(trailerList)) {
+            //     setPagination((prev) => ({
+            //         ...prev,
+            //         current: page,
+            //         pageSize: pageSize,
+            //         total: response.totalElements,
+            //     }));
+            // } else {
+            //     console.error('Invalid data format:', response);
+            //     setMovieSources([]);
+            // }
+
+            console.log('Get all trailers>>>: ', trailerList);
+        } catch (error) {
+            console.error('Failed to get all trailers:', error);
+        }
+    };
+
     const getModalTitle = () => {
         switch (modalMode) {
             case 'create':
@@ -426,11 +475,12 @@ function Movie() {
                     title={getModalTitle()}
                     fields={modalMode === 'delete' ? [] : movieModalFields}
                     dataSources={genresSources}
+                    trailerSource={trailerSources}
                     onSubmit={handleFormSubmit}
                     initialValues={selectedMovie}
                     isDeleteMode={modalMode === 'delete'}
                     formInstance={form}
-                    uploadFileFields = {['posterPath', 'backdropPath']}
+                    uploadFileFields={['posterPath', 'backdropPath']}
                 />
             )}
         </div>

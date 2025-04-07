@@ -23,4 +23,6 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
     List<Movie> findByReleaseDate(Date release_date);
 
     Page<Movie> findAll(Pageable pageable);
+
+    List<Movie> findByReleaseDateBetween(Date from, Date to);
 }

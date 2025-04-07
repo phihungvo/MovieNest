@@ -49,7 +49,6 @@ export const getMovieToday = async () => {
     }
 }
 
-
 export const getMovieInWeek = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/trending/movie/week`, {

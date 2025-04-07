@@ -5,7 +5,7 @@ import { Flex, Progress } from 'antd';
 const cx = classNames.bind(styles);
 
 function ProgressOverlay({ popularity, size = 35}) {
-    console.log('popularity vote_average: ', popularity);
+    // console.log('popularity vote_average: ', popularity);
     return (
         <>
             <div className={cx('progress-overlay')}>

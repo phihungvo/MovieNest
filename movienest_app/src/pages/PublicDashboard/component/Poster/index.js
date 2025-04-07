@@ -18,7 +18,7 @@ function Poster({ title, options, fetchData, defaultValue = '', isTrailer = fals
                 const result = await fetchData(state);
                 if (isMounted) setResults(result);
 
-                console.log("Result useEffect((): ", result)
+                // console.log("Result useEffect((): ", result)
             } catch (error) {
                 console.error("Error fetching data:", error);
             }

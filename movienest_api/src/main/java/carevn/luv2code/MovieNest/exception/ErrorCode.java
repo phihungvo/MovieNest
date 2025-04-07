@@ -28,6 +28,8 @@ public enum ErrorCode {
     MOVIE_NOT_EXISTED(1015, "Movie not existed", HttpStatus.NOT_FOUND),
     INVALID_TRAILER_TYPE(1016, "Invalid trailer type", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_FOUND(1017, "Comment not found", HttpStatus.NOT_FOUND),
+    ACTOR_EXISTED(1018, "Actor already exists", HttpStatus.CONFLICT),
+    ACTOR_NOT_EXISTED(1019, "Actor not existed", HttpStatus.NOT_FOUND),
     ;
 
     int code;

@@ -11,6 +11,7 @@ import Header from '../component/Header';
 import Poster from '../component/Poster';
 import SkeletonComponent from '../component/Skeleton';
 import { getDetailtMovie } from '~/service/user/home';
+import CommentList from '~/components/Layout/components/Comment';
 
 const cx = classNames.bind(styles);
 
@@ -84,6 +85,8 @@ function UserHome() {
             <div>
                 <button onClick={handleCallDetailMovie()}>Call api</button>
             </div>
+
+            <CommentList />
             <SkeletonComponent />
         </>
     );

@@ -31,6 +31,28 @@ export const getAllTrailers = async ({ page = 0, pageSize = 5 }) => {
     }
 };
 
+// http://localhost:8080/api/trailers/getAllNoPaging
+export const getAllTrailerNoPaging = async () => {
+    const TOKEN = localStorage.getItem('token');
+ 
+    try {
+        const response = await axios.get(`${API_URL}/trailers/getAllNoPaging`, {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('response trailer list: ', response.data);
+        return response.data;
+    } catch (error) {
+        message.error(
+            'Error fetching trailers:',
+            error.response ? error.response.data : error.message,
+        );
+        throw error;
+    }
+};
+
 // http://localhost:8080/api/trailers/create
 export const createTrailers = async (formData) => {
     const TOKEN = localStorage.getItem('token');

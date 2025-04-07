@@ -47,6 +47,7 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
             },
         });
 
+        console.log('data: ', response.data)
         return response.data;
     } catch (error) {
         console.error(

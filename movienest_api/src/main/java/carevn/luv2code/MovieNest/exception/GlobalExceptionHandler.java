@@ -18,6 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = AppException.class)
     public ResponseEntity<ApiResponse> handleAppException(AppException appException) {
+        appException.printStackTrace();
         ErrorCode errorCode = appException.getErrorCode();
         ApiResponse<ErrorCode> apiResponse = new ApiResponse<>();
         apiResponse.setCode(errorCode.getCode());

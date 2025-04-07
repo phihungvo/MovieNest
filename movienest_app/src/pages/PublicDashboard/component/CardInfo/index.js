@@ -32,7 +32,7 @@ function CardInfo({ movieResult, isTrailer }) {
         navigate(`/movie/${id}`);
     };
 
-    console.log('movieResult, ', movieResult);
+    // console.log('movieResult, ', movieResult);
 
     // Xử lý bấm ESC để đóng trailer
     useEffect(() => {
