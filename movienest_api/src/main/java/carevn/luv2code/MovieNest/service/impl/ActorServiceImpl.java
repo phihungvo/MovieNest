@@ -47,20 +47,35 @@ public class ActorServiceImpl implements ActorService {
 
     @Override
     public ActorDTO create(ActorDTO actor) {
+        boolean existingActorByNameAndCharacter = actorRepository.existsByNameAndCharacter(actor.getName(), actor.getCharacter());
+        if (existingActorByNameAndCharacter) {
+            throw new AppException(ErrorCode.ACTOR_EXISTED);
+        }
         Actor actorEntity = actorMapper.toEntity(actor);
         actorEntity = actorRepository.save(actorEntity);
         return actorMapper.toDto(actorEntity);
     }
 
     @Override
-    public Actor update(UUID id, Actor actor) {
+    public Actor update(UUID id, ActorDTO actorDTO) {
         Actor updatedActor = actorRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ACTOR_NOT_EXISTED));
+
+        updatedActor.setName(actorDTO.getName());
+        updatedActor.setCharacter(actorDTO.getCharacter());
+        updatedActor.setGender(actorDTO.getGender());
+        updatedActor.setBiography(actorDTO.getBiography());
+        updatedActor.setBirthday(actorDTO.getBirthday());
+        updatedActor.setPlaceOfBirth(actorDTO.getPlaceOfBirth());
+        updatedActor.setProfilePath(actorDTO.getProfilePath());
+
         return actorRepository.save(updatedActor);
     }
 
     @Override
-    public void delete(Actor actor) {
-        actorRepository.delete(actor);
+    public void delete(UUID actorId) {
+        Actor deleteActor = actorRepository.findById(actorId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACTOR_NOT_EXISTED));
+        actorRepository.delete(deleteActor);
     }
 }

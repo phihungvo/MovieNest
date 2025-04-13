@@ -1,4 +1,4 @@
-# 🎬 MovieNest Project 💀
+# 🎬 MovieNest Project
 
 ## 🌐 Overview
 
@@ -13,7 +13,7 @@
 
 ## ⚙️ Technologies Used
 
-### Backend 🥴
+### Backend
 - **Java 21**
 - **Spring Boot**
 - **Spring Data JPA**
@@ -23,16 +23,13 @@
 - **Lombok**
 - **Maven**
 
-### Frontend 🙉
+### Frontend
 - **ReactJS**
 - **Axios**
 - **React Router**
-- **TailwindCSS**
 - **AntDesign**
 
----
-
-## 🚀 Main Features 📌 Features
+## 📌 Main Features 
 
 ### 1. Movie Management
 - Create, update, delete, and search movies.
@@ -48,35 +45,41 @@
 - Add trailers for each movie.
 - View trailers associated with specific movies.
 
-### 4. Pagination & Search
+### 4. Actor Management
+- Manage actors and link to movies.
+
+### 5. Comment Feature
+- Allow users to comment on movies.
+
+### 6. Pagination & Search
 - Search movies by title.
 - Filter movies by genre and release date.
 - Paginate movie and trailer data.
 
 ## 🌟 Future Features (Planned)
 
-### 5. Rating & Review
+### 1. Rating & Review
 - Users can rate movies (1-10 stars).
 - Users can write reviews and comments about movies.
 - View the list of ratings & reviews for each movie.
 
-### 6. Favorite Movies
+### 2. Favorite Movies
 - Allow users to save their favorite movies.
 - Provide API to retrieve the user's favorite movie list.
 
-### 7. Admin Dashboard - Statistics
+### 3. Admin Dashboard - Statistics
 - Display the number of movies by genre.
 - Show movies with the highest and lowest ratings.
 - Display total counts of trailers, genres, and users.
 
-### 8. Import Movies from TMDB API
+### 4. Import Movies from TMDB API
 - Add a feature to automatically import movie data from The Movie Database (TMDB) API.
 
-### 9. Watchlist & Watch History
+### 5. Watchlist & Watch History
 - Allow users to add movies to their Watchlist.
 - Save and view the history of watched movies.
 
-## Upcoming Feature 🫦
+## Upcoming Feature
 
 | Feature                          | Description                                                      |
 |----------------------------------|---------------------------------------------------------------|

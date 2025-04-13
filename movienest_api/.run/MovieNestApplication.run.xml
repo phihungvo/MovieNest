@@ -1,7 +1,24 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MovieNestApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <envs>
+      <env name="DB_URL" value="jdbc:mysql://localhost:3306/movenest_api?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true" />
+      <env name="DB_USERNAME" value="root" />
+      <env name="DB_PASSWORD" value="Hungyeuy@2410" />
+      <env name="JWT_SECRET" value="QQU0Alvur6b2dBvD5pcC4C3mlRgSm9OUTfrGJMFtFlU=" />
+      <env name="JWT_EXPIRATION" value="360000000" />
+    </envs>
     <module name="MovieNest" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="carevn.luv2code.MovieNest.MovieNestApplication" />
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+      </ENTRIES>
+    </extension>
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

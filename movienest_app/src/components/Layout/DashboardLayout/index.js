@@ -7,8 +7,7 @@ import {
     MailOutlined,
     EditOutlined,
     CalendarOutlined,
-    PieChartOutlined,
-    SettingOutlined,
+    ProfileOutlined,
     UserOutlined,
     BellOutlined,
     FileTextOutlined,
@@ -48,20 +47,21 @@ const sideBar = [
         url: '/admin/trailer'
     },
     {
-        title: 'Comment',
+        title: 'Actor',
         color: '#01a9f4',
+        icon: <UserOutlined />,
+        url: '/admin/actor'
+    },
+    {
+        title: 'Comment',
+        color: '#ff9800',
         icon: <CommentOutlined />,
         url: '/admin/comment'
     },
     {
-        title: 'Settings',
-        color: '#ff9800',
-        icon: <SettingOutlined />
-    },
-    {
-        title: 'Profile',
+        title: 'User',
         color: '#9c27b0',
-        icon: <UserOutlined />
+        icon: <ProfileOutlined />
     },
     {
         title: 'Notifications',
@@ -69,7 +69,7 @@ const sideBar = [
         icon: <BellOutlined />
     },
     {
-        title: 'Documents',
+        title: 'Settings',
         color: '#4caf50',
         icon: <FileTextOutlined />
     },

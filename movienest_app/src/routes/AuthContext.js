@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
           }else {
-            setUser({token, role, roles: decodedToken.role || []});
+            // setUser({token, role, roles: decodedToken.role || []});
+            setUser({token, roles: decodedToken.role || []});
           }
         }catch (error) {
           console.log('Error when decode token: ', error);
@@ -33,9 +34,9 @@ export const AuthProvider = ({ children }) => {
     const login = (userData) => setUser(userData);
     const logout = () => {
       localStorage.removeItem('token');
-      localStorage.removeItem('role');
       setUser(null);
     }
+    console.log('Userrrr: ', user)
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

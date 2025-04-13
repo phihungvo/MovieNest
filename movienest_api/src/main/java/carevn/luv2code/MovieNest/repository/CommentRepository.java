@@ -11,11 +11,9 @@ import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
-    // Lấy tất cả comment gốc (không phải comment con) chưa bị ẩn
     @Query("SELECT c FROM Comment c WHERE c.isHidden = false AND c.parentComment IS NULL")
     List<Comment> getRootCommentsNotHidden();
 
-    // Lấy tất cả comment (cả gốc và con) chưa bị ẩn
     @Query("SELECT c FROM Comment c WHERE c.isHidden = false")
     List<Comment> getAllCommentsNotHidden();
 

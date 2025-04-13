@@ -10,7 +10,7 @@ import {
     DeleteOutlined,
     EditOutlined,
 } from '@ant-design/icons';
-import { Select } from 'antd';
+import { Select, Button } from 'antd';
 import styles from './Movie.module.scss';
 import {
     getAllMovies,
@@ -468,7 +468,7 @@ function Movie() {
                 />
             </div>
 
-            {isModalOpen && (
+            {/* {isModalOpen && ( */}
                 <PopupModal
                     isModalOpen={isModalOpen}
                     setIsModalOpen={setIsModalOpen}
@@ -482,7 +482,7 @@ function Movie() {
                     formInstance={form}
                     uploadFileFields={['posterPath', 'backdropPath']}
                 />
-            )}
+            {/* )} */}
         </div>
     );
 }

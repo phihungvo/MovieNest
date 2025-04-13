@@ -11,6 +11,8 @@ import java.util.UUID;
 @Repository
 public interface ActorRepository  extends JpaRepository<Actor, UUID> {
 
+    boolean existsByNameAndCharacter(String name, String character);
+
     Page<Actor> findAll(Pageable pageable);
 
 }

@@ -53,11 +53,6 @@ button {
     transition: transform 0.2s ease-in-out;
 }
 
-button:hover {
-    transform: scale(1.5);
-    /* Giữ nguyên vị trí khi phóng to */
-}
-
 /* Overlay phủ mờ toàn màn hình */
 .overlay {
     position: fixed;

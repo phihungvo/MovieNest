@@ -31,6 +31,7 @@ function Login() {
             }
 
             localStorage.setItem('token', token);
+            console.log('token 1 : ', localStorage.getItem('token'))
 
             const decodedToken = jwtDecode(token);
             console.log('Decoded Token: ', decodedToken);
@@ -50,10 +51,9 @@ function Login() {
             })
 
             message.success('Đăng nhập thành công!');
-
             
             if (isAdmin) {
-                navigate('/admin/trailer');
+                navigate('/admin/movie');
             } else {
                 navigate('/');
             }

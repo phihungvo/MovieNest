@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { message } from 'antd';
 
-const API_URL = process.env.REACT_APP_API_URL;
+// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
 // Sửa lỗi trong hàm searchMovieByKeyWord
 export const searchMovieByKeyWord = async (keyWord) => {
@@ -32,7 +33,11 @@ export const searchMovieByKeyWord = async (keyWord) => {
 };
 
 export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
+    console.log('API URL--------:', process.env.REACT_APP_API_URL);
+    console.log('Token:', process.env.REACT_APP_TOKEN);
+
     const TOKEN = localStorage.getItem('token');
+    console.log('Token get all movie: ', TOKEN);
 
     try {
         const response = await axios.get(`${API_URL}/movie/getAll`, {
@@ -91,10 +96,11 @@ export const findAllMovieNoPaging = async () => {
 };
 
 export const createMovie = async (formData) => {
+    console.log(`API URL :)))))) ${API_URL}/movie/update/`);
+    console.log('Token:', process.env.REACT_APP_TOKEN);
+    
     const TOKEN = localStorage.getItem('token');
-
-    console.log('form data create movie: ', formData);
-
+    
     try {
         let releaseDate = null;
         if (formData.releaseDate) {
@@ -142,8 +148,9 @@ export const createMovie = async (formData) => {
     }
 };
 
-// http://localhost:8080/api/movie/update?movieId=7ae4a794-e5a7-419d-a6ba-8ec0c88dfe13
+// http://localhost:8080/api/movie/update/0bde48a3-1dbc-4174-95ec-d9753cd5ec3d
 export const handleUpdateMovie = async (movieId, formData) => {
+    console.log(`Api url+++++: ${API_URL}/movie/update/${movieId}`);
     const TOKEN = localStorage.getItem('token');
 
     console.log('id: ', movieId, ' formdata: ', formData);
@@ -169,13 +176,11 @@ export const handleUpdateMovie = async (movieId, formData) => {
         );
 
         console.log('response: ', response.data);
-        return response.data; // Return the data for success case
+        return response.data;
     } catch (error) {
-        // Lấy message từ lỗi
         const errorMessage =
             error.response?.data?.message || 'Something went wrong';
 
-        // Hiển thị message
         message.error(`${errorMessage}`);
         console.error('Error updating movie:', errorMessage);
         throw error;

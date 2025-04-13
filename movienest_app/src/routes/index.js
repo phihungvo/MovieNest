@@ -15,6 +15,7 @@ const privateRoutes = [
     { path: '/admin/movie', component: Movie, title: 'Movie', role: 'admin' },
     { path: '/admin/trailer', component: Trailer, title: 'Trailer', role: 'admin' },
     { path: '/admin/comment', component: Comment, title: 'Comment', role: 'admin' },
+    { path: '/admin/actor', component: Actor, title: 'Actor', role: 'admin' },
 
 ];
 

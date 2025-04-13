@@ -34,4 +34,12 @@ build/
 
 # Ignore Spring Boot config
 /movienest_api/src/main/resources/application.*
-# /movienest_api/src/main/resources/
+/movienest_api/src/main/java/oauth2config
+
+src/main/resources/
+
+mkdir -p config/local
+touch config/local/application.yml
+echo "
+# Contains local config that shouldn't go into the repository
+config/local/" >> .gitignore

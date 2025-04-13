@@ -18,7 +18,7 @@ public interface ActorService {
 
     ActorDTO create(ActorDTO actor);
 
-    Actor update(UUID id, Actor actor);
+    Actor update(UUID id, ActorDTO actorDTO);
 
-    void delete(Actor actor);
+    void delete(UUID actorId);
 }

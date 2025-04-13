@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import SmartTable from '~/components/Layout/components/SmartTable';
+import SmartInput from '~/components/Layout/components/SmartInput';
 
 const cx = classNames.bind(styles);
 
@@ -87,14 +88,14 @@ function Comment() {
                         type="primary"
                         icon={<EditOutlined />}
                         buttonWidth={80}
-                        onClick={() => handleEditTrailer(record)}
+                        // onClick={() => handleEditTrailer(record)}
                     />
                     <SmartButton
                         title="Delete"
                         type="danger"
                         icon={<DeleteOutlined />}
                         buttonWidth={80}
-                        onClick={() => handleDeleteTrailer(record)}
+                        // onClick={() => handleDeleteTrailer(record)}
                         style={{ marginLeft: '8px' }}
                     />
                 </>
@@ -140,7 +141,7 @@ function Comment() {
                     dataSources={commentSources}
                     loading={loading}
                     pagination={pagination}
-                    onTableChange={handleTableChange}
+                    // onTableChange={handleTableChange}
                 />
             </div>
         </div>
