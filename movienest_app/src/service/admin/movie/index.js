@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { message } from 'antd';
+import API_ENDPOINTS from '../../../constants/endpoints';
 
-// const API_URL = process.env.REACT_APP_API_URL;
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.REACT_APP_API_URL;
+// const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
 // Sửa lỗi trong hàm searchMovieByKeyWord
 export const searchMovieByKeyWord = async (keyWord) => {
@@ -11,7 +12,7 @@ export const searchMovieByKeyWord = async (keyWord) => {
     try {
         console.log('Start searching with keyword:', keyWord);
         const response = await axios.post(
-            `${API_URL}/movie/search?keyWord=${encodeURIComponent(keyWord)}`,
+            API_ENDPOINTS.MOVIES.SEARCH(keyWord),
             {},
             {
                 headers: {
@@ -33,18 +34,11 @@ export const searchMovieByKeyWord = async (keyWord) => {
 };
 
 export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
-    console.log('API URL--------:', process.env.REACT_APP_API_URL);
-    console.log('Token:', process.env.REACT_APP_TOKEN);
-
     const TOKEN = localStorage.getItem('token');
-    console.log('Token get all movie: ', TOKEN);
 
     try {
-        const response = await axios.get(`${API_URL}/movie/getAll`, {
-            params: {
-                page: page,
-                pageSize: pageSize,
-            },
+        const response = await axios.get(API_ENDPOINTS.MOVIES.GET_ALL, {
+            params: { page, pageSize },
             withCredentials: true,
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
@@ -52,7 +46,7 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
             },
         });
 
-        console.log('data: ', response.data)
+        console.log('data: ', response.data);
         return response.data;
     } catch (error) {
         console.error(
@@ -68,7 +62,8 @@ export const findAllMovieNoPaging = async () => {
     const TOKEN = localStorage.getItem('token');
 
     try {
-        const response = await axios.get(`${API_URL}/movie/findAllNoPaging`, {
+        const response = await axios.get(
+            API_ENDPOINTS.MOVIES.GET_ALL_NO_PAGING, {
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
@@ -76,14 +71,10 @@ export const findAllMovieNoPaging = async () => {
         });
 
         const movies = response.data;
-        const moviearr = movies.map((movie, index) => (
-            {
-                id: movie.id,
-                name: movie.title,
-            }
-        ))
-
-        // console.log('Movie arr : ', moviearr)
+        const moviearr = movies.map((movie, index) => ({
+            id: movie.id,
+            name: movie.title,
+        }));
 
         return moviearr;
     } catch (error) {
@@ -96,11 +87,8 @@ export const findAllMovieNoPaging = async () => {
 };
 
 export const createMovie = async (formData) => {
-    console.log(`API URL :)))))) ${API_URL}/movie/update/`);
-    console.log('Token:', process.env.REACT_APP_TOKEN);
-    
     const TOKEN = localStorage.getItem('token');
-    
+
     try {
         let releaseDate = null;
         if (formData.releaseDate) {
@@ -112,7 +100,7 @@ export const createMovie = async (formData) => {
         console.log('Release date: ', releaseDate);
 
         const response = await axios.post(
-            `${API_URL}/movie/create`,
+            API_ENDPOINTS.MOVIES.CREATE,
             {
                 title: formData.title,
                 overview: formData.overview,
@@ -150,7 +138,6 @@ export const createMovie = async (formData) => {
 
 // http://localhost:8080/api/movie/update/0bde48a3-1dbc-4174-95ec-d9753cd5ec3d
 export const handleUpdateMovie = async (movieId, formData) => {
-    console.log(`Api url+++++: ${API_URL}/movie/update/${movieId}`);
     const TOKEN = localStorage.getItem('token');
 
     console.log('id: ', movieId, ' formdata: ', formData);
@@ -165,7 +152,7 @@ export const handleUpdateMovie = async (movieId, formData) => {
 
         console.log('PUT Method');
         const response = await axios.put(
-            `${API_URL}/movie/update/${movieId}`,
+            API_ENDPOINTS.MOVIES.UPDATE(movieId),
             formData,
             {
                 headers: {
@@ -194,10 +181,7 @@ export const deleteMovie = async (movieId) => {
     console.log('Delete movie id: ', movieId);
 
     try {
-        const response = await axios.delete(`${API_URL}/movie/delete`, {
-            params: {
-                movieId: movieId,
-            },
+        const response = await axios.delete(API_ENDPOINTS.MOVIES.DELETE(movieId), {
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',

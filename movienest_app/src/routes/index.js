@@ -4,6 +4,7 @@ import Movie from '../pages/AdminDashboard/Movie';
 import Comment from '~/pages/AdminDashboard/Comment';
 import Login from '../pages/General/Login';
 import Register from '../pages/General/Register';
+import Actor from '../pages/AdminDashboard/Actor';
 
 const publicRoutes = [
     { path: '/', component: UserHome, title: 'User Home' },

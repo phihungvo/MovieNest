@@ -53,7 +53,7 @@ function Login() {
             message.success('Đăng nhập thành công!');
             
             if (isAdmin) {
-                navigate('/admin/movie');
+                navigate('/admin/actor');
             } else {
                 navigate('/');
             }

@@ -81,7 +81,7 @@ function PopupModal({
                     formData.official = formData.official === 'Yes';
                 }
 
-                if(formData.adult){
+                if (formData.adult) {
                     formData.adult = formData.adult === 'Yes';
                 }
 
@@ -178,9 +178,9 @@ function PopupModal({
                     >
                         <DatePicker
                             style={{ width: '100%' }}
-                            disabledDate={(current) =>
-                                current && current < moment().startOf('day')
-                            }
+                            // disabledDate={(current) =>
+                            //     current && current < moment().startOf('day')
+                            // }
                         />
                     </Form.Item>
                 );
@@ -195,44 +195,44 @@ function PopupModal({
                         <InputNumber style={{ width: '100%' }} />
                     </Form.Item>
                 );
-                case 'select':
-                    return (
-                        <Form.Item
-                            key={field.name}
-                            label={field.label}
-                            name={field.name}
-                            rules={field.rules}
-                        >
-                            <Select mode={field.multiple ? 'multiple' : undefined}>
-                                {field.options
-                                    ? field.options.map((option) => (
-                                          <Select.Option
-                                              key={option}
-                                              value={option}
-                                          >
-                                              {option}
-                                          </Select.Option>
-                                      ))
-                                    : field.name === 'trailers' 
-                                      ? trailerSource?.map((trailer) => (
-                                          <Select.Option
-                                              key={trailer.id}
-                                              value={trailer.id}
-                                          >
-                                              {trailer.title}
-                                          </Select.Option>
-                                      ))
-                                      : dataSources?.map((genre) => (
-                                          <Select.Option
-                                              key={genre.id}
-                                              value={genre.id}
-                                          >
-                                              {genre.name}
-                                          </Select.Option>
-                                      ))}
-                            </Select>
-                        </Form.Item>
-                    );
+            case 'select':
+                return (
+                    <Form.Item
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                    >
+                        <Select mode={field.multiple ? 'multiple' : undefined}>
+                            {field.options
+                                ? field.options.map((option) => (
+                                      <Select.Option
+                                          key={option}
+                                          value={option}
+                                      >
+                                          {option}
+                                      </Select.Option>
+                                  ))
+                                : field.name === 'trailers'
+                                ? trailerSource?.map((trailer) => (
+                                      <Select.Option
+                                          key={trailer.id}
+                                          value={trailer.id}
+                                      >
+                                          {trailer.title}
+                                      </Select.Option>
+                                  ))
+                                : dataSources?.map((genre) => (
+                                      <Select.Option
+                                          key={genre.id}
+                                          value={genre.id}
+                                      >
+                                          {genre.name}
+                                      </Select.Option>
+                                  ))}
+                        </Select>
+                    </Form.Item>
+                );
             case 'yesno':
                 return (
                     <Form.Item
@@ -242,8 +242,11 @@ function PopupModal({
                         rules={field.rules}
                     >
                         <Select>
-                            <Select.Option value="Yes">Yes</Select.Option>
-                            <Select.Option value="No">No</Select.Option>
+                            {(field.options || []).map((option, index) => (
+                                <Select.Option key={index} value={option}>
+                                    {option}
+                                </Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
                 );

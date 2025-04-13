@@ -42,7 +42,7 @@ export const getAllTrailerNoPaging = async () => {
                 'Content-Type': 'application/json',
             },
         });
-        console.log('response trailer list: ', response.data);
+        // console.log('response trailer list: ', response.data);
         return response.data;
     } catch (error) {
         message.error(

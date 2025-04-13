@@ -314,13 +314,6 @@ function Movie() {
 
             const response = await createMovie(formData);
 
-            if (!response || response.error) {
-                const errorMessage = response?.error || 'Movie create failed!';
-                message.error(`Error: ${errorMessage}`);
-                return;
-            }
-
-            message.success('Movie create successfully!');
             handleGetAllMovies();
             setIsModalOpen(false);
         } catch (error) {
@@ -408,7 +401,7 @@ function Movie() {
             //     setMovieSources([]);
             // }
 
-            console.log('Get all trailers>>>: ', trailerList);
+            // console.log('Get all trailers>>>: ', trailerList);
         } catch (error) {
             console.error('Failed to get all trailers:', error);
         }
@@ -469,19 +462,19 @@ function Movie() {
             </div>
 
             {/* {isModalOpen && ( */}
-                <PopupModal
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    title={getModalTitle()}
-                    fields={modalMode === 'delete' ? [] : movieModalFields}
-                    dataSources={genresSources}
-                    trailerSource={trailerSources}
-                    onSubmit={handleFormSubmit}
-                    initialValues={selectedMovie}
-                    isDeleteMode={modalMode === 'delete'}
-                    formInstance={form}
-                    uploadFileFields={['posterPath', 'backdropPath']}
-                />
+            <PopupModal
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                title={getModalTitle()}
+                fields={modalMode === 'delete' ? [] : movieModalFields}
+                dataSources={genresSources}
+                trailerSource={trailerSources}
+                onSubmit={handleFormSubmit}
+                initialValues={selectedMovie}
+                isDeleteMode={modalMode === 'delete'}
+                formInstance={form}
+                uploadFileFields={['posterPath', 'backdropPath']}
+            />
             {/* )} */}
         </div>
     );
