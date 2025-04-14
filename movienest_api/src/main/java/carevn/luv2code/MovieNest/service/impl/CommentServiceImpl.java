@@ -111,7 +111,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void deleteComment(UUID commentId) {
+    public void softDeleteComment(UUID commentId) {
         // Soft delete: Chỉ ẩn comment thay vì xóa
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
@@ -119,6 +119,18 @@ public class CommentServiceImpl implements CommentService {
         comment.setHidden(true);
         commentRepository.save(comment);
     }
+
+    @Override
+    @Transactional
+    public void deleteComment(UUID commentId) {
+        // Soft delete: Chỉ ẩn comment thay vì xóa
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+
+        commentRepository.delete(comment);
+    }
+
+
 
     @Override
     public CommentDTO getCommentById(UUID commentId) {

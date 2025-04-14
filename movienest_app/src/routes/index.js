@@ -1,3 +1,4 @@
+import HomeDashboard from '~/pages/AdminDashboard/HomeDashboard';
 import Trailer from '~/pages/AdminDashboard/Trailer';
 import UserHome from '~/pages/PublicDashboard/UserHome';
 import Movie from '../pages/AdminDashboard/Movie';
@@ -13,6 +14,7 @@ const publicRoutes = [
 ];
 
 const privateRoutes = [
+    { path: '/admin/dashboard', component: HomeDashboard, title: 'HomeDashboard', role: 'admin' },
     { path: '/admin/movie', component: Movie, title: 'Movie', role: 'admin' },
     { path: '/admin/trailer', component: Trailer, title: 'Trailer', role: 'admin' },
     { path: '/admin/comment', component: Comment, title: 'Comment', role: 'admin' },

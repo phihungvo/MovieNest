@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { message } from 'antd';
 import API_ENDPOINTS from '../../../constants/endpoints';
+import { getToken } from '~/constants/token';
 
 const API_URL = process.env.REACT_APP_API_URL;
-// const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
 // Sửa lỗi trong hàm searchMovieByKeyWord
 export const searchMovieByKeyWord = async (keyWord) => {
@@ -22,52 +22,44 @@ export const searchMovieByKeyWord = async (keyWord) => {
             },
         );
 
-        console.log('Search movie results:', response.data);
         return response.data;
     } catch (error) {
-        console.error(
-            'Error searching movie:',
-            error.response ? error.response.data : error,
-        );
-        throw error;
+        console.error('Error searching movie: ', error);
     }
 };
 
 export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
-    const TOKEN = localStorage.getItem('token');
+    const TOKEN = getToken();
 
     try {
         const response = await axios.get(API_ENDPOINTS.MOVIES.GET_ALL, {
             params: { page, pageSize },
-            withCredentials: true,
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
             },
         });
 
-        console.log('data: ', response.data);
         return response.data;
     } catch (error) {
-        console.error(
-            'Error fetching movies:',
-            error.response ? error.response.data : error.message,
-        );
+        console.error('Error fetching movies: ', error);
     }
 };
 
 // http://localhost:8080/api/movie/findAllNoPaging
 export const findAllMovieNoPaging = async () => {
-    const TOKEN = localStorage.getItem('token');
+    const TOKEN = getToken();
 
     try {
         const response = await axios.get(
-            API_ENDPOINTS.MOVIES.GET_ALL_NO_PAGING, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
+            API_ENDPOINTS.MOVIES.GET_ALL_NO_PAGING,
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
 
         const movies = response.data;
         const moviearr = movies.map((movie, index) => ({
@@ -77,16 +69,12 @@ export const findAllMovieNoPaging = async () => {
 
         return moviearr;
     } catch (error) {
-        console.error(
-            'Error find all movie:',
-            error.response ? error.response.data : error,
-        );
-        throw error;
+        console.error('Error find all movie: ', error);
     }
 };
 
 export const createMovie = async (formData) => {
-    const TOKEN = localStorage.getItem('token');
+    const TOKEN = getToken();
 
     try {
         let releaseDate = null;
@@ -95,8 +83,6 @@ export const createMovie = async (formData) => {
                 ? formData.releaseDate.format('YYYY-MM-DD')
                 : formData.releaseDate;
         }
-
-        console.log('Release date: ', releaseDate);
 
         const response = await axios.post(
             API_ENDPOINTS.MOVIES.CREATE,
@@ -124,22 +110,18 @@ export const createMovie = async (formData) => {
             },
         );
 
-        console.log('Movie Created:', response.data);
+        if (response.data) {
+            message.success('Movie created successfully!');
+        }
         return response.data;
     } catch (error) {
-        console.error(
-            'Error creating movie:',
-            error.response ? error.response.data : error,
-        );
-        throw error;
+        message.error('Error creating movie: ', error);
     }
 };
 
 // http://localhost:8080/api/movie/update/0bde48a3-1dbc-4174-95ec-d9753cd5ec3d
 export const handleUpdateMovie = async (movieId, formData) => {
-    const TOKEN = localStorage.getItem('token');
-
-    console.log('id: ', movieId, ' formdata: ', formData);
+    const TOKEN = getToken();
 
     try {
         let releaseDate = null;
@@ -149,7 +131,6 @@ export const handleUpdateMovie = async (movieId, formData) => {
                 : formData.releaseDate;
         }
 
-        console.log('PUT Method');
         const response = await axios.put(
             API_ENDPOINTS.MOVIES.UPDATE(movieId),
             formData,
@@ -161,39 +142,27 @@ export const handleUpdateMovie = async (movieId, formData) => {
             },
         );
 
-        console.log('response: ', response.data);
         return response.data;
     } catch (error) {
-        const errorMessage =
-            error.response?.data?.message || 'Something went wrong';
-
-        message.error(`${errorMessage}`);
-        console.error('Error updating movie:', errorMessage);
-        throw error;
+        message.error('Error updating movie:', error);
     }
 };
 
 // http://localhost:8080/api/movie/delete?movieId=17a1c81c-be64-4229-ac64-c4ffa4ffb5e9
 export const deleteMovie = async (movieId) => {
-    const TOKEN = localStorage.getItem('token');
-
-    console.log('Delete movie id: ', movieId);
+    const TOKEN = getToken();
 
     try {
-        const response = await axios.delete(API_ENDPOINTS.MOVIES.DELETE(movieId), {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
+        const response = await axios.delete(
+            API_ENDPOINTS.MOVIES.DELETE(movieId),
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
-
-        console.log('response: ', response.data);
+        );
     } catch (error) {
-        const errorMessage =
-            error.response?.data?.message || 'Something went wrong';
-
-        message.error(`${errorMessage}`);
-        console.error('Error deleting movie:', errorMessage);
-        throw error;
+        message.error('Error deleting movie:', error);
     }
 };

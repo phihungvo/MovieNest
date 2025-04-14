@@ -9,8 +9,13 @@ import {
     EditOutlined,
     DeleteOutlined,
 } from '@ant-design/icons';
-import { Form, message } from 'antd';
-import { getAllComments, createComment } from '~/service/comment';
+import { Form, message, Tag } from 'antd';
+import {
+    getAllComments,
+    createComment,
+    updateComment,
+    deleteComment,
+} from '~/service/admin/comment';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import SmartTable from '~/components/Layout/components/SmartTable';
 import SmartInput from '~/components/Layout/components/SmartInput';
@@ -56,13 +61,30 @@ function Comment() {
             dataIndex: 'status',
             key: 'status',
             width: 200,
+            render: (status) => {
+                let color;
+                switch (status) {
+                    case 'APPROVED':
+                        color = 'green';
+                        break;
+                    case 'PENDING':
+                        color = 'orange';
+                        break;
+                    case 'REJECTED':
+                        color = 'red';
+                        break;
+                    default:
+                        color = 'default';
+                }
+                return <Tag color={color}>{status}</Tag>;
+            },
         },
         {
             title: 'Edited',
             dataIndex: 'isEdited',
             key: 'isEdited',
             width: 100,
-            render: (official) => (official ? 'YES' : 'NO'),
+            render: (isEdited) => (isEdited ? 'YES' : 'NO'),
         },
         {
             title: 'Create At',
@@ -90,14 +112,14 @@ function Comment() {
                         type="primary"
                         icon={<EditOutlined />}
                         buttonWidth={80}
-                        // onClick={() => handleEditTrailer(record)}
+                        onClick={() => handleEditComment(record)}
                     />
                     <SmartButton
                         title="Delete"
                         type="danger"
                         icon={<DeleteOutlined />}
                         buttonWidth={80}
-                        // onClick={() => handleDeleteTrailer(record)}
+                        onClick={() => handleDeleteComment(record)}
                         style={{ marginLeft: '8px' }}
                     />
                 </>
@@ -110,6 +132,12 @@ function Comment() {
             label: 'Content',
             name: 'content',
             type: 'text',
+        },
+        {
+            label: 'Status',
+            name: 'status',
+            type: 'select',
+            options: ['APPROVED', 'PENDING', 'REJECTED'],
         },
         {
             label: 'User',
@@ -131,14 +159,48 @@ function Comment() {
     };
 
     const handleCallCreateComment = async (formData) => {
-        console.log('Form data submitted:', formData);
         await createComment(formData);
         handleGetAllComments();
         setIsModalOpen(false);
     };
 
-    const handleGetAllComments = async (page = 0, pageSize = 5) => {
-        const response = await getAllComments({ page, pageSize });
+    const handleEditComment = (record) => {
+        setSelectedComment(record);
+        setModalMode('edit');
+
+        const formData = {
+            content: record.content,
+            userId: record.userId,
+            movieId: record.movieId,
+            status: record.status,
+        };
+
+        form.setFieldsValue(formData);
+        setIsModalOpen(true);
+    };
+
+    const handleCallUpdateComment = async (formData) => {
+        await updateComment(selectedComment.id, formData);
+        message.success('Comment updated successfully!');
+        handleGetAllComments();
+        setIsModalOpen(false);
+    };
+
+    const handleDeleteComment = (record) => {
+        setModalMode('delete');
+        setSelectedComment(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCallDeleteComment = async () => {
+        await deleteComment(selectedComment.id);
+        message.success('Comment deleted successfully!');
+        handleGetAllComments();
+        setIsModalOpen(false);
+    };
+
+    const handleGetAllComments = async (page = 1, pageSize = 5) => {
+        const response = await getAllComments({ page: page - 1, pageSize });
 
         const commentList = response.content;
 
@@ -146,15 +208,26 @@ function Comment() {
             setCommentSources(commentList);
             setPagination((prev) => ({
                 ...prev,
-                current: page + 1,
+                current: page,
                 pageSize: pageSize,
                 total: response.totalElements,
             }));
         }
+        setCommentSources(commentList);
     };
 
     const handleTableChange = (pagination) => {
         handleGetAllComments(pagination.current, pagination.pageSize);
+    };
+
+    const handleFormSubmit = (formData) => {
+        if (modalMode === 'create') {
+            handleCallCreateComment(formData);
+        } else if (modalMode === 'edit') {
+            handleCallUpdateComment(formData);
+        } else if (modalMode === 'delete') {
+            handleCallDeleteComment();
+        }
     };
 
     useEffect(() => {
@@ -171,12 +244,6 @@ function Comment() {
                 return 'Delete Comment';
             default:
                 return 'Comment Details';
-        }
-    };
-
-    const handleFormSubmit = (formData) => {
-        if (modalMode === 'create') {
-            handleCallCreateComment(formData);
         }
     };
 

@@ -31,7 +31,7 @@ public class GenresController {
         return ResponseEntity.ok(genresService.searchGenres(keyWord));
     }
 
-    @GetMapping("/findAll")
+    @GetMapping("/getAll")
     public ResponseEntity<List<Genres>> findAllGenres() {
         return ResponseEntity.ok(genresService.findAllGenres());
     }

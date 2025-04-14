@@ -205,7 +205,11 @@ function Trailer() {
             label: 'Official',
             name: 'official',
             type: 'yesno',
-            render: (official) => (official ? 'YES' : 'NO'),
+            options: [
+                'YES',
+                'NO',
+            ]
+            // render: (official) => (official ? 'YES' : 'NO'),
         },
         {
             label: 'Movies',
@@ -278,8 +282,6 @@ function Trailer() {
             console.log('Form data submitted:', formData);
 
             const response = await createTrailers(formData);
-
-            message.success('Trailer created successfully!');
 
             form.resetFields();
             handleGetAllTrailers();

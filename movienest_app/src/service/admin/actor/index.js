@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { message } from 'antd';
+import { getToken } from '~/constants/token';
+import API_ENDPOINTS from '~/constants/endpoints';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -17,7 +19,7 @@ export const createActor = async (data) => {
                 biography: data.biography,
                 birthday: data.birthday,
                 placeOfBirth: data.placeOfBirth,
-                profilePath: data.profilePath
+                profilePath: data.profilePath,
             },
             {
                 headers: {
@@ -27,11 +29,11 @@ export const createActor = async (data) => {
             },
         );
 
-        if(!response){
+        if (!response) {
             message.success('Movie Create Failed !');
         }
-        
-        console.log('data: >>>> ', response.data)
+
+        console.log('data: >>>> ', response.data);
         return response.data;
     } catch (error) {
         console.error(
@@ -43,11 +45,11 @@ export const createActor = async (data) => {
 };
 
 // http://localhost:8080/api/actor/getAllPagable
-export const getAllPagable = async ({page = 0, pageSize = 5}) => {
-    const TOKEN = localStorage.getItem('token');
+export const getAllPagable = async ({ page = 0, pageSize = 5 }) => {
+    const TOKEN = getToken();
 
     try {
-        const response = await axios.get(`${API_URL}/actor/getAllPagable`, {
+        const response = await axios.get(API_ENDPOINTS.ACTOR.GET_ALL, {
             params: {
                 page: page,
                 pageSize: pageSize,
@@ -56,60 +58,41 @@ export const getAllPagable = async ({page = 0, pageSize = 5}) => {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
             },
-        })
+        });
         return response.data;
-    }catch (error){
-        console.error(
-            'Error fetching actor with pageble: ',
-            error.response ? error.response.data : error,
-        );
-        throw error;
+    } catch (error) {
+        message.error('Error fetching actor with pageble: ', error);
     }
-}
+};
 
 // http://localhost:8080/api/actor/findAll
 export const getAllActorNoPaging = async () => {
-
-    const TOKEN = localStorage.getItem('token');
+    const TOKEN = getToken();
 
     try {
-        const response = await axios.get(`${API_URL}/actor/findAll`, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
+        const response = await axios.get(
+            API_ENDPOINTS.ACTOR.GET_ALL_NO_PAGING,
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
-
-        const actors = response.data;
-        // const moviearr = actors.map((movie, index) => (
-        //     {
-        //         id: movie.id,
-        //         name: movie.title,
-        //     }
-        // ))
-
-        // console.log('Movie arr : ', moviearr)
-
-        return actors;
-    } catch (error) {
-        console.error(
-            'Error find all actor:',
-            error.response ? error.response.data : error,
         );
-        throw error;
+
+        return response.data;
+    } catch (error) {
+        message.error('Error fetching actor with no pageble: ', error);
     }
-}
+};
 
 // http://localhost:8080/api/actor/update/074548c9-1a56-4fd5-9e18-f9aaae1c8f7e
 export const handleUpdateActor = async (actorId, formData) => {
-    const TOKEN = localStorage.getItem('token');
-
-    console.log('id: ', actorId);
-    console.log('form data: ', formData)
+    const TOKEN = getToken();
 
     try {
         const response = await axios.put(
-            `${API_URL}/actor/update/${actorId}`,
+            API_ENDPOINTS.ACTOR.UPDATE(actorId),
             formData,
             {
                 headers: {
@@ -119,39 +102,24 @@ export const handleUpdateActor = async (actorId, formData) => {
             },
         );
 
-        console.log('response: ', response.data);
         return response.data;
     } catch (error) {
-        const errorMessage =
-            error.response?.data?.message || 'Something went wrong';
-
-        message.error(`${errorMessage}`);
-        console.error('Error updating movie:', errorMessage);
-        throw error;
+        console.error('Error updating movie:', error);
     }
 };
 
 // http://localhost:8080/api/actor/delete/074548c9-1a56-4fd5-9e18-f9aaae1c8f7e
 export const deleteActor = async (actorId) => {
-    const TOKEN = localStorage.getItem('token');
-
-    console.log('Delete actor id: ', actorId);
+    const TOKEN = getToken();
 
     try {
-        const response = await axios.delete(`${API_URL}/actor/delete/${actorId}`, {
+        await axios.delete(API_ENDPOINTS.ACTOR.DELETE(actorId), {
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
             },
         });
-
-        console.log('response: ', response.data);
     } catch (error) {
-        const errorMessage =
-            error.response?.data?.message || 'Something went wrong';
-
-        message.error(`${errorMessage}`);
-        console.error('Error deleting movie:', errorMessage);
-        throw error;
+        console.error('Error deleting movie: ', error);
     }
 };

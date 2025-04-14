@@ -1,28 +1,24 @@
 import axios from 'axios';
+import { getToken } from '~/constants/token';
+import API_ENDPOINTS from '~/constants/endpoints';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// const TOKEN = process.env.REACT_APP_TOKEN;
-
-const TOKEN = localStorage.getItem("token");
-
-// http://localhost:8080/api/admin/findAll
+// http://localhost:8080/api/genres/getAll
 export const getAllGenres = async () => {
+    const TOKEN = getToken();
     try {
-        const response = await axios.get(`${API_URL}/genres/findAll`, {
-            withCredentials: true,
+        const response = await axios.get(
+            API_ENDPOINTS.GENRES.GET_ALL
+            ,{
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
             },
         });
-        
+
         return response.data;
     } catch (error) {
-        console.error(
-            'Error fetching movies:',
-            error.response ? error.response.data : error.message,
-        );
-        throw error; // Ném lỗi để component có thể xử lý
+        console.error('Error fetching genres:', error);
     }
 };

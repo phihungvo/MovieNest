@@ -165,7 +165,6 @@ function Actor() {
     };
 
     const handleCallCreateActor = async (formData) => {
-        console.log('Form data submitted:', formData);
         await createActor(formData);
         handleGetAllActors();
         setIsModalOpen(false);
@@ -173,13 +172,11 @@ function Actor() {
 
     const handleCallUpdateActor = async (formData) => {
         await handleUpdateActor(selectedActor.id, formData);
-        message.success('Movie updated successfully!');
         handleGetAllActors();
         setIsModalOpen(false);
     };
 
     const handleEditActor = (record) => {
-        console.log('Editing record: ', record);
         setSelectedActor(record);
         setModalMode('edit');
 
@@ -215,25 +212,20 @@ function Actor() {
 
     const handleGetAllActors = async (page = 1, pageSize = 5) => {
         // setLoading(true);
-        try {
-            const response = await getAllPagable({ page, pageSize });
+        const response = await getAllPagable({ page, pageSize });
 
-            const actorList = response.content;
+        const actorList = response.content;
 
-            if (Array.isArray(actorList)) {
-                setActorSource(actorList);
-                setPagination((prev) => ({
-                    ...prev,
-                    current: page,
-                    pageSize: pageSize,
-                    total: response.totalElements,
-                }));
-            }
-
+        if (Array.isArray(actorList)) {
             setActorSource(actorList);
-        } catch (error) {
-            console.error('Failed to fetch actors:', error);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize: pageSize,
+                total: response.totalElements,
+            }));
         }
+        setActorSource(actorList);
     };
 
     const handleTableChange = (pagination) => {

@@ -17,6 +17,8 @@ public interface CommentService {
 
     CommentDTO updateCommentForUser(UUID id, CommentUpdateRequest request);
 
+    void softDeleteComment(UUID id);
+
     void deleteComment(UUID id);
 
     CommentDTO getCommentById(UUID id);

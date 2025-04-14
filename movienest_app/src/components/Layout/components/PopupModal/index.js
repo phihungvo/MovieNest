@@ -132,7 +132,6 @@ function PopupModal({
                     formData.id = initialValues.id;
                 }
 
-                console.log('Final form data to submit:', formData);
                 onSubmit(formData);
             }
         } catch (error) {
@@ -176,9 +175,7 @@ function PopupModal({
                         name={field.name}
                         rules={field.rules}
                     >
-                        <DatePicker
-                            style={{ width: '100%' }}
-                        />
+                        <DatePicker style={{ width: '100%' }} />
                     </Form.Item>
                 );
             case 'number':
@@ -315,6 +312,7 @@ function PopupModal({
         return (
             <Modal
                 title={title}
+                centered
                 open={isModalOpen}
                 onCancel={handleCancel}
                 footer={[
@@ -331,11 +329,8 @@ function PopupModal({
                     </Button>,
                 ]}
             >
-                <p>
-                    Are you sure you want to delete the movie "
-                    {initialValues?.title}"?
-                </p>
-                <p>This action cannot be undone.</p>
+                <p>Bạn có chắc chắn muốn xóa <b><i> {initialValues?.title} </i></b> ?</p>
+                <p>Hành động này không thể hoàn tác.</p>
             </Modal>
         );
     }
@@ -367,6 +362,7 @@ function PopupModal({
             open={isModalOpen}
             onCancel={handleCancel}
             width={700}
+            // style={{ top: 20 }}
             footer={[
                 <Button key="cancel" onClick={handleCancel}>
                     Cancel
