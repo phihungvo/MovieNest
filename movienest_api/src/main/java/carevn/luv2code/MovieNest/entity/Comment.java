@@ -1,6 +1,8 @@
 
 package carevn.luv2code.MovieNest.entity;
 
+import carevn.luv2code.MovieNest.enums.CommentStatus;
+import carevn.luv2code.MovieNest.enums.TrailerType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -35,6 +37,10 @@ public class Comment {
     boolean isEdited;
 
     boolean isHidden;
+
+    @Enumerated(EnumType.STRING)
+            @Column(name = "status")
+    CommentStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)

@@ -1,9 +1,11 @@
 package carevn.luv2code.MovieNest.service.impl;
 
 import carevn.luv2code.MovieNest.dto.CommentDTO;
+import carevn.luv2code.MovieNest.dto.requests.CommentUpdateRequest;
 import carevn.luv2code.MovieNest.entity.Comment;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.User;
+import carevn.luv2code.MovieNest.enums.CommentStatus;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.CommentMapper;
@@ -21,9 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private static final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
@@ -52,6 +56,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentMapper.toComment(commentDTO);
         comment.setCreateAt(new Date());
         comment.setUpdatedAt(new Date());
+        comment.setStatus(CommentStatus.PENDING);
 
         if (commentDTO.getMovieId() != null) {
             Movie movie = movieRepository.findById(commentDTO.getMovieId())
@@ -79,9 +84,29 @@ public class CommentServiceImpl implements CommentService {
         existingComment.setContent(commentDTO.getContent());
         existingComment.setUpdatedAt(new Date());
         existingComment.setEdited(true);
+        existingComment.setStatus(commentDTO.getStatus());
 
         Comment updatedComment = commentRepository.save(existingComment);
         return commentMapper.toDtoWithReplies(updatedComment);
+    }
+
+    @Override
+    public CommentDTO updateCommentForUser(UUID id, CommentUpdateRequest request) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+        if (request.getContent() != null) {
+            comment.setContent(request.getContent());
+            comment.setEdited(true);
+        }
+        comment.setStatus(CommentStatus.PENDING);
+
+        if (request.getIsHidden() != null) {
+            comment.setHidden(request.getIsHidden());
+        }
+
+        comment.setUpdatedAt(new Date());
+
+        return commentMapper.toDtoWithReplies(commentRepository.save(comment));
     }
 
     @Override
@@ -104,10 +129,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Page<Comment> getAllComments(int page, int size) {
-        Pageable pageble = PageRequest.of(page, size);
-        Page<Comment> pageComments = commentRepository.findAll(pageble);
-        return pageComments;
+    public Page<CommentDTO> getAllComments(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Comment> pageComments = commentRepository.findAll(pageable);
+
+        return pageComments.map(comment -> {
+            CommentDTO dto = new CommentDTO();
+            dto.setId(comment.getId());
+            dto.setContent(comment.getContent());
+            dto.setCreateAt(comment.getCreateAt());
+            dto.setUpdatedAt(comment.getUpdatedAt());
+            dto.setEdited(comment.isEdited());
+            dto.setHidden(comment.isHidden());
+            dto.setStatus(comment.getStatus());
+            dto.setMovieName(comment.getMovie().getTitle());
+            dto.setUsername(comment.getUser().getUsername());
+            return dto;
+        });
     }
 
     @Override

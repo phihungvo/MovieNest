@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.dto;
 
-import carevn.luv2code.MovieNest.entity.Comment;
+import carevn.luv2code.MovieNest.enums.CommentStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,14 +16,20 @@ import java.util.UUID;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDTO {
+    UUID id;
 
     @NotNull
     String content;
 
     Date createAt;
 
+    Date updatedAt;
+
     UUID movieId;
+
+    String movieName;
 
     UUID userId;
 
@@ -31,6 +38,9 @@ public class CommentDTO {
     boolean isEdited;
 
     boolean isHidden;
+
+    @NotNull(message = "Trailer type is required")
+    CommentStatus status;
 
     UUID parentId;
 

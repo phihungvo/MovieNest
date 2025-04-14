@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.service;
 
 import carevn.luv2code.MovieNest.dto.CommentDTO;
+import carevn.luv2code.MovieNest.dto.requests.CommentUpdateRequest;
 import carevn.luv2code.MovieNest.entity.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +15,13 @@ public interface CommentService {
 
     CommentDTO updateComment(UUID id, CommentDTO comment);
 
+    CommentDTO updateCommentForUser(UUID id, CommentUpdateRequest request);
+
     void deleteComment(UUID id);
 
     CommentDTO getCommentById(UUID id);
 
-    Page<Comment> getAllComments(int page, int size);
+    Page<CommentDTO> getAllComments(int page, int size);
 
     List<CommentDTO> getAllCommentsNotHidden();
 

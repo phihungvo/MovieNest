@@ -6,13 +6,13 @@ const API_URL = process.env.REACT_APP_API_URL;
 // http://localhost:8080/api/actor/create
 export const createActor = async (data) => {
     const TOKEN = localStorage.getItem('token');
-
+    console.log('Token>>>>: ', TOKEN);
     try {
         const response = await axios.post(
             `${API_URL}/actor/create`,
             {
                 name: data.name,
-                charater: data.charater,
+                character: data.character,
                 gender: data.gender,
                 biography: data.biography,
                 birthday: data.birthday,
@@ -27,7 +27,11 @@ export const createActor = async (data) => {
             },
         );
 
-        message.success('Movie Created:', response.data);
+        if(!response){
+            message.success('Movie Create Failed !');
+        }
+        
+        console.log('data: >>>> ', response.data)
         return response.data;
     } catch (error) {
         console.error(
@@ -134,10 +138,7 @@ export const deleteActor = async (actorId) => {
     console.log('Delete actor id: ', actorId);
 
     try {
-        const response = await axios.delete(`${API_URL}/actor/delete`, {
-            params: {
-                actorId: actorId,
-            },
+        const response = await axios.delete(`${API_URL}/actor/delete/${actorId}`, {
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',

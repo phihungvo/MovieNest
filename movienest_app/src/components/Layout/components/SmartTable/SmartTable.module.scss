@@ -11,3 +11,13 @@
     color: white; /* Chữ màu trắng */
     font-weight: bold;
 }
+
+.fixed-row-height {
+    height: 20px; // hoặc giá trị bạn muốn
+  
+    // Canh giữa nội dung theo chiều dọc
+    td {
+      vertical-align: middle;
+    }
+  }
+  

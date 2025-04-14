@@ -25,7 +25,7 @@ import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { getAllTrailers, getAllTrailerNoPaging } from '~/service/admin/trailer';
 
-const cx = classNames.bind(styles);
+const cx = (className) => styles[className];
 
 function Movie() {
     const [movieSources, setMovieSources] = useState([]);
@@ -344,11 +344,11 @@ function Movie() {
             const response = await deleteMovie(selectedMovie.id);
 
             console.log('response: ', response);
-            if (!response || response.error) {
-                const errorMessage = response?.error || 'Movie delete failed!';
-                message.error(`Error: ${errorMessage}`);
-                return;
-            }
+            // if (!response || response.error) {
+            //     const errorMessage = response?.error || 'Movie delete failed!';
+            //     message.error(`Error: ${errorMessage}`);
+            //     return;
+            // }
 
             message.success('Movie deleted successfully!');
             handleGetAllMovies();
@@ -424,14 +424,6 @@ function Movie() {
         <div className={cx('movie-wrapper')}>
             <div className={cx('card-header')}>
                 <h2>Movie Management</h2>
-                <div>
-                    <SmartButton
-                        title="Add new"
-                        icon={<PlusOutlined />}
-                        type="primary"
-                        onClick={handleAddMovie}
-                    />
-                </div>
             </div>
             <hr
                 style={{
@@ -447,6 +439,12 @@ function Movie() {
                     icon={<SearchOutlined />}
                 />
                 <div className={cx('features')}>
+                    <SmartButton
+                        title="Add new"
+                        icon={<PlusOutlined />}
+                        type="primary"
+                        onClick={handleAddMovie}
+                    />
                     <SmartButton title="Bộ lọc" icon={<FilterOutlined />} />
                     <SmartButton title="Excel" icon={<CloudUploadOutlined />} />
                 </div>

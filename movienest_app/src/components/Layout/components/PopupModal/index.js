@@ -178,9 +178,6 @@ function PopupModal({
                     >
                         <DatePicker
                             style={{ width: '100%' }}
-                            // disabledDate={(current) =>
-                            //     current && current < moment().startOf('day')
-                            // }
                         />
                     </Form.Item>
                 );

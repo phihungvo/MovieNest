@@ -53,7 +53,6 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
             'Error fetching movies:',
             error.response ? error.response.data : error.message,
         );
-        throw error;
     }
 };
 

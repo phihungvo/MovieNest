@@ -352,14 +352,6 @@ function Trailer() {
         <div className={cx('trailer-wrapper')}>
             <div className={cx('trailer-header')}>
                 <h2>Trailer Management</h2>
-                <div>
-                    <SmartButton
-                        title="Add new"
-                        icon={<PlusOutlined />}
-                        type="primary"
-                        onClick={handleAddTrailer}
-                    />
-                </div>
             </div>
             <hr
                 style={{
@@ -375,6 +367,12 @@ function Trailer() {
                     icon={<SearchOutlined />}
                 />
                 <div className={cx('features')}>
+                    <SmartButton
+                        title="Add new"
+                        icon={<PlusOutlined />}
+                        type="primary"
+                        onClick={handleAddTrailer}
+                    />
                     <SmartButton title="Bộ lọc" icon={<FilterOutlined />} />
                     <SmartButton title="Excel" icon={<CloudUploadOutlined />} />
                 </div>

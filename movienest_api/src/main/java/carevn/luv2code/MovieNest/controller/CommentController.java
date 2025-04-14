@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.controller;
 
 import carevn.luv2code.MovieNest.dto.CommentDTO;
+import carevn.luv2code.MovieNest.dto.requests.CommentUpdateRequest;
 import carevn.luv2code.MovieNest.entity.Comment;
 import carevn.luv2code.MovieNest.service.CommentService;
 import org.springframework.data.domain.Page;
@@ -64,6 +65,13 @@ public class CommentController {
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable UUID commentId,
+                                                     @RequestBody CommentUpdateRequest updateRequest){
+        CommentDTO updatedComment = commentService.updateCommentForUser(commentId, updateRequest);
+        return ResponseEntity.ok(updatedComment);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId){
         commentService.deleteComment(commentId);
@@ -71,11 +79,11 @@ public class CommentController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<Page<Comment>> getAllComment(
+    public ResponseEntity<Page<CommentDTO>> getAllComment(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ){
-        Page<Comment> comments = commentService.getAllComments(page, size);
+        Page<CommentDTO> comments = commentService.getAllComments(page, size);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 

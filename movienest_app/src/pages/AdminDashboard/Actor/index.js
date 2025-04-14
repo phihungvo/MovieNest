@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import styles from './Actor.module.scss';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartTable from '~/components/Layout/components/SmartTable';
@@ -11,6 +10,7 @@ import {
     DeleteOutlined,
     EditOutlined,
 } from '@ant-design/icons';
+import moment from 'moment';
 import { Form, message } from 'antd';
 import {
     createActor,
@@ -21,80 +21,9 @@ import {
 } from '~/service/admin/actor';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { useState, useEffect, use } from 'react';
-const cx = classNames.bind(styles);
+import styles from './Actor.module.scss';
 
-const columns = [
-    {
-        title: 'Actor Name',
-        dataIndex: 'name',
-        key: 'name',
-        width: 200,
-        fixed: 'left',
-    },
-    {
-        title: 'Character',
-        dataIndex: 'character',
-        key: 'character',
-        width: 200,
-    },
-    {
-        title: 'Gender',
-        dataIndex: 'gender',
-        key: 'gender',
-        width: 200,
-    },
-    {
-        title: 'Birthday',
-        dataIndex: 'birthday',
-        key: 'birthday',
-        width: 200,
-
-        render: (date) =>
-            date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
-    },
-    {
-        title: 'placeOfBirth',
-        dataIndex: 'placeOfBirth',
-        key: 'placeOfBirth',
-        width: 200,
-    },
-    {
-        title: 'Profile Path',
-        dataIndex: 'profilePath',
-        key: 'profilePath',
-        width: 200,
-        render: (url) => (
-            <img
-                src={url ? url : '/default-poster.jpg'}
-                alt="Profile path"
-                style={{ width: '50px' }}
-            />
-        ),
-    },
-    {
-        title: 'Actions',
-        fixed: 'right',
-        width: 200,
-        render: (_, record) => (
-            <>
-                <SmartButton
-                    title="Edit"
-                    type="primary"
-                    icon={<EditOutlined />}
-                    buttonWidth={80}
-                    // onClick={() => handleEditMovie(record)}
-                />
-                <SmartButton
-                    title="Delete"
-                    type="danger"
-                    icon={<DeleteOutlined />}
-                    buttonWidth={80}
-                    // onClick={() => handleDeleteMovie(record)}
-                />
-            </>
-        ),
-    },
-];
+const cx = (className) => styles[className];
 
 const movieModalFields = [
     {
@@ -104,6 +33,7 @@ const movieModalFields = [
         rules: [{ required: true, message: 'Actor name is required!' }],
     },
     { label: 'Character', name: 'character', type: 'text' },
+    { label: 'Place of birth', name: 'placeOfBirth', type: 'text' },
     {
         label: 'Gender',
         name: 'gender',
@@ -128,20 +58,157 @@ function Actor() {
     const [modalMode, setModalMode] = useState(null); // 'create', 'edit' or 'delete'
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalModeTitle, setModalModeTitle] = useState(null);
+    const [selectedActor, setSelectedActor] = useState(null);
     const [form] = Form.useForm();
+
+    const columns = [
+        {
+            title: 'Actor Name',
+            dataIndex: 'name',
+            key: 'name',
+            width: 200,
+            fixed: 'left',
+        },
+        {
+            title: 'Character',
+            dataIndex: 'character',
+            key: 'character',
+            width: 200,
+        },
+        {
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
+            width: 100,
+        },
+        {
+            title: 'Birthday',
+            dataIndex: 'birthday',
+            key: 'birthday',
+            width: 120,
+            render: (date) =>
+                date ? moment(date).format('DD/MM/YYYY') : 'N/A',
+        },
+        {
+            title: 'placeOfBirth',
+            dataIndex: 'placeOfBirth',
+            key: 'placeOfBirth',
+            width: 200,
+        },
+        {
+            title: 'Profile',
+            dataIndex: 'profilePath',
+            key: 'profilePath',
+            width: 80,
+            render: (url) => (
+                <img
+                    src={url ? url : '/default-poster.jpg'}
+                    alt="Profile path"
+                    style={{ width: '50px' }}
+                />
+            ),
+        },
+        {
+            title: 'Actions',
+            fixed: 'right',
+            width: 200,
+            render: (_, record) => (
+                <>
+                    <SmartButton
+                        title="Edit"
+                        type="primary"
+                        icon={<EditOutlined />}
+                        buttonWidth={80}
+                        onClick={() => handleEditActor(record)}
+                    />
+                    <SmartButton
+                        title="Delete"
+                        type="danger"
+                        icon={<DeleteOutlined />}
+                        buttonWidth={80}
+                        onClick={() => handleDeleteActor(record)}
+                    />
+                </>
+            ),
+        },
+    ];
+
+    const actorModalFields = [
+        {
+            label: 'Actor Name',
+            name: 'name',
+            type: 'text',
+            rules: [{ required: true, message: 'Actor Name is required!' }],
+        },
+        { label: 'Character', name: 'character', type: 'text' },
+        { label: 'Biography', name: 'biography', type: 'text' },
+        {
+            label: 'Gender',
+            name: 'gender',
+            type: 'yesno',
+            options: ['Male', 'Female'],
+        },
+        { label: 'Profile Path', name: 'profilePath', type: 'text' },
+        {
+            label: 'Birthday',
+            name: 'birthday',
+            type: 'date',
+        },
+        { label: 'Place Of Birth', name: 'placeOfBirth', type: 'text' },
+    ];
 
     const handleAddActor = () => {
         setModalMode('create');
+        setSelectedActor(null);
         form.resetFields();
         setIsModalOpen(true);
     };
 
-    const handleCreateActor = async (formData) => {
+    const handleCallCreateActor = async (formData) => {
         console.log('Form data submitted:', formData);
+        await createActor(formData);
+        handleGetAllActors();
+        setIsModalOpen(false);
+    };
 
-        const response = await createActor(formData);
+    const handleCallUpdateActor = async (formData) => {
+        await handleUpdateActor(selectedActor.id, formData);
+        message.success('Movie updated successfully!');
+        handleGetAllActors();
+        setIsModalOpen(false);
+    };
 
+    const handleEditActor = (record) => {
+        console.log('Editing record: ', record);
+        setSelectedActor(record);
+        setModalMode('edit');
+
+        const formData = {
+            name: record.name,
+            character: record.character,
+            placeOfBirth: record.placeOfBirth,
+            gender: record.gender === 'Male' ? 'Male' : 'Female',
+            birthday:
+                record.birthday && moment(record.birthday).isValid()
+                    ? moment(record.birthday)
+                    : null,
+            biography: record.biography,
+            profilePath: record.profilePath,
+        };
+
+        form.setFieldsValue(formData);
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteActor = (record) => {
+        setModalMode('delete');
+        setSelectedActor(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCallDeleteActor = async () => {
+        await deleteActor(selectedActor.id);
+        message.success('Actor deleted successfully!');
         handleGetAllActors();
         setIsModalOpen(false);
     };
@@ -175,7 +242,11 @@ function Actor() {
 
     const handleFormSubmit = (formData) => {
         if (modalMode === 'create') {
-            handleCreateActor(formData);
+            handleCallCreateActor(formData);
+        } else if (modalMode === 'edit') {
+            handleCallUpdateActor(formData);
+        } else if (modalMode === 'delete') {
+            handleCallDeleteActor();
         }
     };
 
@@ -184,7 +255,7 @@ function Actor() {
     }, []);
 
     const getModalModeTitle = () => {
-        switch (modalModeTitle) {
+        switch (modalMode) {
             case 'create':
                 return 'Add New Actor';
             case 'edit':
@@ -200,14 +271,6 @@ function Actor() {
         <div className={cx('actor-wrapper')}>
             <div className={cx('card-header')}>
                 <h2>Actor Management</h2>
-                <div>
-                    <SmartButton
-                        title="Add new"
-                        icon={<PlusOutlined />}
-                        type="primary"
-                        onClick={handleAddActor}
-                    />
-                </div>
             </div>
             <hr
                 style={{
@@ -223,6 +286,12 @@ function Actor() {
                     icon={<SearchOutlined />}
                 />
                 <div className={cx('features')}>
+                    <SmartButton
+                        title="Add new"
+                        icon={<PlusOutlined />}
+                        type="primary"
+                        onClick={handleAddActor}
+                    />
                     <SmartButton title="Bộ lọc" icon={<FilterOutlined />} />
                     <SmartButton title="Excel" icon={<CloudUploadOutlined />} />
                 </div>
@@ -232,7 +301,7 @@ function Actor() {
                     title={getModalModeTitle()}
                     columns={columns}
                     dataSources={actorSource}
-                    // loading={loading}
+                    loading={loading}
                     pagination={pagination}
                     onTableChange={handleTableChange}
                 />
@@ -240,10 +309,11 @@ function Actor() {
 
             <PopupModal
                 isModalOpen={isModalOpen}
-                title={getModalModeTitle()}
                 setIsModalOpen={setIsModalOpen}
-                fields={modalMode === 'delete' ? [] : movieModalFields}
+                title={getModalModeTitle()}
+                fields={modalMode === 'delete' ? [] : actorModalFields}
                 onSubmit={handleFormSubmit}
+                initialValues={selectedActor}
                 isDeleteMode={modalMode === 'delete'}
                 formInstance={form}
             />

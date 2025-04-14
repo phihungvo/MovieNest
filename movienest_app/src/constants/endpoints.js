@@ -16,6 +16,11 @@ const API_ENDPOINTS = {
     CREATE: `${BASE_URL}/genres`,
     DELETE: (id) => `${BASE_URL}/genres/${id}`,
   },
+
+  COMMENTS: {
+    GET_ALL_COMMENT: `${BASE_URL}/comment/getAll`,
+    CREATE: `${BASE_URL}/comment/create`,
+  }
 };
 
 export default API_ENDPOINTS;
