@@ -49,8 +49,8 @@ services:
     ports:
       - "80:80" # Expose ra port 80 của VPS
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./frontend/build:/usr/share/nginx/html
+      - ./movienest_app/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./movienest_app/build:/usr/share/nginx/html
     depends_on:
       - frontend
       - backend
