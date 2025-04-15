@@ -1,38 +1,51 @@
+version: "3.8"
 
 services:
   backend:
-    build: ./movienest_api
+    build: ./movienest_api 
     image: movienest-api
     platform: linux/amd64
     ports:
-      - "8080:8080"
+      - "8080:8080"  
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/moviedb
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - JWT_SECRET=mysecretkey  
+      - JWT_EXPIRATION=3600 
     depends_on:
       - mysql
+    networks:
+      - movienest_network
 
   frontend:
-    build: ./movienest_app
+    build: ./movienest_app 
     image: movienest-app
     platform: linux/amd64
     ports:
-      - "3000:3000"
+      - "3000:3000"  
     depends_on:
       - backend
+    networks:
+      - movienest_network
 
   mysql:
     image: mysql:8
     platform: linux/amd64
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: movienest_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: moviedb
     ports:
-      - "3307:3306"
+      - "3307:3306" 
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  
+    networks:
+      - movienest_network
 
 volumes:
   mysql_data:
     driver: local
+
+networks:
+  movienest_network:
+    driver: bridge
