@@ -14,8 +14,15 @@ import {
     Input,
     QRCode,
     Space,
+    Avatar,
+    List,
+    
 } from 'antd';
-import { ClockCircleOutlined } from '@ant-design/icons';
+import {
+    ClockCircleOutlined,
+    MessageOutlined,
+    StarOutlined,
+} from '@ant-design/icons';
 
 const { Countdown } = Statistic;
 // import classNames from 'classnames/bind';
@@ -23,8 +30,24 @@ const { Countdown } = Statistic;
 
 const cx = (classNames) => styles[classNames];
 
+const data = Array.from({ length: 23 }).map((_, i) => ({
+    href: 'https://ant.design',
+    title: `ant design part ${i}`,
+    avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
+    description:
+        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+    content:
+        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+}));
+const IconText = ({ icon, text }) => (
+    <Space>
+        {React.createElement(icon)}
+        {text}
+    </Space>
+);
+
 function HomeDashboard() {
-    const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Dayjs is also OK
+    const deadline = Date.now() + 6000 * 72 * 43 * 24 * 2 + 1000 * 30;
     const onFinish = () => {
         console.log('finished!');
     };
@@ -75,58 +98,62 @@ function HomeDashboard() {
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginBottom: '24px' }}>
-    {/* Cột bên trái: 2 dòng số liệu */}
-    <Col span={16}>
-        <Row gutter={[16, 16]}>
-            <Col span={12}>
-                <Card variant="borderless">
-                    <Statistic
-                        title="Feedback"
-                        value={1128}
-                        prefix={<LikeOutlined />}
-                    />
-                </Card>
-            </Col>
-            <Col span={12}>
-                <Card variant="borderless">
-                    <Statistic title="Unmerged" value={93} suffix="/ 100" />
-                </Card>
-            </Col>
-            <Col span={12}>
-                <Card variant="borderless">
-                    <Statistic
-                        title="Tổng doanh thu"
-                        value={20123.45}
-                        precision={2}
-                        valueStyle={{ color: '#3f8600' }}
-                        prefix="₫"
-                    />
-                </Card>
-            </Col>
-            <Col span={12}>
-                <Card variant="borderless">
-                    <Statistic
-                        title="Đơn hàng thành công"
-                        value={734}
-                        suffix=" giao dịch"
-                    />
-                </Card>
-            </Col>
-        </Row>
-    </Col>
+                    {/* Cột bên trái: 2 dòng số liệu */}
+                    <Col span={16}>
+                        <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                                <Card variant="borderless">
+                                    <Statistic
+                                        title="Feedback"
+                                        value={1128}
+                                        prefix={<LikeOutlined />}
+                                    />
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card variant="borderless">
+                                    <Statistic
+                                        title="Unmerged"
+                                        value={93}
+                                        suffix="/ 100"
+                                    />
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card variant="borderless">
+                                    <Statistic
+                                        title="Tổng doanh thu"
+                                        value={20123.45}
+                                        precision={2}
+                                        valueStyle={{ color: '#3f8600' }}
+                                        prefix="₫"
+                                    />
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card variant="borderless">
+                                    <Statistic
+                                        title="Đơn hàng thành công"
+                                        value={734}
+                                        suffix=" giao dịch"
+                                    />
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Col>
 
-    {/* Cột bên phải: 2 dòng QRCode */}
-    <Col span={8}>
-        <Row gutter={[0, 16]}>
-            <Col span={24}>
-                <Card variant="borderless">
-                    <Space direction="vertical" align="center">
-                        <QRCode value={text || '-'} />
-                        <div>Mã QR truy cập</div>
-                    </Space>
-                </Card>
-            </Col>
-            {/* <Col span={24}>
+                    {/* Cột bên phải: 2 dòng QRCode */}
+                    <Col span={8}>
+                        <Row gutter={[0, 16]}>
+                            <Col span={24}>
+                                <Card variant="borderless">
+                                    <Space direction="vertical" align="center">
+                                        <QRCode value={text || '-'} />
+                                        <div>Mã QR truy cập</div>
+                                    </Space>
+                                </Card>
+                            </Col>
+                            {/* <Col span={24}>
                 <Card variant="borderless">
                     <Space direction="vertical" align="center">
                         <QRCode value="https://phimmoi.vn" />
@@ -134,10 +161,62 @@ function HomeDashboard() {
                     </Space>
                 </Card>
             </Col> */}
-        </Row>
-    </Col>
-</Row>
+                        </Row>
+                    </Col>
+                </Row>
 
+                <List
+                    itemLayout="vertical"
+                    size="large"
+                    pagination={{
+                        onChange: (page) => {
+                            console.log(page);
+                        },
+                        pageSize: 3,
+                    }}
+                    dataSource={data}
+                    footer={
+                        <div>
+                            <b>ant design</b> footer part
+                        </div>
+                    }
+                    renderItem={(item) => (
+                        <List.Item
+                            key={item.title}
+                            actions={[
+                                <IconText
+                                    icon={StarOutlined}
+                                    text="156"
+                                    key="list-vertical-star-o"
+                                />,
+                                <IconText
+                                    icon={LikeOutlined}
+                                    text="156"
+                                    key="list-vertical-like-o"
+                                />,
+                                <IconText
+                                    icon={MessageOutlined}
+                                    text="2"
+                                    key="list-vertical-message"
+                                />,
+                            ]}
+                            extra={
+                                <img
+                                    width={272}
+                                    alt="logo"
+                                    src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                                />
+                            }
+                        >
+                            <List.Item.Meta
+                                avatar={<Avatar src={item.avatar} />}
+                                title={<a href={item.href}>{item.title}</a>}
+                                description={item.description}
+                            />
+                            {item.content}
+                        </List.Item>
+                    )}
+                />
             </div>
         </div>
     );

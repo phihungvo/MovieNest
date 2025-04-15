@@ -53,7 +53,7 @@ function Login() {
             message.success('Đăng nhập thành công!');
             
             if (isAdmin) {
-                navigate('/admin/actor');
+                navigate('/admin/dashboard');
             } else {
                 navigate('/');
             }
