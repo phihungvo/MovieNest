@@ -6,6 +6,10 @@ WORKDIR /app
 # Copy mã nguồn ứng dụng vào container
 COPY . .
 
+# Inject biến môi trường trước khi build
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # Cài đặt dependencies và build dự án
 RUN npm install && npm run build
 
