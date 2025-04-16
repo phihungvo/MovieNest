@@ -19,20 +19,22 @@ services:
       - movienest_network
 
   frontend:
-    build: ./movienest_app
+    build:
+      context: ./movienest_app
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://backend:8080/api
     image: movienest-app
     platform: linux/amd64
-    context: ./movienest_app
-    args:
-      REACT_APP_API_URL: http://backend:8080/api
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=/api # URL tương đối
+      - REACT_APP_API_URL=/api  
     depends_on:
       - backend
     networks:
       - movienest_network
+
 
   mysql:
     image: mysql:8
