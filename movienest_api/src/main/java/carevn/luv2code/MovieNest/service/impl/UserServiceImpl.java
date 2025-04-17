@@ -2,6 +2,8 @@ package carevn.luv2code.MovieNest.service.impl;
 
 import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.entity.User;
+import carevn.luv2code.MovieNest.exception.AppException;
+import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.UserMapper;
 import carevn.luv2code.MovieNest.repository.UserRepository;
 import carevn.luv2code.MovieNest.service.UserService;
@@ -29,8 +31,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return user;
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override

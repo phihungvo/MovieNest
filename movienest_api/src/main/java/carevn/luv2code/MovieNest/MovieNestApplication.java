@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//@ComponentScan(basePackages = "carevn.luv2code.MovieNest")
 public class MovieNestApplication implements CommandLineRunner {
 
 	@Resource

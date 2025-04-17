@@ -2,12 +2,8 @@ package carevn.luv2code.MovieNest.entity;
 
 import carevn.luv2code.MovieNest.enums.Role;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +11,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
