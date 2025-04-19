@@ -1,72 +1,123 @@
-// // src/components/auth/OAuth2RedirectHandler.js
-// import React, { useEffect } from 'react';
-// import { useNavigate, useLocation } from 'react-router-dom';
-// import { message } from 'antd';
-// import { jwtDecode } from 'jwt-decode';
-// import { useAuth } from '~/routes/AuthContext';
+// Tách logic xử lý ảnh thành hàm riêng
+export const processImageUpload = async (imageData) => {
+    if (!imageData) return null;
 
-// const OAuth2RedirectHandler = () => {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const { login } = useAuth();
+    let imagePath = imageData;
+    
+    // Xử lý file mới upload
+    if (imageData.originFileObj) {
+        try {
+            // Upload file mới
+            const uploadResult = await uploadFile(imageData.originFileObj);
+            imagePath = uploadResult.url;
+            console.log(
+                `Image ${uploadResult.alreadyExists ? 'already exists' : 'uploaded'}: ${imagePath}`
+            );
+        } catch (uploadError) {
+            // Nếu upload thất bại do file đã tồn tại, thử lấy URL
+            if (
+                uploadError.response &&
+                uploadError.response.data &&
+                uploadError.response.data.message &&
+                uploadError.response.data.message.includes('already exists')
+            ) {
+                console.log('File already exists, using existing URL');
+                imagePath = `${API_URL}/storage/files/${imageData.originFileObj.name}`;
+            } else {
+                throw uploadError;
+            }
+        }
+    } 
+    // Xử lý ảnh có sẵn từ form
+    else if (imageData.url) {
+        imagePath = imageData.url;
+    } 
+    // Xử lý định dạng mảng (từ Ant Design Upload)
+    else if (Array.isArray(imageData) && imageData.length > 0) {
+        if (imageData[0].originFileObj) {
+            try {
+                const uploadResult = await uploadFile(imageData[0].originFileObj);
+                imagePath = uploadResult.url;
+                console.log(
+                    `Image ${uploadResult.alreadyExists ? 'already exists' : 'uploaded'}: ${imagePath}`
+                );
+            } catch (uploadError) {
+                // Nếu upload thất bại do file đã tồn tại, thử lấy URL
+                if (
+                    uploadError.response &&
+                    uploadError.response.data &&
+                    uploadError.response.data.message &&
+                    uploadError.response.data.message.includes('already exists')
+                ) {
+                    console.log('File already exists, using existing URL');
+                    imagePath = `${API_URL}/storage/files/${imageData[0].originFileObj.name}`;
+                } else {
+                    throw uploadError;
+                }
+            }
+        } else if (imageData[0].url) {
+            imagePath = imageData[0].url;
+        }
+    }
+    // Nếu imagePath đã là URL chuỗi, giữ nguyên như vậy
+    
+    return imagePath;
+};
 
-//   useEffect(() => {
-//     // Get token from URL parameters
-//     const getUrlParameter = (name) => {
-//       const searchParams = new URLSearchParams(location.search);
-//       return searchParams.get(name);
-//     };
+// Hàm xử lý cập nhật phim đã refactor
+export const handleUpdateMovie = async (movieId, formData) => {
+    const TOKEN = getToken();
 
-//     const token = getUrlParameter('token');
-//     const error = getUrlParameter('error');
+    try {
+        let releaseDate = null;
+        if (formData.releaseDate) {
+            releaseDate = formData.releaseDate.format
+                ? formData.releaseDate.format('YYYY-MM-DD')
+                : formData.releaseDate;
+        }
 
-//     if (token) {
-//       // Store token in localStorage
-//       localStorage.setItem('token', token);
-      
-//       try {
-//         // Decode the token to get user info
-//         const decodedToken = jwtDecode(token);
-//         console.log('Decoded Token:', decodedToken);
+        // Xử lý ảnh poster sử dụng hàm mới
+        const posterPath = await processImageUpload(formData.posterPath);
         
-//         const roles = decodedToken.roles || [];
-//         const isAdmin = roles.includes('ADMIN');
-        
-//         localStorage.setItem('role', isAdmin ? 'admin' : 'user');
-        
-//         // Update auth context
-//         login({
-//           token,
-//           role: isAdmin ? 'admin' : 'user',
-//           roles
-//         });
-        
-//         message.success('Đăng nhập thành công!');
-        
-//         // Redirect based on role
-//         if (isAdmin) {
-//           navigate('/admin/movie');
-//         } else {
-//           navigate('/');
-//         }
-//       } catch (err) {
-//         console.error('Error processing token:', err);
-//         message.error('Authentication failed');
-//         navigate('/login');
-//       }
-//     } else if (error) {
-//       message.error(error || 'OAuth authentication failed');
-//       navigate('/login');
-//     } else {
-//       navigate('/login');
-//     }
-//   }, [location, navigate, login]);
+        // Xử lý ảnh backdrop sử dụng hàm mới
+        const backdropPath = await processImageUpload(formData.backdropPath);
 
-//   return (
-//     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-//       <div>Processing authentication...</div>
-//     </div>
-//   );
-// };
+        console.log(
+            'Final posterPath and backdropPath: ',
+            posterPath,
+            ' : ',
+            backdropPath,
+        );
 
-// export default OAuth2RedirectHandler;
+        // Cập nhật formData với đường dẫn ảnh mới
+        const updatedFormData = {
+            ...formData,
+            posterPath,
+            backdropPath,
+            releaseDate
+        };
+
+        console.log('Updating movie with data>>>>>>>>>>>>>:', updatedFormData);
+
+        const response = await axios.put(
+            API_ENDPOINTS.MOVIES.UPDATE(movieId),
+            updatedFormData,
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+
+        if (response.data) {
+            message.success('Movie updated successfully!');
+        }
+        return response.data;
+    } catch (error) {
+        message.error(
+            'Error updating movie: ' + (error.message || 'Unknown error'),
+        );
+        throw error;
+    }
+};

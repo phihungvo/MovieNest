@@ -1,6 +1,7 @@
 import axios from 'axios';
 import API_ENDPOINTS from '~/constants/endpoints';
 import { getToken } from '~/constants/token';
+import { getTrailerByMovieId } from '~/service/admin/trailer';
 
 const API_KEY =
     process.env.REACT_APP_TMDB_API_KEY || 'aad34a977eb04581217d21401cd37a60';
@@ -37,7 +38,6 @@ export const searchMovies = async (query) => {
     }
 };
 
-// http://localhost:8080/api/movie/today
 export const getMovieToday = async () => {
     const TOKEN = getToken();
     try {
@@ -48,7 +48,6 @@ export const getMovieToday = async () => {
             },
         });
 
-        console.log('Movie today response: ', response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching movies today: ', error);
@@ -56,7 +55,6 @@ export const getMovieToday = async () => {
     }
 };
 
-// http://localhost:8080/api/movie/this-week
 export const getMovieInWeek = async () => {
     const TOKEN = getToken();
     try {
@@ -73,7 +71,6 @@ export const getMovieInWeek = async () => {
     }
 };
 
-// https://api.themoviedb.org/3/movie/popular?api_key=
 export const getPopularMovie = async () => {
     const TOKEN = getToken();
     try {
@@ -84,8 +81,6 @@ export const getPopularMovie = async () => {
             },
         });
 
-        console.log('POPULAR movie::: ', response);
-
         return response.data;
     } catch (error) {
         console.error('Error fetching popular movies: ', error);
@@ -95,54 +90,48 @@ export const getPopularMovie = async () => {
 
 // Lấy phim đang chiếu phổ biến (popular) và thông tin video trailers của các phim đó
 export const getPopularMovieTrailers = async () => {
+    const TOKEN = getToken();
+    console.log('TOKEN from localStorage (or cookie): ', TOKEN);
+
     try {
         // First get popular movies
-        const moviesResponse = await axios.get(`${BASE_URL}/movie/popular`, {
-            params: {
-                api_key: API_KEY,
+        const moviesResponse = await axios.get(API_ENDPOINTS.MOVIES.POPULAR, {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                'Content-Type': 'application/json',
             },
         });
 
-        const movies = moviesResponse.data.results;
-        // console.log('>>getPopularMovieTrailers: ', movies);
+        const movies = moviesResponse.data;
+        console.log('popular movie: ', movies);
 
-        // For each movie, fetch its videos
-        // Sử dụng Promise.all(...) để chạy nhiều request API cùng lúc (tối ưu hóa tốc độ).
         const moviesWithTrailers = await Promise.all(
-            movies.slice(0, 10).map(async (movie) => {
+            movies.slice(0, 20).map(async (movie) => {
                 try {
-                    const videosResponse = await axios.get(
-                        `${BASE_URL}/movie/${movie.id}/videos`,
-                        {
-                            params: {
-                                api_key: API_KEY,
-                            },
-                        },
-                    );
+                    const trailerResponse = await getTrailerByMovieId(movie.id);
 
-                    // https://api.themoviedb.org/3/movie/950396/images?api_key=aad34a977eb04581217d21401cd37a60
-                    const imageOfMovie = await axios.get(
-                        `${BASE_URL}/movie/${movie.id}/images`,
-                        {
-                            params: {
-                                api_key: API_KEY,
-                            },
-                        },
-                    );
+                    // const imageOfMovie = await axios.get(
+                    //     `${BASE_URL}/movie/${movie.id}/images`,
+                    //     {
+                    //         params: {
+                    //             api_key: API_KEY,
+                    //         },
+                    //     },
+                    // );
 
-                    const file_path = imageOfMovie.data.backdrops[0];
+                    // const file_path = imageOfMovie.data.backdrops[0];
                     // console.log('file path :>>>>>', file_path.file_path);
 
                     // const trailers = videosResponse.data.results.filter(
                     //     video => video.type === 'Trailer' && video.site === 'Youtube'
                     // );
 
-                    const trailers = videosResponse.data.results.filter(
-                        (video) =>
-                            video.type === 'Trailer' &&
-                            (video.site === 'Youtube' ||
-                                video.site === 'YouTube'),
-                    );
+                    // const trailers = videosResponse.data.results.filter(
+                    //     (video) =>
+                    //         video.type === 'Trailer' &&
+                    //         (video.site === 'Youtube' ||
+                    //             video.site === 'YouTube'),
+                    // );
 
                     // console.log('Filtered trailers:', videosResponse.data.results.filter(
                     //     video => video.type.toLowerCase() === 'trailer' && video.site.toLowerCase() === 'youtube'
@@ -156,13 +145,16 @@ export const getPopularMovieTrailers = async () => {
                     //     '>>>> Available videos for movie :',
                     //     trailers[0],
                     //     trailers[0].key,
-                    // );
+                    // );trailerResponse[0].key;
 
+                    // console.log('key trailer: ', trailerResponse[0].key)
                     return {
                         ...movie,
                         trailer_key:
-                            trailers.length > 0 ? trailers[0].key : null,
-                        image_path: file_path.file_path,
+                            trailerResponse.length > 0
+                                ? trailerResponse[0].key
+                                : null,
+                        // image_path: file_path.file_path,
                     };
                 } catch (error) {
                     console.error(
@@ -187,61 +179,61 @@ export const getPopularMovieTrailers = async () => {
 
 // Lấy phim đang chiếu trong rạp (in theaters) và thông tin video trailers của các phim đó
 export const getInThreatersMovieTrailers = async () => {
+    const TOKEN = getToken();
     try {
         const moviesResponse = await axios.get(
-            `${BASE_URL}/movie/now_playing`,
+            API_ENDPOINTS.MOVIES.IN_THEATER,
             {
-                params: {
-                    api_key: API_KEY,
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
                 },
             },
         );
 
-        const movies = moviesResponse.data.results;
+        console.log('movie in theater: ', moviesResponse.data);
+        const movies = moviesResponse.data;
 
         // Lặp qua từng phim và lấy video trailer.
         const moviesWithTrailers = await Promise.all(
             movies.slice(0, 10).map(async (movie) => {
+                const movieId = movie.id;
+                console.log('MovieId: ', movieId);
                 try {
-                    const videoResponse = await axios.get(
-                        `${BASE_URL}/movie/${movie.id}/videos`,
-                        {
-                            params: {
-                                api_key: API_KEY,
-                            },
-                        },
-                    );
+                    const trailersList = await getTrailerByMovieId(movieId);
 
-                    const imageOfMovie = await axios.get(
-                        `${BASE_URL}/movie/${movie.id}/images`,
-                        {
-                            params: {
-                                api_key: API_KEY,
-                            },
-                        },
-                    );
+                    console.log('Trailer list of a movie>>>: ', trailersList);
+
+                    // const imageOfMovie = await axios.get(
+                    //     `${BASE_URL}/movie/${movie.id}/images`,
+                    //     {
+                    //         params: {
+                    //             api_key: API_KEY,
+                    //         },
+                    //     },
+                    // );
 
                     // const file_path = imageOfMovie.data.backdrops[0]
-                    const file_path =
-                        imageOfMovie.data.backdrops &&
-                        imageOfMovie.data.backdrops.length > 0
-                            ? imageOfMovie.data.backdrops[0].file_path
-                            : null;
+                    // const file_path =
+                    //     imageOfMovie.data.backdrops &&
+                    //     imageOfMovie.data.backdrops.length > 0
+                    //         ? imageOfMovie.data.backdrops[0].file_path
+                    //         : null;
                     // console.log('file path>>>>>: ', file_path.file_path)
-                    console.log('file path>>>>>: ', file_path);
+                    // console.log('file path>>>>>: ', file_path);
 
-                    const trailers = videoResponse.data.results.filter(
-                        (video) =>
-                            video.type === 'Trailer' &&
-                            video.site === 'YouTube',
-                    );
+                    // const trailers = videoResponse.data.results.filter(
+                    //     (video) =>
+                    //         video.type === 'Trailer' &&
+                    //         video.site === 'YouTube',
+                    // );
 
-                    return {
-                        ...movie,
-                        trailer_key:
-                            trailers.length > 0 ? trailers[0].key : null,
-                        image_path: file_path,
-                    };
+                    // return {
+                    //     ...movie,
+                    //     trailer_key:
+                    //         trailers.length > 0 ? trailers[0].key : null,
+                    //     image_path: file_path,
+                    // };
                 } catch (error) {
                     console.error(
                         `Error fetching videos for movie ${movie.id}:`,

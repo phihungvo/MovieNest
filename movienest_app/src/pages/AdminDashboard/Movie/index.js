@@ -24,6 +24,7 @@ import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { getAllTrailers, getAllTrailerNoPaging } from '~/service/admin/trailer';
+import uploadFile from '~/service/admin/uploadFile';
 
 const cx = (className) => styles[className];
 
@@ -143,12 +144,6 @@ function Movie() {
             width: 80,
         },
         {
-            title: 'Type',
-            dataIndex: 'movieType',
-            key: 'movieType',
-            width: 80,
-        },
-        {
             title: 'Adult',
             dataIndex: 'adult',
             key: 'adult',
@@ -242,98 +237,130 @@ function Movie() {
         'CANADA',
     ];
 
-    const movieTypes = [
-        'ACTION',
-        'ADVENTURE',
-        'ANIMATION',
-        'COMEDY',
-        'CRIME',
-        'DOCUMENTARY',
-        'DRAMA',
-        'FAMILY',
-        'FANTASY',
-        'HORROR',
-        'MYSTERY',
-        'ROMANCE',
-        'SCI_FI', // Science Fiction
-        'REALITY',
-        'MUSIC',
-        'HISTORY',
-        'WAR',
-        'SPORT',
-        'LEGAL',
-        'SHORT',
-        'KIDS'
-    ]
-
     const movieModalFields = [
         {
-            label: 'Title',
+            label: 'Tiêu đề',
             name: 'title',
             type: 'text',
-            rules: [{ required: true, message: 'Title is required!' }],
+            rules: [{ required: true, message: 'Tiêu đề là trường bắt buộc!' }],
+            placeholder: 'Nhập tiêu đề phim',
         },
         {
-            label: 'Type',
-            name: 'movieType',
-            type: 'select',
-            multiple: true,
-            options: movieTypes,
-        },
-        {
-            label: 'Country',
+            label: 'Quốc gia',
             name: 'country',
             type: 'select',
             options: countryList,
-            multiple: false,
+            placeholder: 'Chọn quốc gia',
         },
-        { label: 'Vote Average', name: 'voteAverage', type: 'number' },
-        { label: 'Vote Count', name: 'voteCount', type: 'number' },
-        { label: 'Popularity', name: 'popularity', type: 'number' },
         {
-            label: 'Popular',
+            label: 'Điểm đánh giá trung bình',
+            name: 'voteAverage',
+            type: 'number',
+            min: 0,
+            max: 10,
+            step: 0.1,
+        },
+        {
+            label: 'Số lượt đánh giá',
+            name: 'voteCount',
+            type: 'number',
+            min: 0,
+        },
+        {
+            label: 'Độ phổ biến',
+            name: 'popularity',
+            type: 'number',
+            min: 0,
+        },
+        {
+            label: 'Phổ biến',
             name: 'popular',
             type: 'yesno',
             options: ['Yes', 'No'],
         },
         {
-            label: 'Adult',
+            label: 'Dành cho người lớn',
             name: 'adult',
             type: 'yesno',
             options: ['Yes', 'No'],
         },
-
-        { label: 'In Theater', name: 'inTheater', type: 'yesno' },
         {
-            label: 'Genres',
+            label: 'Đang chiếu rạp',
+            name: 'inTheater',
+            type: 'yesno',
+            options: ['Yes', 'No'],
+        },
+        {
+            label: 'Thể loại',
             name: 'genres',
             type: 'select',
             multiple: true,
-            // options:
-            //     Array.isArray(genresSources) && genresSources.length > 0
-            //         ? genresSources.map((genre) => ({
-            //               label: genre.name,
-            //               value: genre.id,
-            //           }))
-            //         : [],
+            dataSourceKey: 'genres', // Sử dụng key để tham chiếu đến dataSources
+            labelKey: 'name', // Chỉ định trường để hiển thị làm label
+            valueKey: 'id', // Chỉ định trường để sử dụng làm value
+            placeholder: 'Chọn thể loại phim',
+            showSearch: true,
         },
         {
             label: 'Trailers',
             name: 'trailers',
             type: 'select',
             multiple: true,
+            dataSourceKey: 'trailers', // Sử dụng key để tham chiếu đến dataSources
+            labelKey: 'title', // Chỉ định trường để hiển thị làm label
+            valueKey: 'id', // Chỉ định trường để sử dụng làm value
+            placeholder: 'Chọn trailer',
+            showSearch: true,
         },
-        { label: 'Overview', name: 'overview', type: 'textarea' },
-        { label: 'Poster', name: 'posterPath', type: 'upload' },
-        { label: 'Backdrop', name: 'backdropPath', type: 'upload' },
+
         {
-            label: 'Release Date',
+            label: 'Poster',
+            name: 'posterPath',
+            type: 'upload',
+            accept: 'image/*',
+            listType: 'picture-card',
+            maxCount: 1,
+        },
+        {
+            label: 'Backdrop',
+            name: 'backdropPath',
+            type: 'upload',
+            accept: 'image/*',
+            listType: 'picture-card',
+            maxCount: 1,
+        },
+        {
+            label: 'Mô tả',
+            name: 'overview',
+            type: 'textarea',
+            fullWidth: true,
+            rows: 4,
+            placeholder: 'Nhập mô tả phim',
+        },
+        {
+            label: 'Ngày phát hành',
             name: 'releaseDate',
             type: 'date',
-            rules: [{ required: true, message: 'Release date is required!' }],
+            rules: [
+                {
+                    required: true,
+                    message: 'Ngày phát hành là trường bắt buộc!',
+                },
+            ],
+            format: 'DD/MM/YYYY',
         },
-        // { label: 'Rate', name: 'rate', type: 'rate' },
     ];
+
+    const prepareDataSources = () => {
+        return {
+            countries: countryList.map((country) => ({
+                label: country,
+                value: country,
+            })),
+            genres: genresSources,
+            trailers: trailerSources,
+        };
+    };
 
     useEffect(() => {
         handleGetAllMovies();
@@ -485,6 +512,15 @@ function Movie() {
         }
     };
 
+    const processFormData = async (values) => {
+        values.popular = values.popular === 'Yes';
+        values.inTheater = values.inTheater === 'Yes';
+        values.adult = values.adult === 'Yes';
+
+        console.log('Values from form: ', values)
+        return values;
+    };
+
     return (
         <div className={cx('movie-wrapper')}>
             <div className={cx('card-header')}>
@@ -530,13 +566,15 @@ function Movie() {
                 setIsModalOpen={setIsModalOpen}
                 title={getModalTitle()}
                 fields={modalMode === 'delete' ? [] : movieModalFields}
-                dataSources={genresSources}
-                trailerSource={trailerSources}
+                dataSources={prepareDataSources()}
                 onSubmit={handleFormSubmit}
                 initialValues={selectedMovie}
                 isDeleteMode={modalMode === 'delete'}
                 formInstance={form}
-                uploadFileFields={['posterPath', 'backdropPath']}
+                onBeforeSubmit={processFormData}
+                // cancelLabel="Hủy"
+                // submitLabel="Xác nhận"
+                // deleteConfirmLabel="Xóa"
             />
             {/* )} */}
         </div>

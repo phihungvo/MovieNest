@@ -24,7 +24,6 @@ export const getAllTrailers = async ({ page = 0, pageSize = 5 }) => {
     }
 };
 
-// http://localhost:8080/api/trailers/getAllNoPaging
 export const getAllTrailerNoPaging = async () => {
     const TOKEN = getToken();
 
@@ -44,9 +43,46 @@ export const getAllTrailerNoPaging = async () => {
     }
 };
 
-// http://localhost:8080/api/trailers/create
+export const getTrailerById = async (trailerId) => {
+    const TOKEN = getToken();
+    try {
+        const response = await axios.get(
+            API_ENDPOINTS.TRAILER.GET_BY_ID(trailerId),
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        return response.data;
+    } catch (error) {
+        console.log('Error when fetching trailer by id: ', error);
+    }
+};
+
+export const getTrailerByMovieId = async (movieId) => {
+    const TOKEN = getToken();
+    try {
+        const response = await axios.get(
+            API_ENDPOINTS.TRAILER.GET_TRAILER_BY_MOVIE_ID(movieId),
+            {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        return response.data;
+    } catch (error) {
+        console.log('Error when fetching trailer by movieId: ', error);
+    }
+};
+
 export const createTrailers = async (formData) => {
     const TOKEN = getToken();
+
+    console.log('Form data trailer: ', formData);
 
     try {
         const response = await axios.post(
@@ -57,8 +93,8 @@ export const createTrailers = async (formData) => {
                 site: formData.site,
                 trailerType: formData.trailerType,
                 official: formData.official,
-                movieId: formData.movie,
-                publishedAt: formData.publishedAt,
+                movieIds: formData.movie,
+                publishedAt: formData.publishedAt
             },
             {
                 headers: {
@@ -68,13 +104,14 @@ export const createTrailers = async (formData) => {
             },
         );
 
+        message.success('Create trailer success: ');
+        console.log('creating trailer:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error creating trailer:', error);
     }
 };
 
-// http://localhost:8080/api/trailers/649e6bde-c155-4590-bf62-4bc04de7be44
 export const handleUpdateTrailer = async (trailerId, formData) => {
     const TOKEN = getToken();
 
@@ -95,7 +132,6 @@ export const handleUpdateTrailer = async (trailerId, formData) => {
     }
 };
 
-// http://localhost:8080/api/trailers/9c95a08b-76a2-404a-bd60-9176d6f7cea8
 export const deleteTrailer = async (trailerId) => {
     const TOKEN = getToken();
 

@@ -6,6 +6,7 @@ import carevn.luv2code.MovieNest.service.TrailerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,8 +43,9 @@ public class TrailerController {
     }
 
     @GetMapping("/movie/{movieId}")
-    public ResponseEntity<List<Trailer>> getTrailersByMovieId(@PathVariable("movieId") UUID movieid) {
-        return ResponseEntity.ok(trailerService.getTrailersByMovieId(movieid));
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Trailer>> getTrailersByMovieId(@PathVariable("movieId") UUID movieId) {
+        return ResponseEntity.ok(trailerService.getTrailersByMovieId(movieId));
     }
 
     @GetMapping("/{trailerId}")

@@ -1,271 +1,167 @@
 import React, { useState, useEffect } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import {
-    DatePicker,
-    Form,
-    Input,
-    InputNumber,
-    Rate,
-    Select,
-    Upload,
-    Modal,
-    Row,
-    Col,
-    Button,
-    message,
-} from 'antd';
 import moment from 'moment';
-import { uploadFile } from '~/service/admin/uploadFile';
-
-const { TextArea } = Input;
+import TextField from '../TextField';
+import PasswordField from '../PasswordField';
+import DateField from '../DateField';
+import DateRange from '../DateRange';
+import TimeField from '../TimeField';
+import InputNumberField from '../InputNumberField';
+import SelectField from '../SelectField';
+import CalendarField from '../CalendarField';
+import TextAreaField from '../TextAreaField';
+import UploadField from '../UploadField';
+import CheckboxGroup from '../CheckboxGroup';
+import Checkbox from '../Checkbox';
+import RadioGroup from '../RadioGroup';
+import { Button, Col, Form, message, Modal, Row } from 'antd';
 
 function PopupModal({
     isModalOpen,
     setIsModalOpen,
     title,
-    dataSources,
-    trailerSource,
-    fields,
+    fields = [],
+    dataSources = {}, // Đổi thành object để linh hoạt hơn
     onSubmit,
     initialValues,
     isDeleteMode,
     formInstance,
-    uploadFileFields = [],
+    footer,
+    width = 700,
+    onBeforeSubmit,
+    deleteMessage,
+    deleteConfirmLabel = 'Xóa',
+    cancelLabel = 'Hủy',
+    submitLabel = 'Xác nhận',
 }) {
-    const [componentDisabled, setComponentDisabled] = useState(false);
-    const [uploadLoading, setUploadLoading] = useState(false);
-
-    // Sử dụng form instance được truyền từ component cha
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [processedFields, setProcessedFields] = useState([]);
     const form = formInstance;
 
-    // Xử lý khi form có giá trị ban đầu từ prop initialValues
+    // Xử lý fields với dữ liệu động khi component khởi tạo hoặc khi dependencies thay đổi
     useEffect(() => {
-        if (initialValues && !isDeleteMode) {
-            // Form đã được set giá trị từ component cha (Movie.jsx)
-            console.log('Modal received initialValues:', initialValues);
-        }
-    }, [initialValues, isDeleteMode]);
+        if (!fields || fields.length === 0) return;
+
+        const updatedFields = fields.map((field) => {
+            // Tạo bản sao của field để tránh thay đổi props
+            const updatedField = { ...field };
+
+            // Xử lý các trường select mà cần dataSources
+            if (field.dataSourceKey && dataSources[field.dataSourceKey]) {
+                const dataSource = dataSources[field.dataSourceKey];
+
+                // Chuyển đổi dataSource thành mảng options cho trường select
+                if (Array.isArray(dataSource)) {
+                    updatedField.options = dataSource.map((item) => {
+                        // Nếu dataSource là array of objects
+                        if (typeof item === 'object') {
+                            return {
+                                label:
+                                    item[field.labelKey || 'name'] ||
+                                    item[field.labelKey || 'title'] ||
+                                    `Item ${item[field.valueKey || 'id']}`,
+                                value: item[field.valueKey || 'id'],
+                                data: item, // Lưu toàn bộ data để có thể sử dụng sau này nếu cần
+                            };
+                        }
+                        // Nếu dataSource là array of strings/numbers
+                        return {
+                            label: item,
+                            value: item,
+                        };
+                    });
+                }
+                // Nếu dataSource đã là object với format {label, value}
+                else if (
+                    typeof dataSource === 'object' &&
+                    !Array.isArray(dataSource)
+                ) {
+                    updatedField.options = Object.keys(dataSource).map(
+                        (key) => ({
+                            label: dataSource[key],
+                            value: key,
+                        }),
+                    );
+                }
+            }
+
+            // Xử lý các trường select đơn giản có options tĩnh
+            if (field.type === 'yesno' || field.type === 'boolean') {
+                updatedField.type = 'select';
+                updatedField.options = field.options || ['Yes', 'No'];
+            }
+
+            return updatedField;
+        });
+
+        setProcessedFields(updatedFields);
+    }, [fields, dataSources]);
+
+    if (isDeleteMode) {
+        return (
+            <Modal
+                title={title}
+                centered
+                open={isModalOpen}
+                onCancel={() => setIsModalOpen(false)}
+                footer={
+                    footer || [
+                        <Button
+                            key="cancel"
+                            onClick={() => setIsModalOpen(false)}
+                        >
+                            {cancelLabel}
+                        </Button>,
+                        <Button
+                            key="submit"
+                            type="primary"
+                            danger
+                            onClick={() => onSubmit(initialValues)}
+                        >
+                            {deleteConfirmLabel}
+                        </Button>,
+                    ]
+                }
+            >
+                {deleteMessage || (
+                    <>
+                        {initialValues?.title && (
+                            <p>
+                                Bạn có chắc chắn muốn xóa{' '}
+                                <b>
+                                    <i>{initialValues.title}</i>
+                                </b>{' '}
+                                ?
+                            </p>
+                        )}
+                        <p>Hành động này không thể hoàn tác.</p>
+                    </>
+                )}
+            </Modal>
+        );
+    }
 
     const handleOk = async () => {
-        setUploadLoading(true);
-
         try {
-            if (isDeleteMode) {
-                onSubmit(initialValues);
-            } else {
-                const values = await form.validateFields();
+            setIsSubmitting(true);
 
-                const formData = {
-                    ...values,
-                    popular: values.popular === 'Yes',
-                    inTheater: values.inTheater === 'Yes',
-                    official: values.official === 'Yes',
-                    adult: values.adult === 'Yes',
-                };
+            const values = await form.validateFields();
 
-                // Process upload fields
-                for (const field of uploadFileFields) {
-                    if (values[field] && values[field].length > 0) {
-                        const fileInfo = values[field][0];
-                        
-                        if (fileInfo.originFileObj) {
-                            formData[field] = fileInfo;
-                        } else if (fileInfo.url) {
-                            formData[field] = fileInfo.url;
-                        } else {
-                            formData[field] = null;
-                        }
-                    } else {
-                        formData[field] = null;
-                    }
-                }
+            const finalValues = onBeforeSubmit
+                ? await onBeforeSubmit(values)
+                : values;
 
-                // Process date fields
-                if (formData.releaseDate) {
-                    formData.releaseDate = formData.releaseDate.format 
-                        ? formData.releaseDate.format('YYYY-MM-DD')
-                        : formData.releaseDate;
-                }
+            await onSubmit(finalValues);
+            console.log('Final form value: ', finalValues)
 
-                // Ensure genres is an array
-                if (formData.genres && !Array.isArray(formData.genres)) {
-                    formData.genres = [formData.genres];
-                }
-
-                // Nếu đang edit, giữ lại ID
-                if (initialValues && initialValues.id) {
-                    formData.id = initialValues.id;
-                }
-                
-                console.log('Submitting formData:', formData);
-                onSubmit(formData);
-            }
+            setIsModalOpen(false);
         } catch (error) {
             console.log('Validation Failed: ', error);
+            message.error('Vui lòng kiểm tra lại thông tin nhập liệu');
         } finally {
-            setUploadLoading(false);
+            setIsSubmitting(false);
         }
     };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    // Custom upload button for images
-    const uploadButton = (
-        <button type="button" style={{ border: 0, background: 'none' }}>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-        </button>
-    );
-
-    // Render each field based on its type
-    const renderField = (field, isFullWidth) => {
-        switch (field.type) {
-            case 'text':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        rules={field.rules}
-                    >
-                        <Input />
-                    </Form.Item>
-                );
-            case 'date':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        rules={field.rules}
-                    >
-                        <DatePicker style={{ width: '100%' }} />
-                    </Form.Item>
-                );
-            case 'number':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        rules={field.rules}
-                    >
-                        <InputNumber style={{ width: '100%' }} />
-                    </Form.Item>
-                );
-            case 'select':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        rules={field.rules}
-                    >
-                        <Select mode={field.multiple ? 'multiple' : undefined}>
-                            {field.options
-                                ? field.options.map((option) => (
-                                      <Select.Option
-                                          key={option}
-                                          value={option}
-                                      >
-                                          {option}
-                                      </Select.Option>
-                                  ))
-                                : field.name === 'trailers'
-                                ? trailerSource?.map((trailer) => (
-                                      <Select.Option
-                                          key={trailer.id}
-                                          value={trailer.id}
-                                      >
-                                          {trailer.title}
-                                      </Select.Option>
-                                  ))
-                                : dataSources?.map((genre) => (
-                                      <Select.Option
-                                          key={genre.id}
-                                          value={genre.id}
-                                      >
-                                          {genre.name}
-                                      </Select.Option>
-                                  ))}
-                        </Select>
-                    </Form.Item>
-                );
-            case 'yesno':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        rules={field.rules}
-                    >
-                        <Select>
-                            {(field.options || []).map((option, index) => (
-                                <Select.Option key={index} value={option}>
-                                    {option}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                );
-            case 'rate':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                    >
-                        <Rate />
-                    </Form.Item>
-                );
-            case 'textarea':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        rules={field.rules}
-                    >
-                        <TextArea rows={3} />
-                    </Form.Item>
-                );
-            case 'upload':
-                return (
-                    <Form.Item
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                    >
-                        <Upload
-                            listType="picture-card"
-                            beforeUpload={() => false}
-                            maxCount={1}
-                            accept="image/*"
-                            onPreview={(file) => {
-                                if (file.url) {
-                                    window.open(file.url);
-                                } else if (file.originFileObj) {
-                                    const objectUrl = URL.createObjectURL(
-                                        file.originFileObj,
-                                    );
-                                    window.open(objectUrl);
-                                }
-                            }}
-                        >
-                            {uploadButton}
-                        </Upload>
-                    </Form.Item>
-                );
-            default:
-                return null;
-        }
-    };
-
-    // Helper function để xử lý upload
     const normFile = (e) => {
         if (Array.isArray(e)) {
             return e;
@@ -273,87 +169,116 @@ function PopupModal({
         return e?.fileList;
     };
 
-    // Render delete modal
-    if (isDeleteMode) {
-        return (
-            <Modal
-                title={title}
-                centered
-                open={isModalOpen}
-                onCancel={handleCancel}
-                footer={[
-                    <Button key="cancel" onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                        key="submit"
-                        type="primary"
-                        danger
-                        onClick={handleOk}
-                    >
-                        Delete
-                    </Button>,
-                ]}
-            >
-                <p>Bạn có chắc chắn muốn xóa <b><i> {initialValues?.title} </i></b> ?</p>
-                <p>Hành động này không thể hoàn tác.</p>
-            </Modal>
-        );
-    }
-
-    // Sắp xếp các field vào các hàng (2 field cùng type một hàng nếu có thể)
-    const groupedFields = [];
-    let row = [];
-    let prevType = null;
-
-    fields.forEach((field) => {
-        if (prevType !== field.type || row.length >= 2) {
-            if (row.length > 0) {
-                groupedFields.push([...row]);
-            }
-            row = [];
+    const renderField = (field) => {
+        switch (field.type) {
+            case 'text':
+                return <TextField field={field} />;
+            case 'password':
+                return <PasswordField field={field} />;
+            case 'date':
+                return <DateField field={field} />;
+            case 'daterange':
+                return <DateRange field={field} />;
+            case 'time':
+                return <TimeField field={field} />;
+            case 'number':
+                return <InputNumberField field={field} />;
+            case 'select':
+                return <SelectField field={field} />;
+            case 'cascader':
+                return <CalendarField field={field} />;
+            case 'textarea':
+                return <TextAreaField field={field} />;
+            case 'upload':
+                return <UploadField field={field} />;
+            case 'checkbox':
+                return <Checkbox field={field} />;
+            case 'checkbox-group':
+                return <CheckboxGroup field={field} />;
+            case 'radio':
+                return <RadioGroup field={field} />;
+            default:
+                return null;
         }
-        row.push(field);
-        prevType = field.type;
-    });
+    };
 
-    // Thêm row cuối cùng vào groupedFields
-    if (row.length > 0) {
-        groupedFields.push([...row]);
+    // Nhóm các trường thành các hàng (2 trường mỗi hàng trừ khi fullWidth = true)
+    const groupedFields = [];
+    if (processedFields && processedFields.length > 0) {
+        let row = [];
+
+        processedFields.forEach((field) => {
+            // Nếu trường cần độ rộng đầy đủ hoặc hàng đã có 2 trường
+            if (field.fullWidth || row.length >= 2) {
+                if (row.length > 0) {
+                    groupedFields.push([...row]);
+                }
+                row = [field];
+            } else {
+                row.push(field);
+            }
+        });
+
+        // Thêm hàng cuối cùng
+        if (row.length > 0) {
+            groupedFields.push([...row]);
+        }
     }
 
     return (
         <Modal
             title={title}
             open={isModalOpen}
-            onCancel={handleCancel}
-            width={700}
-            // style={{ top: 20 }}
-            footer={[
-                <Button key="cancel" onClick={handleCancel}>
-                    Cancel
-                </Button>,
-                <Button
-                    key="submit"
-                    type="primary"
-                    onClick={handleOk}
-                    loading={uploadLoading}
-                >
-                    Submit
-                </Button>,
-            ]}
+            onCancel={() => setIsModalOpen(false)}
+            width={width}
+            centered={true}
+            destroyOnClose={true}
+            maskClosable={false}
+            footer={
+                footer || [
+                    <Button key="cancel" onClick={() => setIsModalOpen(false)}>
+                        {cancelLabel}
+                    </Button>,
+                    <Button
+                        key="submit"
+                        type="primary"
+                        onClick={handleOk}
+                        loading={isSubmitting}
+                    >
+                        {submitLabel}
+                    </Button>,
+                ]
+            }
         >
-            <Form form={form} layout="horizontal" disabled={componentDisabled}>
+            <Form
+                form={form}
+                layout="vertical"
+                requiredMark={true}
+                validateMessages={{
+                    required: '${label} là trường bắt buộc!',
+                    types: {
+                        email: '${label} không phải là email hợp lệ!',
+                        number: '${label} không phải là số hợp lệ!',
+                    },
+                    number: {
+                        range: '${label} phải nằm trong khoảng ${min} đến ${max}',
+                    },
+                }}
+            >
                 {groupedFields.map((row, rowIndex) => (
-                    <Row key={rowIndex} gutter={[16, 16]}>
+                    <Row key={rowIndex} gutter={[16, 0]}>
                         {row.map((field) => {
-                            const isFullWidth = row.length === 1;
+                            const isFullWidth =
+                                row.length === 1 || field.fullWidth;
                             return (
                                 <Col
                                     span={isFullWidth ? 24 : 12}
-                                    key={field.name}
+                                    key={
+                                        field.name ||
+                                        `field-${rowIndex}-${Math.random()}`
+                                    }
                                 >
-                                    {renderField(field, isFullWidth)}
+                                    {renderField(field)}
                                 </Col>
                             );
                         })}

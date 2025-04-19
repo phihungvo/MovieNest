@@ -17,7 +17,8 @@ export const login = async (email, password) => {
 
         if (response.status === 200) return response.data.token;
     } catch (error) {
-        console.error('Error in login: ', error);
+        console.log('Login error: ', error);
+        console.error('Error in login !');
     }
 };
 
@@ -35,6 +36,24 @@ export const register = async (username, email, password) => {
 
         if (response.status === 200) return response.data.token;
     } catch (error) {
-        message.error('Register failed: ', error);
+        console.log('Register error: ', error);
+        message.error('Register failed !');
+    }
+};
+
+export const getAllUser = async ({ page = 0, pageSize = 5 }) => {
+    const TOKEN = getToken();
+    try {
+        const response = await axios.get(API_ENDPOINTS.USER.GET_ALL, {
+            params: { page, pageSize },
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.content;
+    } catch (error) {
+        console.log('Error when fetching all user ! Error: ', error);
+        message.error('Error get all user: ');
     }
 };

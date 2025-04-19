@@ -283,6 +283,8 @@ function Trailer() {
 
             const response = await createTrailers(formData);
 
+            console.log('response: ', response);
+
             form.resetFields();
             handleGetAllTrailers();
             setIsModalOpen(false);

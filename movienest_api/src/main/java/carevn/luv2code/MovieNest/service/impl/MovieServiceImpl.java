@@ -68,14 +68,14 @@ public class MovieServiceImpl implements MovieService {
         movie.setReleaseDate(movieDTO.getReleaseDate());
         movie.setPosterPath(movieDTO.getPosterPath());
         movie.setBackdropPath(movieDTO.getBackdropPath());
-        movie.setPopular(movieDTO.isPopular());
-        movie.setInTheater(movieDTO.isInTheater());
-        movie.setVoteAverage(movieDTO.getVoteAverage());
-        movie.setVoteCount(movieDTO.getVoteCount());
-        movie.setAdult(movieDTO.isAdult());
-        movie.setPopularity(movieDTO.getPopularity());
+        if (movieDTO.getVoteAverage() != null)  movie.setVoteAverage(movieDTO.getVoteAverage());
+        if (movieDTO.getPopular() != null)  movie.setPopular(movieDTO.getPopular());
+        if (movieDTO.getInTheater() != null)  movie.setInTheater(movieDTO.getInTheater());
+        if (movieDTO.getVoteCount() != null)  movie.setVoteCount(movieDTO.getVoteCount());
+        if (movieDTO.getAdult() != null)  movie.setAdult(movieDTO.getAdult());
+        if (movieDTO.getPopularity() != null)  movie.setPopularity(movieDTO.getPopularity());
         movie.setCountry(Country.valueOf(movieDTO.getCountry()));
-        movie.setMovieType(MovieType.valueOf(movieDTO.getMovieType()));
+//        movie.setMovieType(MovieType.valueOf(movieDTO.getMovieType()));
 
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
@@ -163,14 +163,13 @@ public class MovieServiceImpl implements MovieService {
         movieExisted.setReleaseDate(movieDTO.getReleaseDate());
         movieExisted.setPosterPath(movieDTO.getPosterPath());
         movieExisted.setBackdropPath(movieDTO.getBackdropPath());
-        movieExisted.setVoteAverage(movieDTO.getVoteAverage());
-        movieExisted.setPopular(movieDTO.isPopular());
-        movieExisted.setInTheater(movieDTO.isInTheater());
-        movieExisted.setVoteCount(movieDTO.getVoteCount());
-        movieExisted.setAdult(movieDTO.isAdult());
-        movieExisted.setPopularity(movieDTO.getPopularity());
-        movieExisted.setCountry(Country.valueOf(movieDTO.getCountry()));
-        movieExisted.setMovieType(MovieType.valueOf(movieDTO.getMovieType()));
+        if (movieDTO.getVoteAverage() != null) movieExisted.setVoteAverage(movieDTO.getVoteAverage());
+        if (movieDTO.getPopular() != null) movieExisted.setPopular(movieDTO.getPopular());
+        if (movieDTO.getInTheater() != null) movieExisted.setInTheater(movieDTO.getInTheater());
+        if (movieDTO.getVoteCount() != null) movieExisted.setVoteCount(movieDTO.getVoteCount());
+        if (movieDTO.getAdult() != null) movieExisted.setAdult(movieDTO.getAdult());
+        if (movieDTO.getPopularity() != null) movieExisted.setPopularity(movieDTO.getPopularity());
+        if (movieDTO.getCountry() != null) movieExisted.setCountry(Country.valueOf(movieDTO.getCountry()));
 
         if (movieDTO.getGenres() != null) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());

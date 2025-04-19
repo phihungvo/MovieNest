@@ -25,21 +25,21 @@ public class MovieDTO {
 
      String backdropPath;
 
-     float voteAverage;
+     Float voteAverage;
 
-     int voteCount;
+     Integer voteCount;
 
-     boolean popular;
+     Boolean popular;
 
-     String movieType;
+//     String movieType;
 
      String country;
 
-     boolean inTheater;
+     Boolean inTheater;
 
-     boolean adult;
+     Boolean adult;
 
-     float popularity;
+     Float popularity;
 
      List<UUID> genres; // Danh sách thể loại
 

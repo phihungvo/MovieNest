@@ -3,6 +3,7 @@ package carevn.luv2code.MovieNest.controller;
 import carevn.luv2code.MovieNest.dto.requests.ApiResponse;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,13 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/findAll")
-    public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.ok().body(userService.findAll());
+    @GetMapping("/getAll")
+    public ResponseEntity<Page<User>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<User> users = userService.findAll(page, size);
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/createUser")

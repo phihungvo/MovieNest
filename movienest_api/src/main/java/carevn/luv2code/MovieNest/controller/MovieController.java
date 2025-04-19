@@ -82,6 +82,11 @@ public class MovieController {
         return new ResponseEntity<>(movieService.findMovieByCountry(Country.THAILAND), HttpStatus.OK);
     }
 
+//    @GetMapping("/thailand-movie")
+//    public ResponseEntity<List<Movie>> getAnimationMovies(){
+//        return new ResponseEntity<>(movieService.findMovieByCountry(Country.), HttpStatus.OK);
+//    }
+
     @GetMapping("/findAllNoPaging")
     public ResponseEntity<List<Movie>> findAllNoPaging(){
         List<Movie> movies = movieService.findAllNoPaging();

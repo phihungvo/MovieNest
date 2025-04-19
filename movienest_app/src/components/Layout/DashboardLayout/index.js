@@ -63,6 +63,7 @@ const sideBar = [
         title: 'User',
         color: '#9c27b0',
         icon: <ProfileOutlined />,
+        url: '/admin/user',
     },
     {
         title: 'Notifications',

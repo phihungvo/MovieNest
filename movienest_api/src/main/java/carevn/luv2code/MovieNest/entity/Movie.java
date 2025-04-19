@@ -49,9 +49,9 @@ public class Movie {
 
     float popularity;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "movie_type")
-    MovieType movieType;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "movie_type")
+//    MovieType movieType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "country")

@@ -16,9 +16,10 @@ function CardInfo({ movieResult, isTrailer }) {
     const [imageUrls, setImageUrls] = useState({});
 
     const handleClickPlayButton = (movie) => {
+        console.log('trailer key: ', movie.key)
         setTrailerURL(
             `https://www.youtube.com/embed/${
-                movie.trailer_key || movie.trailerKey
+                movie.trailer_key || movie.trailer_key
             }?autoplay=1`,
         );
         setShowTrailer(true);

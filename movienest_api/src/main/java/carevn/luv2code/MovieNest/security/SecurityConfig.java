@@ -47,7 +47,7 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        .requestMatchers("/api/storage/files/**", "/api/movie/korea-movie").permitAll()
+                        .requestMatchers("/api/storage/files/**", "/api/movie/korea-movie", "/api/trailers/movie/**").permitAll()
 
                         // User endpoints
                         .requestMatchers("/api/user/**", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")

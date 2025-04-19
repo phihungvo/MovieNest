@@ -2,6 +2,7 @@ package carevn.luv2code.MovieNest.service;
 
 import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.entity.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface UserService {
 
     void updateUser(UserDTO userDTO);
 
-    List<User> findAll();
+    Page<User> findAll(int page, int size);
 }
