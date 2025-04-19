@@ -15,6 +15,12 @@ const API_ENDPOINTS = {
         DELETE: (id) => `${BASE_URL}/movie/delete?movieId=${id}`,
         SEARCH: (keyWord) =>
             `${BASE_URL}/movie/search?keyWord=${encodeURIComponent(keyWord)}`,
+        TODAY: `${BASE_URL}/movie/today`,
+        THIS_WEEK: `${BASE_URL}/movie/this-week`,
+        POPULAR: `${BASE_URL}/movie/popular`,
+        KOREAN_MOVIES:  `${BASE_URL}/movie/korean-movie`,
+        VIETNAME_MOVIES: `${BASE_URL}/movie/vietnamese-movie`,
+        THAILAND_MOVIES: `${BASE_URL}/movie/thailand-movie`,
     },
 
     TRAILER: {

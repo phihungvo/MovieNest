@@ -64,10 +64,13 @@ function Movie() {
             releaseDate: record.releaseDate ? moment(record.releaseDate) : null,
 
             genres: record.genres ? record.genres.map((genre) => genre.id) : [],
+            trailers: record.trailers
+                ? record.trailers.map((trailer) => trailer.id)
+                : [],
 
-            popular: record.popular ? 'Yes' : 'No',
-            inTheater: record.inTheater ? 'Yes' : 'No',
-            adult: record.adult ? 'Yes' : 'No',
+            // popular: record.popular ? 'Yes' : 'No',
+            // inTheater: record.inTheater ? 'Yes' : 'No',
+            // adult: record.adult ? 'Yes' : 'No',
 
             // Xử lý posterPath và backdropPath nếu có ảnh
             posterPath: record.posterPath
@@ -115,7 +118,7 @@ function Movie() {
             title: 'Release Date',
             dataIndex: 'releaseDate',
             key: 'releaseDate',
-            width: 200,
+            width: 165,
 
             render: (date) =>
                 date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
@@ -124,7 +127,7 @@ function Movie() {
             title: 'Poster Image',
             dataIndex: 'posterPath',
             key: 'posterPath',
-            width: 200,
+            width: 80,
             render: (url) => (
                 <img
                     src={url ? url : '/default-poster.jpg'}
@@ -132,6 +135,18 @@ function Movie() {
                     style={{ width: '50px' }}
                 />
             ),
+        },
+        {
+            title: 'Country',
+            dataIndex: 'country',
+            key: 'country',
+            width: 80,
+        },
+        {
+            title: 'Type',
+            dataIndex: 'movieType',
+            key: 'movieType',
+            width: 80,
         },
         {
             title: 'Adult',
@@ -216,12 +231,61 @@ function Movie() {
         },
     ];
 
+    const countryList = [
+        'VIETNAM',
+        'THAILAND',
+        'KOREA',
+        'JAPAN',
+        'CHINA',
+        'USA',
+        'UK',
+        'CANADA',
+    ];
+
+    const movieTypes = [
+        'ACTION',
+        'ADVENTURE',
+        'ANIMATION',
+        'COMEDY',
+        'CRIME',
+        'DOCUMENTARY',
+        'DRAMA',
+        'FAMILY',
+        'FANTASY',
+        'HORROR',
+        'MYSTERY',
+        'ROMANCE',
+        'SCI_FI', // Science Fiction
+        'REALITY',
+        'MUSIC',
+        'HISTORY',
+        'WAR',
+        'SPORT',
+        'LEGAL',
+        'SHORT',
+        'KIDS'
+    ]
+
     const movieModalFields = [
         {
             label: 'Title',
             name: 'title',
             type: 'text',
             rules: [{ required: true, message: 'Title is required!' }],
+        },
+        {
+            label: 'Type',
+            name: 'movieType',
+            type: 'select',
+            multiple: true,
+            options: movieTypes,
+        },
+        {
+            label: 'Country',
+            name: 'country',
+            type: 'select',
+            options: countryList,
+            multiple: false,
         },
         { label: 'Vote Average', name: 'voteAverage', type: 'number' },
         { label: 'Vote Count', name: 'voteCount', type: 'number' },
@@ -326,12 +390,13 @@ function Movie() {
 
     const handleMovieUpdate = async (formData) => {
         try {
+            console.log('Form data submitted for update:', formData);
+
             const response = await handleUpdateMovie(
                 selectedMovie.id,
                 formData,
             );
 
-            message.success('Movie updated successfully!');
             handleGetAllMovies();
             setIsModalOpen(false);
         } catch (error) {

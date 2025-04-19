@@ -2,6 +2,7 @@ package carevn.luv2code.MovieNest.service;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
 import carevn.luv2code.MovieNest.entity.Movie;
+import carevn.luv2code.MovieNest.enums.Country;
 import org.springframework.data.domain.Page;
 
 import java.util.Date;
@@ -20,10 +21,15 @@ public interface MovieService {
 
     List<Movie> getMoviesToday();
 
+    List<Movie> getMoviePopular();
+
+    List<Movie> getMovieInTheater();
+
     List<Movie> getMoviesThisWeek();
 
     Movie updateMovie(UUID id, MovieDTO movieDTO);
 
     boolean deleteMovie(UUID id);
 
+    List<Movie> findMovieByCountry(Country country);
 }

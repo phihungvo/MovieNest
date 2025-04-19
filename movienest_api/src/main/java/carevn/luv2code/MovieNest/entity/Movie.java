@@ -1,5 +1,7 @@
 package carevn.luv2code.MovieNest.entity;
 
+import carevn.luv2code.MovieNest.enums.Country;
+import carevn.luv2code.MovieNest.enums.MovieType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -46,6 +49,14 @@ public class Movie {
 
     float popularity;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "movie_type")
+    MovieType movieType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "country")
+    Country country;
+
     @ManyToMany
     @JoinTable(
             name = "movie_genres",
@@ -54,7 +65,10 @@ public class Movie {
     )
     List<Genres> genres;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(name = "movie_trailer",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "trailer_id"))
     List<Trailer> trailers;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)

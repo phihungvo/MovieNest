@@ -5,6 +5,7 @@ import classNames from 'classnames/bind';
 import { PlayCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ProgressOverlay from '../ProgressOverplay';
+import { getMovieImage } from '~/service/admin/uploadFile';
 
 const cx = classNames.bind(styles);
 
@@ -12,10 +13,13 @@ function CardInfo({ movieResult, isTrailer }) {
     const { Meta } = Card;
     const [showTrailer, setShowTrailer] = useState(false);
     const [trailerURL, setTrailerURL] = useState('');
+    const [imageUrls, setImageUrls] = useState({});
 
     const handleClickPlayButton = (movie) => {
         setTrailerURL(
-            `https://www.youtube.com/embed/${movie.trailer_key}?autoplay=1`,
+            `https://www.youtube.com/embed/${
+                movie.trailer_key || movie.trailerKey
+            }?autoplay=1`,
         );
         setShowTrailer(true);
     };
@@ -32,9 +36,73 @@ function CardInfo({ movieResult, isTrailer }) {
         navigate(`/movie/${id}`);
     };
 
-    // console.log('movieResult, ', movieResult);
+    useEffect(() => {
+        const loadImages = async () => {
+            // setLoading(true);
 
-    // Xử lý bấm ESC để đóng trailer
+            const imagePromises = movieResult.map(async (movie) => {
+                let imagePath = isTrailer ? movie.imagePath : movie.posterPath;
+
+                if (!imagePath) {
+                    return {
+                        id: movie.id,
+                        url: '/images/default-movie-poster.jpg',
+                    };
+                }
+
+                // Kiểm tra nếu đã là URL đầy đủ
+                if (
+                    imagePath &&
+                    (imagePath.startsWith('http://') ||
+                        imagePath.startsWith('https://'))
+                ) {
+                    return { id: movie.id, url: imagePath };
+                }
+
+                // Kiểm tra nếu là đường dẫn TMDB
+                if (imagePath && !imagePath.includes('/api/')) {
+                    return {
+                        id: movie.id,
+                        url: `https://image.tmdb.org/t/p/w500${imagePath}`,
+                    };
+                }
+
+                // Lấy ảnh từ máy chủ local nếu là đường dẫn lưu trữ nội bộ
+                if (imagePath) {
+                    try {
+                        const imgUrl = await getMovieImage(imagePath);
+                        return { id: movie.id, url: imgUrl };
+                    } catch (error) {
+                        console.error(
+                            `Lỗi tải ảnh cho movie ${movie.id}:`,
+                            error,
+                        );
+                    }
+                }
+
+                // Trả về ảnh mặc định nếu không tìm thấy
+                return {
+                    id: movie.id,
+                    url: '/images/default-movie-poster.jpg',
+                };
+            });
+
+            const loadedImages = await Promise.all(imagePromises);
+
+            // Chuyển mảng kết quả thành object với key là movie.id và value là URL
+            const newImageUrls = {};
+            loadedImages.forEach((item) => {
+                newImageUrls[item.id] = item.url;
+            });
+
+            setImageUrls(newImageUrls);
+        };
+
+        if (movieResult && movieResult.length > 0) {
+            loadImages();
+        }
+    }, [movieResult, isTrailer]);
+
     useEffect(() => {
         const handleEscKey = (event) => {
             if (event.key === 'Escape' && showTrailer) {
@@ -88,7 +156,10 @@ function CardInfo({ movieResult, isTrailer }) {
                         ) : (
                             <img
                                 alt={movie.title}
-                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                src={
+                                    imageUrls[movie.id] ||
+                                    '/images/loading-placeholder.gif'
+                                }
                                 style={{
                                     width: '150px',
                                     height: '225px',
@@ -117,12 +188,15 @@ function CardInfo({ movieResult, isTrailer }) {
                         // </div>
                         // console.log('movie: ', movie)
 
-                        <ProgressOverlay popularity={movie.vote_average} size={35}/>
+                        <ProgressOverlay
+                            popularity={movie.voteAverage}
+                            size={35}
+                        />
                     )}
                     <Meta
                         className={cx('info')}
                         title={movie.title}
-                        description={movie.release_date}
+                        description={movie.releaseDate || movie.release_date}
                     />
                 </Card>
             ))}

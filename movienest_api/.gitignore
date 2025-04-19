@@ -43,3 +43,5 @@ touch config/local/application.yml
 echo "
 # Contains local config that shouldn't go into the repository
 config/local/" >> .gitignore
+movienest_api/uploads/*
+!movienest_api/uploads/.gitkeep

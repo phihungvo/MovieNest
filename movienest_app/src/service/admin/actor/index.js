@@ -104,7 +104,7 @@ export const handleUpdateActor = async (actorId, formData) => {
 
         return response.data;
     } catch (error) {
-        console.error('Error updating movie:', error);
+        console.error('Error updating actor:', error);
     }
 };
 

@@ -31,6 +31,10 @@ public class MovieDTO {
 
      boolean popular;
 
+     String movieType;
+
+     String country;
+
      boolean inTheater;
 
      boolean adult;

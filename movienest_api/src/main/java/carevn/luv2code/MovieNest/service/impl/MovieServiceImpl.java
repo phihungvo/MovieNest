@@ -5,6 +5,8 @@ import carevn.luv2code.MovieNest.entity.Comment;
 import carevn.luv2code.MovieNest.entity.Genres;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.Trailer;
+import carevn.luv2code.MovieNest.enums.Country;
+import carevn.luv2code.MovieNest.enums.MovieType;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.repository.CommentRepository;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,12 +58,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void save(MovieDTO movieDTO) {
-
         if(movieRepository.existsByTitle(movieDTO.getTitle())){
             throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
         }
 
-        // Tạo Movie entity và ánh xạ dữ liệu từ MovieDTO
         Movie movie = new Movie();
         movie.setTitle(movieDTO.getTitle());
         movie.setOverview(movieDTO.getOverview());
@@ -72,6 +74,8 @@ public class MovieServiceImpl implements MovieService {
         movie.setVoteCount(movieDTO.getVoteCount());
         movie.setAdult(movieDTO.isAdult());
         movie.setPopularity(movieDTO.getPopularity());
+        movie.setCountry(Country.valueOf(movieDTO.getCountry()));
+        movie.setMovieType(MovieType.valueOf(movieDTO.getMovieType()));
 
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
@@ -89,7 +93,6 @@ public class MovieServiceImpl implements MovieService {
 //        }
 
         movieRepository.save(movie);
-        log.info("Saved movie: {}", movie.getTitle());
     }
 
 
@@ -116,8 +119,27 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> getMoviesToday() {
         LocalDate today = LocalDate.now();
-        Date todayDate = java.sql.Date.valueOf(today);
-        return movieRepository.findByReleaseDate(todayDate);
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        Date startDate = java.sql.Timestamp.valueOf(startOfDay);
+        Date endDate = java.sql.Timestamp.valueOf(endOfDay);
+
+        return movieRepository.findByReleaseDateBetween(startDate, endDate);
+    }
+
+    @Override
+    public List<Movie> getMoviePopular() {
+        List<Movie> moviePopular = new ArrayList<>();
+        moviePopular = movieRepository.findTop15ByPopularTrue();
+        return moviePopular;
+    }
+
+    @Override
+    public List<Movie> getMovieInTheater() {
+        List<Movie> movieInTheater = new ArrayList<>();
+        movieInTheater = movieRepository.findTop15ByInTheaterTrue();
+        return movieInTheater;
     }
 
     @Override
@@ -147,47 +169,19 @@ public class MovieServiceImpl implements MovieService {
         movieExisted.setVoteCount(movieDTO.getVoteCount());
         movieExisted.setAdult(movieDTO.isAdult());
         movieExisted.setPopularity(movieDTO.getPopularity());
+        movieExisted.setCountry(Country.valueOf(movieDTO.getCountry()));
+        movieExisted.setMovieType(MovieType.valueOf(movieDTO.getMovieType()));
 
         if (movieDTO.getGenres() != null) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
             movieExisted.setGenres(genresList);
         }
 
-        // Xử lý trailers đặc biệt vì có mối quan hệ bidirectional
-        if (movieDTO.getTrailers() != null) {
-            // Tìm tất cả các trailers hiện tại
-            List<Trailer> existingTrailers = movieExisted.getTrailers();
-
-            if (existingTrailers != null) {
-                // Xóa liên kết cũ (nếu không còn trong danh sách mới)
-                existingTrailers.removeIf(trailer ->
-                        !movieDTO.getTrailers().contains(trailer.getId()));
-            }
-
-            // Thêm trailers mới
-            if (!movieDTO.getTrailers().isEmpty()) {
-                List<Trailer> newTrailers = trailerRepository.findAllById(movieDTO.getTrailers());
-
-                // Đảm bảo mỗi trailer đều trỏ về movie này
-                for (Trailer trailer : newTrailers) {
-                    trailer.setMovie(movieExisted);
-                }
-
-                // Thêm vào danh sách hiện tại
-                if (existingTrailers == null) {
-                    movieExisted.setTrailers(newTrailers);
-                } else {
-                    // Thêm những trailer mới chưa có trong danh sách
-                    for (Trailer trailer : newTrailers) {
-                        if (!existingTrailers.contains(trailer)) {
-                            existingTrailers.add(trailer);
-                        }
-                    }
-                }
-            }
+        if(movieDTO.getTrailers() != null) {
+            List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
+            movieExisted.setTrailers(trailerList);
         }
 
-        // Xử lý comments tương tự như trailers
         if (movieDTO.getComments() != null && !movieDTO.getComments().isEmpty()) {
             List<Comment> commentList = commentRepository.findAllById(movieDTO.getComments());
             for (Comment comment : commentList) {
@@ -207,5 +201,9 @@ public class MovieServiceImpl implements MovieService {
         movieRepository.deleteById(movieId);
         return true;
     }
-}
 
+    @Override
+    public List<Movie> findMovieByCountry(Country country) {
+        return movieRepository.findMoviesByCountry(country);
+    }
+}

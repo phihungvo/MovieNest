@@ -36,16 +36,29 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public void save(MultipartFile file) {
+    public String save(MultipartFile file) {
         try {
-            Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+            String filename = file.getOriginalFilename();
+            Path filePath = this.root.resolve(filename);
+
+            if (Files.exists(filePath)) {
+                return filename;
+            }
+            Files.copy(file.getInputStream(), filePath);
+            return filename;
         } catch (Exception e) {
             if (e instanceof FileAlreadyExistsException) {
-                throw new RuntimeException("A file of that name already exists.");
+                return file.getOriginalFilename();
             }
 
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean fileExists(String filename) {
+        Path filePath = this.root.resolve(filename);
+        return Files.exists(filePath);
     }
 
     @Override

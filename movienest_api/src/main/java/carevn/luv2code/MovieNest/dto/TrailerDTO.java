@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -28,7 +29,7 @@ public class TrailerDTO {
 
      boolean official;
 
-     UUID movieId;
+     List<UUID> movieIds;
 
      Date publishedAt;
 }

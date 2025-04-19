@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.repository;
 
 import carevn.luv2code.MovieNest.entity.Movie;
+import carevn.luv2code.MovieNest.enums.Country;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,12 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
     Page<Movie> findAll(Pageable pageable);
 
     List<Movie> findByReleaseDateBetween(Date from, Date to);
+
+    List<Movie> findTop15ByPopularTrue();
+
+    List<Movie> findTop15ByInTheaterTrue();
+
+    @Query("SELECT m FROM Movie m WHERE m.country = :country ")
+    List<Movie> findMoviesByCountry(Country country);
+
 }

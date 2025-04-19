@@ -47,13 +47,15 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
 
+                        .requestMatchers("/api/storage/files/**", "/api/movie/korea-movie").permitAll()
+
                         // User endpoints
-                        .requestMatchers("/api/user/**", "/api/movie/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/user/**", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
 
                         // Admin-only endpoints
                         .requestMatchers(
                                 "/api/admin/**",
-                                "/api/storage/**",
+//                                "/api/storage/**",
                                 "/api/genres/**",
                                 "/api/trailers/**",
                                 "/api/comment/**",

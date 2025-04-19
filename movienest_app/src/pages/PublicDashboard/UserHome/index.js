@@ -12,6 +12,7 @@ import Poster from '../component/Poster';
 import SkeletonComponent from '../component/Skeleton';
 import { getDetailtMovie } from '~/service/user/home';
 import CommentList from '~/components/Layout/components/Comment';
+import { findAllKoreanMovies } from '~/service/admin/movie';
 
 const cx = classNames.bind(styles);
 
@@ -27,19 +28,20 @@ function UserHome() {
     };
 
     const fetchTrailerMovies = async (state) => {
-        // return state === "Popular" ? await getPopularMovieTrailers() : await getInThreatersMovieTrailers();
         const data =
             state === 'Popular'
                 ? await getPopularMovieTrailers()
                 : await getInThreatersMovieTrailers();
-        console.log('Trailer data:', data); // Add this line to inspect the data
         return data;
     };
-    //const movieId = 99861;
+
+    const fetchKoreanMovies = async () => {
+        const data = await findAllKoreanMovies();
+        return data;
+    };
 
     const handleCallDetailMovie = async () => {
-        const data = await getDetailtMovie(99861);
-        console.log('Movie detail data: ', data);
+        await getDetailtMovie(99861);
     };
 
     return (
@@ -79,6 +81,13 @@ function UserHome() {
                 title="Popular Movies"
                 options={[]}
                 fetchData={fetchPopularMovies}
+                // isTrailer={false}
+            />
+
+            <Poster
+                title="Korean Movies"
+                options={[]}
+                fetchData={fetchKoreanMovies}
                 // isTrailer={false}
             />
 

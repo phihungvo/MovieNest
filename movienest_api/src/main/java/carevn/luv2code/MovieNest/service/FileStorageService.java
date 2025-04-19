@@ -10,7 +10,9 @@ public interface FileStorageService {
 
     public void init();
 
-    public void save(MultipartFile file);
+    public String save(MultipartFile file);
+
+    boolean fileExists(String filename);
 
     public Resource load(String filename);
 

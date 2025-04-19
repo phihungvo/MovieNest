@@ -44,9 +44,13 @@ public class FilesController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            storageService.save(file);
-
             String filename = file.getOriginalFilename();
+            boolean fileExists = storageService.fileExists(filename);
+
+            if (!fileExists) {
+                storageService.save(file);
+            }
+
             String fileUrl = MvcUriComponentsBuilder
                     .fromMethodName(FilesController.class, "getFile", filename)
                     .build()
@@ -56,11 +60,20 @@ public class FilesController {
             Map<String, String> response = new HashMap<>();
             response.put("filename", filename);
             response.put("url", fileUrl);
+            response.put("alreadyExists", String.valueOf(fileExists));
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             throw new RuntimeException("Could not upload the file: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/checkFileExists/{filename:.+}")
+    public ResponseEntity<Map<String, Boolean>> checkFileExists(@PathVariable String filename) {
+        boolean exists = storageService.fileExists(filename);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/files")

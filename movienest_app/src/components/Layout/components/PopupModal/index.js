@@ -51,75 +51,40 @@ function PopupModal({
 
         try {
             if (isDeleteMode) {
-                // Nếu là delete mode, không cần validate form
                 onSubmit(initialValues);
             } else {
-                // Validate và lấy giá trị từ form
                 const values = await form.validateFields();
-                const formData = { ...values };
 
-                console.log('Values from form:', values);
+                const formData = {
+                    ...values,
+                    popular: values.popular === 'Yes',
+                    inTheater: values.inTheater === 'Yes',
+                    official: values.official === 'Yes',
+                    adult: values.adult === 'Yes',
+                };
 
-                // if (formData.voteAverage !== undefined) {
-                //     formData.voteAverage = formData.voteAverage;
-                //     delete formData.voteAverage;
-                // }
-
-                // if (formData.voteCount !== undefined) {
-                //     formData.voteCount = formData.voteCount;
-                //     delete formData.voteCount;
-                // }
-
-                if (formData.popular) {
-                    formData.popular = formData.popular === 'Yes';
-                }
-                if (formData.inTheater) {
-                    formData.inTheater = formData.inTheater === 'Yes';
-                }
-
-                if (formData.official) {
-                    formData.official = formData.official === 'Yes';
-                }
-
-                if (formData.adult) {
-                    formData.adult = formData.adult === 'Yes';
-                }
-
-                // Xử lý các trường file (nếu có)
-                if (uploadFileFields.length > 0) {
-                    for (const field of uploadFileFields) {
-                        if (values[field] && values[field].length > 0) {
-                            // Kiểm tra nếu file đã có URL (trường hợp edit)
-                            if (values[field][0].url) {
-                                formData[field] = values[field][0].url;
-                            } else if (values[field][0].originFileObj) {
-                                // Nếu là file mới upload
-                                const file = values[field][0].originFileObj;
-                                try {
-                                    const response = await uploadFile(file);
-                                    console.log(
-                                        `${field} uploaded response:`,
-                                        response,
-                                    );
-                                    formData[field] = response.url;
-                                } catch (error) {
-                                    console.error(
-                                        `Error uploading ${field}:`,
-                                        error,
-                                    );
-                                    formData[field] = null;
-                                }
-                            }
+                // Process upload fields
+                for (const field of uploadFileFields) {
+                    if (values[field] && values[field].length > 0) {
+                        const fileInfo = values[field][0];
+                        
+                        if (fileInfo.originFileObj) {
+                            formData[field] = fileInfo;
+                        } else if (fileInfo.url) {
+                            formData[field] = fileInfo.url;
                         } else {
                             formData[field] = null;
                         }
+                    } else {
+                        formData[field] = null;
                     }
                 }
 
-                // Xử lý ngày tháng
+                // Process date fields
                 if (formData.releaseDate) {
-                    formData.releaseDate =
-                        formData.releaseDate.format('YYYY-MM-DD');
+                    formData.releaseDate = formData.releaseDate.format 
+                        ? formData.releaseDate.format('YYYY-MM-DD')
+                        : formData.releaseDate;
                 }
 
                 // Ensure genres is an array
@@ -131,7 +96,8 @@ function PopupModal({
                 if (initialValues && initialValues.id) {
                     formData.id = initialValues.id;
                 }
-
+                
+                console.log('Submitting formData:', formData);
                 onSubmit(formData);
             }
         } catch (error) {

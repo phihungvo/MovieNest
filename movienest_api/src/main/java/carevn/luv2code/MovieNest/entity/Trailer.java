@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.entity;
 
 import carevn.luv2code.MovieNest.enums.TrailerType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,10 +35,9 @@ public class Trailer {
 
     boolean official;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id")
+    @ManyToMany(mappedBy = "trailers")
     @JsonIgnore
-    Movie movie;
+    List<Movie> movie;
 
     @Column(name = "published_at")
     Date publishedAt;

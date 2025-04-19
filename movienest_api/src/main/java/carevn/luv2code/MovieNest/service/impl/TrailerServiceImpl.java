@@ -44,15 +44,18 @@ public class TrailerServiceImpl implements TrailerService {
             throw new AppException(ErrorCode.TRAILER_EXISTED);
         }
 
-        if (!EnumSet.allOf(TrailerType.class).contains(trailerDTO.getTrailerType())){
+        if (!EnumSet.allOf(TrailerType.class).contains(trailerDTO.getTrailerType())) {
             throw new AppException(ErrorCode.INVALID_TRAILER_TYPE);
         }
 
         Trailer trailer = trailerMapper.toEntity(trailerDTO);
-        Movie movie = movieRepository.findById(trailerDTO.getMovieId())
-                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
+        List<Movie> movieList = movieRepository.findAllById(trailerDTO.getMovieIds());
 
-        trailer.setMovie(movie);
+        if (movieList.isEmpty())
+            throw new AppException(ErrorCode.MOVIE_NOT_EXISTED);
+
+        trailer.setMovie(movieList);
+
         trailerRepository.save(trailer);
     }
 
@@ -91,6 +94,9 @@ public class TrailerServiceImpl implements TrailerService {
         trailer.setTrailerType(trailerDTO.getTrailerType());
         trailer.setOfficial(trailerDTO.isOfficial());
         trailer.setPublishedAt(trailerDTO.getPublishedAt());
+
+        List<Movie> movieList = movieRepository.findAllById(trailerDTO.getMovieIds());
+        trailer.setMovie(movieList);
 
         return trailerRepository.save(trailer);
     }

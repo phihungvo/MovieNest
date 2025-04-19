@@ -16,6 +16,11 @@
     position: relative;
 }
 
+.card-film > :first-child {
+    margin-left: 0 !important;
+}
+
+
 .info {
     text-align: left;
 }

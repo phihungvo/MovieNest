@@ -45,3 +45,6 @@ WorkFlowWithBranch.md
 
 movienest_api/uploads/
 movienest_app/src/t.js
+
+movienest_api/uploads/*
+!movienest_api/uploads/.gitkeep

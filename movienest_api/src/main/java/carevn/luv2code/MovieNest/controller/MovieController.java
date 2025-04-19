@@ -2,6 +2,7 @@ package carevn.luv2code.MovieNest.controller;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
 import carevn.luv2code.MovieNest.entity.Movie;
+import carevn.luv2code.MovieNest.enums.Country;
 import carevn.luv2code.MovieNest.service.MovieService;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,6 +55,31 @@ public class MovieController {
     @GetMapping("/today")
     public ResponseEntity<List<Movie>> getMoviesToday(){
         return new ResponseEntity<>(movieService.getMoviesToday(), HttpStatus.OK);
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<Movie>> getMoviesPopular(){
+        return new ResponseEntity<>(movieService.getMoviePopular(), HttpStatus.OK);
+    }
+
+    @GetMapping("/in-theater")
+    public ResponseEntity<List<Movie>> getMoviesInTheater(){
+        return new ResponseEntity<>(movieService.getMovieInTheater(), HttpStatus.OK);
+    }
+
+    @GetMapping("/korean-movie")
+    public ResponseEntity<List<Movie>> getKoreanMovies(){
+        return new ResponseEntity<>(movieService.findMovieByCountry(Country.KOREA), HttpStatus.OK);
+    }
+
+    @GetMapping("/vietnamese-movie")
+    public ResponseEntity<List<Movie>> getVietnameseMovies(){
+        return new ResponseEntity<>(movieService.findMovieByCountry(Country.VIETNAM), HttpStatus.OK);
+    }
+
+    @GetMapping("/thailand-movie")
+    public ResponseEntity<List<Movie>> getThailandMovies(){
+        return new ResponseEntity<>(movieService.findMovieByCountry(Country.THAILAND), HttpStatus.OK);
     }
 
     @GetMapping("/findAllNoPaging")
