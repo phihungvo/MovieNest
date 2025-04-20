@@ -1,4 +1,6 @@
 import axios from 'axios';
+import API_ENDPOINTS from '../../../constants/endpoints';
+import { getToken } from '~/constants/token';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -10,9 +12,8 @@ export const uploadFile = async (file) => {
     const TOKEN = localStorage.getItem('token');
 
     try {
-        console.log('Uploading file:', file.name);
         const checkResponse = await axios.get(
-            `${API_URL}/storage/checkFileExists/${file.name}`,
+            API_ENDPOINTS.FILE.CHECK_EXISTED(file),
             {
                 headers: {
                     Authorization: `Bearer ${TOKEN}`,
@@ -32,16 +33,12 @@ export const uploadFile = async (file) => {
             };
         }
 
-        const response = await axios.post(
-            `${API_URL}/storage/upload`,
-            formData,
-            {
-                headers: {
-                    Authorization: `Bearer ${TOKEN}`,
-                    'Content-Type': 'multipart/form-data',
-                },
+        const response = await axios.post(API_ENDPOINTS.FILE.UPLOAD, formData, {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                'Content-Type': 'multipart/form-data',
             },
-        );
+        });
 
         console.log('Upload file response:', response.data);
 
@@ -57,7 +54,7 @@ export const getFileInfo = async () => {
     const TOKEN = localStorage.getItem('token');
 
     try {
-        const response = await axios.get(`${API_URL}/storage/files`, {
+        const response = await axios.get(API_ENDPOINTS.FILE.GET_INFO, {
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
             },
@@ -81,15 +78,12 @@ export const getMovieImage = async (imagePath) => {
             return imagePath;
         }
 
-        const response = await axios.get(
-            `${API_URL}/storage/files/${imagePath}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${TOKEN}`,
-                },
-                responseType: 'blob',
+        const response = await axios.get(API_ENDPOINTS.FILE.GET_FILE, {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
             },
-        );
+            responseType: 'blob',
+        });
         // Tạo URL từ blob response
         return URL.createObjectURL(response.data);
     } catch (error) {

@@ -1,12 +1,19 @@
-const BASE_URL = process.env.REACT_APP_API_URL || "/api";
+const BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 const API_ENDPOINTS = {
     AUTH: {
         LOGIN: `${BASE_URL}/auth/login`,
         REGISTER: `${BASE_URL}/auth/register`,
     },
+    FILE: {
+        UPLOAD: `${BASE_URL}/storage/upload`,
+        CHECK_EXISTED: (file) => `${BASE_URL}/storage/checkFileExists/${file.name}`,
+        GET_INFO: `${BASE_URL}/storage/files`,
+        GET_FILE: (filePath) => `${BASE_URL}/storage/files/${filePath}`,
+    },
+
     USER: {
-        GET_ALL:  `${BASE_URL}/user/getAll`,
+        GET_ALL: `${BASE_URL}/user/getAll`,
     },
 
     MOVIES: {
@@ -21,8 +28,8 @@ const API_ENDPOINTS = {
         TODAY: `${BASE_URL}/movie/today`,
         THIS_WEEK: `${BASE_URL}/movie/this-week`,
         POPULAR: `${BASE_URL}/movie/popular`,
-        IN_THEATER:  `${BASE_URL}/movie/in-theater`,
-        KOREAN_MOVIES:  `${BASE_URL}/movie/korean-movie`,
+        IN_THEATER: `${BASE_URL}/movie/in-theater`,
+        KOREAN_MOVIES: `${BASE_URL}/movie/korean-movie`,
         VIETNAME_MOVIES: `${BASE_URL}/movie/vietnamese-movie`,
         THAILAND_MOVIES: `${BASE_URL}/movie/thailand-movie`,
     },
@@ -34,7 +41,8 @@ const API_ENDPOINTS = {
         CREATE: `${BASE_URL}/trailers/create`,
         UPDATE: (trailerId) => `${BASE_URL}/trailers/${trailerId}`,
         DELETE: (trailerId) => `${BASE_URL}/trailers/${trailerId}`,
-        GET_TRAILER_BY_MOVIE_ID:  (movieId) => `${BASE_URL}/trailers/movie/${movieId}`,
+        GET_TRAILER_BY_MOVIE_ID: (movieId) =>
+            `${BASE_URL}/trailers/movie/${movieId}`,
     },
 
     GENRES: {
@@ -45,6 +53,7 @@ const API_ENDPOINTS = {
     ACTOR: {
         GET_ALL: `${BASE_URL}/actor/getAllPagable`,
         GET_ALL_NO_PAGING: `${BASE_URL}/actor/findAll`,
+        CREATE: `${BASE_URL}/actor/create`,
         UPDATE: (actorId) => `${BASE_URL}/actor/update/${actorId}`,
         DELETE: (actorId) => `${BASE_URL}/actor/delete/${actorId}`,
     },

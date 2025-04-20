@@ -31,10 +31,8 @@ function Login() {
             }
 
             localStorage.setItem('token', token);
-            console.log('token 1 : ', localStorage.getItem('token'))
 
             const decodedToken = jwtDecode(token);
-            console.log('Decoded Token: ', decodedToken);
 
             const roles = decodedToken.role || [];
             const isAdmin = roles.includes('ADMIN')

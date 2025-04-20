@@ -60,9 +60,15 @@ public class TrailerServiceImpl implements TrailerService {
     }
 
     @Override
-    public Page<Trailer> findAllTrailers(int page, int size) {
+    public Page<Trailer> findAllTrailers(int page, int size, String keyWord) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
-        Page<Trailer> trailerPage = trailerRepository.findAll(pageable);
+        Page<Trailer> trailerPage;
+
+        if (keyWord != null && !keyWord.trim().isEmpty()) {
+            trailerPage = trailerRepository.findByTitleContainingIgnoreCase(keyWord, pageable);
+        }else {
+            trailerPage = trailerRepository.findAll(pageable);
+        }
         return trailerPage;
     }
 
@@ -103,6 +109,13 @@ public class TrailerServiceImpl implements TrailerService {
 
     @Override
     public void deleteTrailer(UUID trailerId) {
-        trailerRepository.deleteById(trailerId);
+        Trailer trailer = trailerRepository.findById(trailerId)
+                .orElseThrow(() -> new AppException(ErrorCode.TRAILER_NOT_FOUND));
+
+        for (Movie movie : trailer.getMovie()) {
+            movie.getTrailers().remove(trailer);
+        }
+
+        trailerRepository.delete(trailer);
     }
 }

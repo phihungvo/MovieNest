@@ -4,7 +4,6 @@ import API_ENDPOINTS from '~/constants/endpoints';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// http://localhost:8080/api/genres/getAll
 export const getAllGenres = async () => {
     const TOKEN = getToken();
     try {

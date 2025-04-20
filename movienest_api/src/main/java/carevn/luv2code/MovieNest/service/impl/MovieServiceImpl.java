@@ -105,10 +105,17 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<Movie> findAllMovies(int page, int size) {
+    public Page<Movie> findAllMovies(int page, int size, String keyWord) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Movie> pageMovies = movieRepository.findAll(pageable);
-        return pageMovies;
+        Page<Movie> moviePage;
+
+        if (keyWord != null && !keyWord.trim().isEmpty()) {
+            moviePage = movieRepository.findByTitleContainingIgnoreCase(keyWord, pageable);
+        }else {
+            moviePage = movieRepository.findAll(pageable);
+        }
+
+        return moviePage;
     }
 
     @Override

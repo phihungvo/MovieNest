@@ -38,11 +38,13 @@ function Trailer() {
     const [movieSource, setMovieSource] = useState([]);
     const [modalMode, setModalMode] = useState('create');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState('');
     const [form] = Form.useForm();
 
     const handleAddTrailer = () => {
         setModalMode('create');
         setSelectedTrailer(null);
+        handleGetAllMovie();
         form.resetFields();
         setIsModalOpen(true);
     };
@@ -69,12 +71,12 @@ function Trailer() {
 
             trailerType: record.trailerType || record.type,
 
-            movie: record.movie
+            movies: record.movie
                 ? { label: record.movie.title, value: record.movie.id }
                 : null,
         };
 
-        console.log('form: ', form);
+        console.log('form: ', formData);
 
         form.setFieldsValue(formData);
         setIsModalOpen(true);
@@ -93,7 +95,7 @@ function Trailer() {
             setMovieSource(movieData);
             // console.log('Movie: ', response);
         } catch (error) {
-            console.error('Failed to get all genres:', error);
+            console.error('Failed to get all movies:', error);
         }
     };
 
@@ -128,10 +130,13 @@ function Trailer() {
         // { title: 'Movie', dataIndex: 'movie', key: 'movie', width: 250 },
         {
             title: 'Movie',
-            dataIndex: 'movie',
-            key: 'movie',
+            dataIndex: 'movies',
+            key: 'movies',
             width: 100,
-            render: (movie) => (movie ? movie.title : 'N/A'),
+            render: (movies) =>
+                movies && movies.length > 0
+                    ? movies.map((movie) => movie.name).join(', ')
+                    : 'N/A',
         },
         {
             title: 'Publish At',
@@ -205,25 +210,19 @@ function Trailer() {
             label: 'Official',
             name: 'official',
             type: 'yesno',
-            options: [
-                'YES',
-                'NO',
-            ]
+            options: ['YES', 'NO'],
             // render: (official) => (official ? 'YES' : 'NO'),
         },
         {
             label: 'Movies',
-            name: 'movie',
+            name: 'movies',
             type: 'select',
             multiple: false,
-            rules: [{ required: true, message: 'Movie is required!' }],
-            // options:
-            //     Array.isArray(movieSource) && movieSource.length > 0
-            //         ? movieSource.map((movie) => ({
-            //               label: movie.title,
-            //               value: movie.id,
-            //           }))
-            //         : [],
+            dataSourceKey: 'movies',
+            labelKey: 'title',
+            valueKey: 'id',
+            placeholder: 'Chọn thể loại phim',
+            showSearch: true,
         },
         {
             label: 'Publish At',
@@ -245,7 +244,11 @@ function Trailer() {
     const handleGetAllTrailers = async (page = 1, pageSize = 5) => {
         setLoading(true);
         try {
-            const response = await getAllTrailers({ page: page - 1, pageSize });
+            const response = await getAllTrailers({
+                page: page - 1,
+                pageSize,
+                keyWord: searchKeyword,
+            });
             const trailerList = response.content;
 
             if (response && Array.isArray(trailerList)) {
@@ -329,9 +332,19 @@ function Trailer() {
         }
     };
 
+    const handleSearch = () => {
+        handleGetAllTrailers(1, pagination.pageSize);
+    };
+
+    const handleClearSearch = () => {
+        setSearchKeyword('');
+        handleGetAllTrailers(1, pagination.pageSize);
+    };
+
     const handleFormSubmit = (formData) => {
         if (modalMode === 'create') {
             handleCreateTrailer(formData);
+            console.log('form data:: ', formData)
         } else if (modalMode === 'edit') {
             handleTrailerUpdate(formData);
         } else if (modalMode === 'delete') {
@@ -367,8 +380,13 @@ function Trailer() {
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"
-                    placeholder="Search"
+                    placeholder="Tìm kiếm trailer"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    onPressEnter={handleSearch}
                     icon={<SearchOutlined />}
+                    allowClear
+                    onClear={handleClearSearch}
                 />
                 <div className={cx('features')}>
                     <SmartButton

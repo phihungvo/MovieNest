@@ -11,7 +11,7 @@ public interface TrailerService {
 
     void createTrailer(TrailerDTO trailerDTO);
 
-    Page<Trailer> findAllTrailers(int page, int size);
+    Page<Trailer> findAllTrailers(int page, int size, String keyWord);
 
     List<Trailer> findAllTrailersNoPagination();
 

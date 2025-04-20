@@ -31,9 +31,10 @@ public class TrailerController {
     @GetMapping("/getAll")
     public ResponseEntity<Page<Trailer>> getAllTrailers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "") String keyWord
     ) {
-        Page<Trailer> trailer = trailerService.findAllTrailers(page, size);
+        Page<Trailer> trailer = trailerService.findAllTrailers(page, size, keyWord);
         return ResponseEntity.ok(trailer);
     }
 

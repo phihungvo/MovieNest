@@ -34,4 +34,6 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
     @Query("SELECT m FROM Movie m WHERE m.country = :country ")
     List<Movie> findMoviesByCountry(Country country);
 
+    Page<Movie> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
 }

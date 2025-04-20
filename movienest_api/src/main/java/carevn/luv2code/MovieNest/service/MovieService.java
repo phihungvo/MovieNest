@@ -15,7 +15,7 @@ public interface MovieService {
 
     List<Movie> searchMovieByTitle(String keyWord);
 
-    Page<Movie> findAllMovies(int page, int size);
+    Page<Movie> findAllMovies(int page, int size, String keyWord);
 
     List<Movie> findAllNoPaging();
 

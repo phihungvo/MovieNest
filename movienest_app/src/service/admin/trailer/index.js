@@ -5,19 +5,19 @@ import { getToken } from '~/constants/token';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const getAllTrailers = async ({ page = 0, pageSize = 5 }) => {
+export const getAllTrailers = async ({ page = 0, pageSize = 5 , keyWord = '' }) => {
     const TOKEN = getToken();
 
     try {
         const response = await axios.get(API_ENDPOINTS.TRAILER.GET_ALL, {
-            params: { page, pageSize },
-            // withCredentials: true,
+            params: { page, pageSize, keyWord },
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
             },
         });
 
+        console.log('Reponse search: ', response.data);
         return response.data;
     } catch (error) {
         message.error('Error fetching trailers: ', error);
@@ -137,7 +137,6 @@ export const deleteTrailer = async (trailerId) => {
 
     try {
         const response = await axios.delete(
-            // `${API_URL}/trailers/${trailerId}`,
             API_ENDPOINTS.TRAILER.DELETE(trailerId),
             {
                 headers: {

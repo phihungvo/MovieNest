@@ -41,9 +41,10 @@ public class MovieController {
     @GetMapping("/getAll")
     public ResponseEntity<Page<Movie>> getAllMovies(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "") String keyWord
     ){
-        Page<Movie> movies = movieService.findAllMovies(page, size);
+        Page<Movie> movies = movieService.findAllMovies(page, size, keyWord);
         return ResponseEntity.ok(movies);
     }
 

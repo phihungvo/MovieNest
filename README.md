@@ -100,4 +100,3 @@
 | **Order History**            | Users can view their past ticket orders or purchased movies.        |
 | **Payment Integration**      | (Optional) Integrate with mock payment gateways (VNPay, PayPal, etc.). |
 | **E-Ticket Generation**      | Generate QR code or order number after successful payment.          |
-

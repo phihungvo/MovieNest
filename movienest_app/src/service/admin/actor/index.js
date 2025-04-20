@@ -11,7 +11,7 @@ export const createActor = async (data) => {
     console.log('Token>>>>: ', TOKEN);
     try {
         const response = await axios.post(
-            `${API_URL}/actor/create`,
+            API_ENDPOINTS.ACTOR.CREATE,
             {
                 name: data.name,
                 character: data.character,

@@ -3,7 +3,6 @@ import { message } from 'antd';
 import API_ENDPOINTS from '~/constants/endpoints';
 import { getToken } from '~/constants/token';
 
-// http://localhost:8080/api/comment/getAll?page=0
 export const getAllComments = async ({ page = 0, pageSize = 5 }) => {
     const TOKEN = getToken();
 
@@ -29,7 +28,6 @@ export const getAllComments = async ({ page = 0, pageSize = 5 }) => {
     }
 };
 
-// http://localhost:8080/api/comment/create
 export const createComment = async (data) => {
     const TOKEN = getToken();
 
@@ -64,7 +62,6 @@ export const createComment = async (data) => {
     }
 };
 
-// http://localhost:8080/api/comment/1627bcde-4570-4e50-a943-c2137fff41d0 update PUT
 export const updateComment = async (commentId, formData) => {
     const TOKEN = getToken();
     const url = API_ENDPOINTS.COMMENTS.UPDATE_PUT(commentId);
@@ -91,7 +88,6 @@ export const updateComment = async (commentId, formData) => {
     }
 };
 
-// http://localhost:8080/api/comment/1627bcde-4570-4e50-a943-c2137fff41d0 update PATCH
 export const updateCommentForUser = async (commentId, formData) => {
     const TOKEN = getToken();
     const url = API_ENDPOINTS.COMMENTS.UPDATE(commentId);
@@ -118,7 +114,6 @@ export const updateCommentForUser = async (commentId, formData) => {
     }
 };
 
-// http://localhost:8080/api/comment/249f2e10-b3c0-4d65-b873-f3748d65064d delete DELETE
 export const deleteComment = async (commentId) => {
     const TOKEN = getToken();
     const url = API_ENDPOINTS.COMMENTS.DELETE(commentId);

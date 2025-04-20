@@ -25,6 +25,7 @@ import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { getAllTrailers, getAllTrailerNoPaging } from '~/service/admin/trailer';
 import uploadFile from '~/service/admin/uploadFile';
+import { keyboard } from '@testing-library/user-event/dist/keyboard';
 
 const cx = (className) => styles[className];
 
@@ -41,6 +42,7 @@ function Movie() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState(null); // 'create', 'edit' or 'delete'
     const [selectedMovie, setSelectedMovie] = useState(null);
+    const [searchKeyword, setSearchKeyword] = useState('');
     const [form] = Form.useForm();
 
     const handleAddMovie = () => {
@@ -372,12 +374,16 @@ function Movie() {
         handleGetAllMovies(pagination.current, pagination.pageSize);
     };
 
-    const handleGetAllMovies = async (page = 1, pageSize = 5) => {
+    const handleGetAllMovies = async (page = 0, pageSize = 5) => {
         setLoading(true);
         try {
-            const response = await getAllMovies({ page, pageSize });
-            // console.log('Movies Data:', response);
+            const response = await getAllMovies({
+                page,
+                pageSize,
+                keyWord: searchKeyword,
+            });
             const movieList = response.content;
+            // console.log('Movie list search: ', movieList);
 
             if (Array.isArray(movieList)) {
                 setMovieSources(movieList);
@@ -499,6 +505,10 @@ function Movie() {
         }
     };
 
+    const handleSearch = () => {
+        handleGetAllMovies(1, pagination.pageSize);
+    };
+
     const getModalTitle = () => {
         switch (modalMode) {
             case 'create':
@@ -517,8 +527,13 @@ function Movie() {
         values.inTheater = values.inTheater === 'Yes';
         values.adult = values.adult === 'Yes';
 
-        console.log('Values from form: ', values)
+        console.log('Values from form: ', values);
         return values;
+    };
+
+    const handleClearSearch = () => {
+        setSearchKeyword('');
+        handleGetAllMovies(1, pagination.pageSize);
     };
 
     return (
@@ -536,8 +551,13 @@ function Movie() {
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"
-                    placeholder="Search"
+                    placeholder="Tìm kiếm phim"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    onPressEnter={handleSearch}
                     icon={<SearchOutlined />}
+                    allowClear
+                    onClear={handleClearSearch}
                 />
                 <div className={cx('features')}>
                     <SmartButton

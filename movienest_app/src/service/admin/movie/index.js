@@ -6,7 +6,6 @@ import { uploadFile } from '../uploadFile';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// Sửa lỗi trong hàm searchMovieByKeyWord
 export const searchMovieByKeyWord = async (keyWord) => {
     const TOKEN = localStorage.getItem('token');
 
@@ -29,12 +28,12 @@ export const searchMovieByKeyWord = async (keyWord) => {
     }
 };
 
-export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
+export const getAllMovies = async ({ page = 0, pageSize = 5, keyWord = '' }) => {
     const TOKEN = getToken();
 
     try {
         const response = await axios.get(API_ENDPOINTS.MOVIES.GET_ALL, {
-            params: { page, pageSize },
+            params: { page, pageSize, keyWord },
             headers: {
                 Authorization: `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json',
@@ -47,7 +46,6 @@ export const getAllMovies = async ({ page = 0, pageSize = 5 }) => {
     }
 };
 
-// http://localhost:8080/api/movie/findAllNoPaging
 export const findAllMovieNoPaging = async () => {
     const TOKEN = getToken();
 
