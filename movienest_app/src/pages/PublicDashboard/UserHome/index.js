@@ -88,7 +88,7 @@ function UserHome() {
                 title="Korean Movies"
                 options={[]}
                 fetchData={fetchKoreanMovies}
-                // isTrailer={false}
+                isTrailer={true}
             />
 
             <div>

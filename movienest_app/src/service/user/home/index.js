@@ -112,51 +112,12 @@ export const getPopularMovieTrailers = async () => {
 
                     console.log('Trailer response popular: ', trailerResponse);
 
-                    // const imageOfMovie = await axios.get(
-                    //     `${BASE_URL}/movie/${movie.id}/images`,
-                    //     {
-                    //         params: {
-                    //             api_key: API_KEY,
-                    //         },
-                    //     },
-                    // );
-
-                    // const file_path = imageOfMovie.data.backdrops[0];
-                    // console.log('file path :>>>>>', file_path.file_path);
-
-                    // const trailers = videosResponse.data.results.filter(
-                    //     video => video.type === 'Trailer' && video.site === 'Youtube'
-                    // );
-
-                    // const trailers = videosResponse.data.results.filter(
-                    //     (video) =>
-                    //         video.type === 'Trailer' &&
-                    //         (video.site === 'Youtube' ||
-                    //             video.site === 'YouTube'),
-                    // );
-
-                    // console.log('Filtered trailers:', videosResponse.data.results.filter(
-                    //     video => video.type.toLowerCase() === 'trailer' && video.site.toLowerCase() === 'youtube'
-                    // ));
-                    // console.log(
-                    //     'Available videos for movie:',
-                    //     movie.title,
-                    //     trailers,
-                    // );
-                    // console.log(
-                    //     '>>>> Available videos for movie :',
-                    //     trailers[0],
-                    //     trailers[0].key,
-                    // );trailerResponse[0].key;
-
-                    // console.log('key trailer: ', trailerResponse[0].key)
                     return {
                         ...movie,
                         trailer_key:
                             trailerResponse.length > 0
                                 ? trailerResponse[0].key
                                 : null,
-                        // image_path: file_path.file_path,
                     };
                 } catch (error) {
                     console.error(
@@ -193,18 +154,19 @@ export const getInThreatersMovieTrailers = async () => {
             },
         );
 
-        console.log('movie in theater: ', moviesResponse.data);
         const movies = moviesResponse.data;
+        console.log('movie in theater: ', moviesResponse.data);
 
         // Lặp qua từng phim và lấy video trailer.
         const moviesWithTrailers = await Promise.all(
             movies.slice(0, 10).map(async (movie) => {
-                const movieId = movie.id;
-                console.log('MovieId: ', movieId);
                 try {
-                    const trailersList = await getTrailerByMovieId(movieId);
+                    const trailerResponse = await getTrailerByMovieId(movie.id);
 
-                    console.log('Trailer list of a movie>>>: ', trailersList);
+                    console.log(
+                        'Trailer for in thearter movie: ||| >>>>: ',
+                        trailerResponse,
+                    );
 
                     // const imageOfMovie = await axios.get(
                     //     `${BASE_URL}/movie/${movie.id}/images`,
@@ -230,12 +192,13 @@ export const getInThreatersMovieTrailers = async () => {
                     //         video.site === 'YouTube',
                     // );
 
-                    // return {
-                    //     ...movie,
-                    //     trailer_key:
-                    //         trailers.length > 0 ? trailers[0].key : null,
-                    //     image_path: file_path,
-                    // };
+                    return {
+                        ...movie,
+                        trailer_key:
+                            trailerResponse.length > 0
+                                ? trailerResponse[0].key
+                                : null,
+                    };
                 } catch (error) {
                     console.error(
                         `Error fetching videos for movie ${movie.id}:`,
