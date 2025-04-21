@@ -1,5 +1,5 @@
 # 🎬 MovieNest Project
-
+Deploy product: http://14.225.204.231/
 ## 🌐 Overview
 
 **MovieNest** is a full-stack movie management system, consisting of two main parts: **Backend API** and **Frontend UI**. The project is designed to provide users with an efficient way to search, manage, and explore movie information. It simulates the structure of a real-world movie platform and serves as a learning project for full-stack development.
