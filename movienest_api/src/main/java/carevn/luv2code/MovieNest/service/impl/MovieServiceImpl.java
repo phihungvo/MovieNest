@@ -49,7 +49,7 @@ public class MovieServiceImpl implements MovieService {
                             GenresRepository genresRepository,
                             TrailerRepository trailerRepository,
                             CommentRepository commentRepository
-                            ) {
+    ) {
         this.movieRepository = movieRepository;
         this.genresRepository = genresRepository;
         this.trailerRepository = trailerRepository;
@@ -58,7 +58,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void save(MovieDTO movieDTO) {
-        if(movieRepository.existsByTitle(movieDTO.getTitle())){
+        if (movieRepository.existsByTitle(movieDTO.getTitle())) {
             throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
         }
 
@@ -68,14 +68,13 @@ public class MovieServiceImpl implements MovieService {
         movie.setReleaseDate(movieDTO.getReleaseDate());
         movie.setPosterPath(movieDTO.getPosterPath());
         movie.setBackdropPath(movieDTO.getBackdropPath());
-        if (movieDTO.getVoteAverage() != null)  movie.setVoteAverage(movieDTO.getVoteAverage());
-        if (movieDTO.getPopular() != null)  movie.setPopular(movieDTO.getPopular());
-        if (movieDTO.getInTheater() != null)  movie.setInTheater(movieDTO.getInTheater());
-        if (movieDTO.getVoteCount() != null)  movie.setVoteCount(movieDTO.getVoteCount());
-        if (movieDTO.getAdult() != null)  movie.setAdult(movieDTO.getAdult());
-        if (movieDTO.getPopularity() != null)  movie.setPopularity(movieDTO.getPopularity());
+        if (movieDTO.getVoteAverage() != null) movie.setVoteAverage(movieDTO.getVoteAverage());
+        if (movieDTO.getPopular() != null) movie.setPopular(movieDTO.getPopular());
+        if (movieDTO.getInTheater() != null) movie.setInTheater(movieDTO.getInTheater());
+        if (movieDTO.getVoteCount() != null) movie.setVoteCount(movieDTO.getVoteCount());
+        if (movieDTO.getAdult() != null) movie.setAdult(movieDTO.getAdult());
+        if (movieDTO.getPopularity() != null) movie.setPopularity(movieDTO.getPopularity());
         movie.setCountry(Country.valueOf(movieDTO.getCountry()));
-//        movie.setMovieType(MovieType.valueOf(movieDTO.getMovieType()));
 
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
             List<Genres> genresList = genresRepository.findAllById(movieDTO.getGenres());
@@ -84,13 +83,11 @@ public class MovieServiceImpl implements MovieService {
 
         if (movieDTO.getTrailers() != null && !movieDTO.getTrailers().isEmpty()) {
             List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
+            for (Trailer trailer : trailerList) {
+                trailer.setMovie(movie);
+            }
             movie.setTrailers(trailerList);
         }
-
-//        if (movieDTO.getComments() != null && !movieDTO.getComments().isEmpty()) {
-//            List<Comment> commentList = commentRepository.findAllById(movieDTO.getComments());
-//            movie.setComments(commentList);
-//        }
 
         movieRepository.save(movie);
     }
@@ -104,6 +101,7 @@ public class MovieServiceImpl implements MovieService {
         return movies;
     }
 
+
     @Override
     public Page<Movie> findAllMovies(int page, int size, String keyWord) {
         Pageable pageable = PageRequest.of(page, size);
@@ -111,11 +109,17 @@ public class MovieServiceImpl implements MovieService {
 
         if (keyWord != null && !keyWord.trim().isEmpty()) {
             moviePage = movieRepository.findByTitleContainingIgnoreCase(keyWord, pageable);
-        }else {
+        } else {
             moviePage = movieRepository.findAll(pageable);
         }
 
         return moviePage;
+    }
+
+    @Override
+    public Movie findMovieById(UUID movieId) {
+        return movieRepository.findById(movieId).orElseThrow(
+                () -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
     }
 
     @Override
@@ -183,9 +187,15 @@ public class MovieServiceImpl implements MovieService {
             movieExisted.setGenres(genresList);
         }
 
-        if(movieDTO.getTrailers() != null) {
+        if (movieDTO.getTrailers() != null) {
+            movieExisted.getTrailers().clear();
+
             List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
-            movieExisted.setTrailers(trailerList);
+//            movieExisted.setTrailers(trailerList);
+            for (Trailer trailer : trailerList) {
+                trailer.setMovie(movieExisted);
+                movieExisted.getTrailers().add(trailer);
+            }
         }
 
         if (movieDTO.getComments() != null && !movieDTO.getComments().isEmpty()) {
@@ -200,10 +210,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public boolean deleteMovie(UUID movieId) {
-        if (!movieRepository.existsById(movieId)) {
-            return false;
-        }
         movieRepository.deleteById(movieId);
         return true;
     }

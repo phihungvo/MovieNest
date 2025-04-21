@@ -28,7 +28,11 @@ export const searchMovieByKeyWord = async (keyWord) => {
     }
 };
 
-export const getAllMovies = async ({ page = 0, pageSize = 5, keyWord = '' }) => {
+export const getAllMovies = async ({
+    page = 0,
+    pageSize = 5,
+    keyWord = '',
+}) => {
     const TOKEN = getToken();
 
     try {
@@ -79,8 +83,12 @@ export const createMovie = async (formData) => {
             ? formData.releaseDate.format('YYYY-MM-DD')
             : formData.releaseDate;
 
+        console.log('Before processing - posterPath:', formData.posterPath);
+        console.log('Before processing - backdropPath:', formData.backdropPath);
         const posterPath = await processImageUpload(formData.posterPath);
         const backdropPath = await processImageUpload(formData.backdropPath);
+
+        const trailerIds = formData.trailers || [];
 
         const movieData = {
             title: formData.title,
@@ -92,13 +100,15 @@ export const createMovie = async (formData) => {
             voteAverage: formData.voteAverage || 0,
             voteCount: formData.voteCount || 0,
             popularity: formData.popularity || 0,
-            popular: formData.popular === 'Yes',
-            adult: formData.adult === 'Yes',
-            inTheater: formData.inTheater === 'Yes',
+            popular: formData.popular === true,
+            adult: formData.adult === true,
+            inTheater: formData.inTheater === true,
             genres: formData.genres,
-            trailers: formData.trailers || [],
+            trailers: trailerIds,
             comments: formData.comments || [],
         };
+
+        console.log('movie data: ', movieData);
 
         const response = await axios.post(
             API_ENDPOINTS.MOVIES.CREATE,
@@ -171,11 +181,14 @@ export const handleUpdateMovie = async (movieId, formData) => {
         const posterPath = await processImageUpload(formData.posterPath);
         const backdropPath = await processImageUpload(formData.backdropPath);
 
+        const trailerIds = formData.trailers || [];
+
         const updatedFormData = {
             ...formData,
             posterPath,
             backdropPath,
             releaseDate,
+            trailers: trailerIds, // Gửi danh sách ID của trailers
         };
         console.log('Updating movie with data>>>>>>>>>>>>>:', updatedFormData);
 
@@ -234,6 +247,9 @@ export const deleteMovie = async (movieId) => {
                 },
             },
         );
+        if (response.data) {
+            message.success('Movie delete successfully!');
+        }
     } catch (error) {
         message.error('Error deleting movie:', error);
     }

@@ -29,7 +29,5 @@ public class TrailerDTO {
 
      boolean official;
 
-     List<UUID> movieIds;
-
      Date publishedAt;
 }

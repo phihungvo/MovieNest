@@ -83,6 +83,8 @@ export const createTrailers = async (formData) => {
     const TOKEN = getToken();
 
     console.log('Form data trailer: ', formData);
+    // values.popular = values.popular === 'Yes';
+    // formData.official = formData.official === 'YES';
 
     try {
         const response = await axios.post(

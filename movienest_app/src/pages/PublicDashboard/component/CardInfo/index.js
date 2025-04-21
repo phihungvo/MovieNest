@@ -16,7 +16,7 @@ function CardInfo({ movieResult, isTrailer }) {
     const [imageUrls, setImageUrls] = useState({});
 
     const handleClickPlayButton = (movie) => {
-        console.log('trailer key: ', movie.key)
+        console.log('trailer key: ', movie.key);
         setTrailerURL(
             `https://www.youtube.com/embed/${
                 movie.trailer_key || movie.trailer_key
@@ -42,7 +42,9 @@ function CardInfo({ movieResult, isTrailer }) {
             // setLoading(true);
 
             const imagePromises = movieResult.map(async (movie) => {
-                let imagePath = isTrailer ? movie.imagePath : movie.posterPath;
+                let imagePath = isTrailer
+                    ? movie.backdropPath
+                    : movie.posterPath;
 
                 if (!imagePath) {
                     return {
@@ -133,7 +135,10 @@ function CardInfo({ movieResult, isTrailer }) {
                             <div className={cx('card-content')}>
                                 <img
                                     alt={movie.title}
-                                    src={`https://image.tmdb.org/t/p/w500${movie.image_path}`}
+                                    src={
+                                        imageUrls[movie.id] ||
+                                        '/images/loading-placeholder.gif'
+                                    }
                                     style={{
                                         width: '100%',
                                         height: '225px',

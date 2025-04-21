@@ -38,6 +38,11 @@ public class MovieController {
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 
+    @GetMapping("/{movieId}")
+    public ResponseEntity<Movie> findMovieById(@PathVariable UUID movieId) {
+        return new ResponseEntity<>(movieService.findMovieById(movieId), HttpStatus.OK);
+    }
+
     @GetMapping("/getAll")
     public ResponseEntity<Page<Movie>> getAllMovies(
             @RequestParam(defaultValue = "0") int page,

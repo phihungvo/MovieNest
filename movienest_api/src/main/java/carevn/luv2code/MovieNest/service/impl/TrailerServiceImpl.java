@@ -49,12 +49,6 @@ public class TrailerServiceImpl implements TrailerService {
         }
 
         Trailer trailer = trailerMapper.toEntity(trailerDTO);
-        List<Movie> movieList = movieRepository.findAllById(trailerDTO.getMovieIds());
-
-        if (movieList.isEmpty())
-            throw new AppException(ErrorCode.MOVIE_NOT_EXISTED);
-
-        trailer.setMovie(movieList);
 
         trailerRepository.save(trailer);
     }
@@ -101,9 +95,6 @@ public class TrailerServiceImpl implements TrailerService {
         trailer.setOfficial(trailerDTO.isOfficial());
         trailer.setPublishedAt(trailerDTO.getPublishedAt());
 
-        List<Movie> movieList = movieRepository.findAllById(trailerDTO.getMovieIds());
-        trailer.setMovie(movieList);
-
         return trailerRepository.save(trailer);
     }
 
@@ -111,10 +102,6 @@ public class TrailerServiceImpl implements TrailerService {
     public void deleteTrailer(UUID trailerId) {
         Trailer trailer = trailerRepository.findById(trailerId)
                 .orElseThrow(() -> new AppException(ErrorCode.TRAILER_NOT_FOUND));
-
-        for (Movie movie : trailer.getMovie()) {
-            movie.getTrailers().remove(trailer);
-        }
 
         trailerRepository.delete(trailer);
     }

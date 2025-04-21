@@ -25,7 +25,7 @@ public class Trailer {
     String title;
 
     @Column(name = "trailer_key")
-    String key; // Store key of youtube link
+    String key;
 
     String site;
 
@@ -35,9 +35,13 @@ public class Trailer {
 
     boolean official;
 
-    @ManyToMany(mappedBy = "trailers")
-    @JsonIgnore
-    List<Movie> movie;
+//    @ManyToMany(mappedBy = "trailers")
+//    @JsonIgnore
+//    List<Movie> movie;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "movie_id", nullable = true)
+    @JsonBackReference
+    Movie movie;
 
     @Column(name = "published_at")
     Date publishedAt;

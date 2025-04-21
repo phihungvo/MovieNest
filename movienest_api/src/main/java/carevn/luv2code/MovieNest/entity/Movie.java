@@ -3,6 +3,7 @@ package carevn.luv2code.MovieNest.entity;
 import carevn.luv2code.MovieNest.enums.Country;
 import carevn.luv2code.MovieNest.enums.MovieType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -65,10 +66,7 @@ public class Movie {
     )
     List<Genres> genres;
 
-    @ManyToMany
-    @JoinTable(name = "movie_trailer",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "trailer_id"))
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Trailer> trailers;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -71,9 +71,9 @@ function Movie() {
                 ? record.trailers.map((trailer) => trailer.id)
                 : [],
 
-            // popular: record.popular ? 'Yes' : 'No',
-            // inTheater: record.inTheater ? 'Yes' : 'No',
-            // adult: record.adult ? 'Yes' : 'No',
+            popular: record.popular ? 'Yes' : 'No',
+            inTheater: record.inTheater ? 'Yes' : 'No',
+            adult: record.adult ? 'Yes' : 'No',
 
             // Xử lý posterPath và backdropPath nếu có ảnh
             posterPath: record.posterPath
@@ -308,9 +308,9 @@ function Movie() {
             name: 'trailers',
             type: 'select',
             multiple: true,
-            dataSourceKey: 'trailers', // Sử dụng key để tham chiếu đến dataSources
-            labelKey: 'title', // Chỉ định trường để hiển thị làm label
-            valueKey: 'id', // Chỉ định trường để sử dụng làm value
+            dataSourceKey: 'trailers', 
+            labelKey: 'title', 
+            valueKey: 'id',
             placeholder: 'Chọn trailer',
             showSearch: true,
         },
@@ -374,11 +374,11 @@ function Movie() {
         handleGetAllMovies(pagination.current, pagination.pageSize);
     };
 
-    const handleGetAllMovies = async (page = 0, pageSize = 5) => {
+    const handleGetAllMovies = async (page = 1, pageSize = 5) => {
         setLoading(true);
         try {
             const response = await getAllMovies({
-                page,
+                page: page - 1,
                 pageSize,
                 keyWord: searchKeyword,
             });
@@ -439,16 +439,7 @@ function Movie() {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await deleteMovie(selectedMovie.id);
-
-            console.log('response: ', response);
-            // if (!response || response.error) {
-            //     const errorMessage = response?.error || 'Movie delete failed!';
-            //     message.error(`Error: ${errorMessage}`);
-            //     return;
-            // }
-
-            message.success('Movie deleted successfully!');
+            await deleteMovie(selectedMovie.id);
             handleGetAllMovies();
             setIsModalOpen(false);
         } catch (error) {
@@ -580,7 +571,6 @@ function Movie() {
                 />
             </div>
 
-            {/* {isModalOpen && ( */}
             <PopupModal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
@@ -592,9 +582,6 @@ function Movie() {
                 isDeleteMode={modalMode === 'delete'}
                 formInstance={form}
                 onBeforeSubmit={processFormData}
-                // cancelLabel="Hủy"
-                // submitLabel="Xác nhận"
-                // deleteConfirmLabel="Xóa"
             />
             {/* )} */}
         </div>

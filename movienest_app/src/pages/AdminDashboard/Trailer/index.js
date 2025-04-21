@@ -128,16 +128,16 @@ function Trailer() {
             render: (official) => (official ? 'YES' : 'NO'),
         },
         // { title: 'Movie', dataIndex: 'movie', key: 'movie', width: 250 },
-        {
-            title: 'Movie',
-            dataIndex: 'movies',
-            key: 'movies',
-            width: 100,
-            render: (movies) =>
-                movies && movies.length > 0
-                    ? movies.map((movie) => movie.name).join(', ')
-                    : 'N/A',
-        },
+        // {
+        //     title: 'Movie',
+        //     dataIndex: 'movies',
+        //     key: 'movies',
+        //     width: 100,
+        //     render: (movies) =>
+        //         movies && movies.length > 0
+        //             ? movies.map((movie) => movie.name).join(', ')
+        //             : 'N/A',
+        // },
         {
             title: 'Publish At',
             dataIndex: 'publishedAt',
@@ -213,17 +213,17 @@ function Trailer() {
             options: ['YES', 'NO'],
             // render: (official) => (official ? 'YES' : 'NO'),
         },
-        {
-            label: 'Movies',
-            name: 'movies',
-            type: 'select',
-            multiple: false,
-            dataSourceKey: 'movies',
-            labelKey: 'title',
-            valueKey: 'id',
-            placeholder: 'Chọn thể loại phim',
-            showSearch: true,
-        },
+        // {
+        //     label: 'Movies',
+        //     name: 'movies',
+        //     type: 'select',
+        //     multiple: false,
+        //     dataSourceKey: 'movies',
+        //     labelKey: 'title',
+        //     valueKey: 'id',
+        //     placeholder: 'Chọn thể loại phim',
+        //     showSearch: true,
+        // },
         {
             label: 'Publish At',
             name: 'publishedAt',
@@ -306,8 +306,9 @@ function Trailer() {
                 selectedTrailer.id,
                 formData,
             );
-
-            message.success('Trailer updated successfully!');
+            if (response){
+                message.success('Trailer updated successfully!');
+            }
 
             setIsModalOpen(false);
             form.resetFields();
@@ -365,6 +366,11 @@ function Trailer() {
         }
     };
 
+    const processFormData = async (values) => {
+        values.official = values.official === 'YES';
+        return values;
+    };
+
     return (
         <div className={cx('trailer-wrapper')}>
             <div className={cx('trailer-header')}>
@@ -416,6 +422,7 @@ function Trailer() {
                     title={getModalTitle()}
                     fields={modalMode === 'delete' ? [] : trailerModalFields}
                     dataSources={movieSource}
+                    onBeforeSubmit={processFormData}
                     onSubmit={handleFormSubmit}
                     initialValues={selectedTrailer}
                     isDeleteMode={modalMode === 'delete'}

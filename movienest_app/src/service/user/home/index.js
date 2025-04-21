@@ -110,6 +110,8 @@ export const getPopularMovieTrailers = async () => {
                 try {
                     const trailerResponse = await getTrailerByMovieId(movie.id);
 
+                    console.log('Trailer response popular: ', trailerResponse);
+
                     // const imageOfMovie = await axios.get(
                     //     `${BASE_URL}/movie/${movie.id}/images`,
                     //     {

@@ -17,6 +17,8 @@ public interface MovieService {
 
     Page<Movie> findAllMovies(int page, int size, String keyWord);
 
+    Movie findMovieById(UUID movieId);
+
     List<Movie> findAllNoPaging();
 
     List<Movie> getMoviesToday();

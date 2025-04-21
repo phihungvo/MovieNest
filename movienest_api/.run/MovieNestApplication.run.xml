@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MovieNestApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <envs>
+      <env name="JWT_EXPIRATION" value="36000000000" />
+      <env name="JWT_SECRET" value="QQU0Alvur6b2dBvD5pcC4C3mlRgSm9OUTfrGJMFtFlU=" />
       <env name="SPRING_DATASOURCE_PASSWORD" value="Hungyeuy@2410" />
       <env name="SPRING_DATASOURCE_URL" value="jdbc:mysql://localhost:3306/movenest_api?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true" />
       <env name="SPRING_DATASOURCE_USERNAME" value="root" />
-      <env name="JWT_EXPIRATION" value="360000000" />
-      <env name="JWT_SECRET" value="QQU0Alvur6b2dBvD5pcC4C3mlRgSm9OUTfrGJMFtFlU=" />
     </envs>
     <module name="MovieNest" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="carevn.luv2code.MovieNest.MovieNestApplication" />
