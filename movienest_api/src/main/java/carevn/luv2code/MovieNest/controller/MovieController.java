@@ -105,13 +105,10 @@ public class MovieController {
         return ResponseEntity.ok(movie);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMovie(@RequestParam UUID movieId){
-        boolean deleted = movieService.deleteMovie(movieId);
-        if (!deleted) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Movie not found");
-        }
-        return ResponseEntity.ok("Movie deleted");
+    @DeleteMapping("/{movieId}")
+    public ResponseEntity<Void> deleteMovie(@PathVariable UUID movieId){
+        movieService.deleteMovie(movieId);
+        return ResponseEntity.ok().build();
     }
 
 }

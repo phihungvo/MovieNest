@@ -31,7 +31,7 @@ public interface MovieService {
 
     Movie updateMovie(UUID id, MovieDTO movieDTO);
 
-    boolean deleteMovie(UUID id);
+    void deleteMovie(UUID id);
 
     List<Movie> findMovieByCountry(Country country);
 }

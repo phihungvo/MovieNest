@@ -211,9 +211,16 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public boolean deleteMovie(UUID movieId) {
-        movieRepository.deleteById(movieId);
-        return true;
+    public void deleteMovie(UUID movieId) {
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+
+        movie.getGenres().clear();
+
+        movie.getTrailers().clear();
+//        movie.getComments().clear();
+
+        movieRepository.delete(movie);
     }
 
     @Override

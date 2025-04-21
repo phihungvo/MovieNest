@@ -35,10 +35,7 @@ public class Trailer {
 
     boolean official;
 
-//    @ManyToMany(mappedBy = "trailers")
-//    @JsonIgnore
-//    List<Movie> movie;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = true)
     @JsonBackReference
     Movie movie;

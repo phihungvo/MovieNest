@@ -29,8 +29,8 @@ export const createActor = async (data) => {
             },
         );
 
-        if (!response) {
-            message.success('Movie Create Failed !');
+        if (response) {
+            message.success('Actor Create Successfully !');
         }
 
         console.log('data: >>>> ', response.data);
@@ -102,6 +102,9 @@ export const handleUpdateActor = async (actorId, formData) => {
             },
         );
 
+        if (response) {
+            message.success('Actor Updated Successfully !');
+        }
         return response.data;
     } catch (error) {
         console.error('Error updating actor:', error);

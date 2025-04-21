@@ -212,7 +212,7 @@ function Actor() {
 
     const handleGetAllActors = async (page = 1, pageSize = 5) => {
         // setLoading(true);
-        const response = await getAllPagable({ page, pageSize });
+        const response = await getAllPagable({ page: page - 1, pageSize });
 
         const actorList = response.content;
 
