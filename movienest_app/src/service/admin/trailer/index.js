@@ -6,13 +6,11 @@ import { getToken } from '~/constants/token';
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const getAllTrailers = async ({ page = 0, pageSize = 5 , keyWord = '' }) => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.get(API_ENDPOINTS.TRAILER.GET_ALL, {
             params: { page, pageSize, keyWord },
             headers: {
-                Authorization: `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
         });
@@ -25,14 +23,12 @@ export const getAllTrailers = async ({ page = 0, pageSize = 5 , keyWord = '' }) 
 };
 
 export const getAllTrailerNoPaging = async () => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.get(
             API_ENDPOINTS.TRAILER.GET_ALL_NO_PAGING,
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -43,14 +39,32 @@ export const getAllTrailerNoPaging = async () => {
     }
 };
 
+export const getTrailersWithoutMovie = async () => {
+    try {
+        const response = await axios.get(
+            API_ENDPOINTS.TRAILER.WITHOUT_MOVIE,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+
+        console.log('without movie: ', response.data);
+        return response.data;
+    }catch (error){
+        console.error('Error when fetching all trailer without movie! ', error)
+    }
+}
+
 export const getTrailerById = async (trailerId) => {
-    const TOKEN = getToken();
     try {
         const response = await axios.get(
             API_ENDPOINTS.TRAILER.GET_BY_ID(trailerId),
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -62,13 +76,12 @@ export const getTrailerById = async (trailerId) => {
 };
 
 export const getTrailerByMovieId = async (movieId) => {
-    const TOKEN = getToken();
     try {
         const response = await axios.get(
             API_ENDPOINTS.TRAILER.GET_TRAILER_BY_MOVIE_ID(movieId),
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -80,11 +93,8 @@ export const getTrailerByMovieId = async (movieId) => {
 };
 
 export const createTrailers = async (formData) => {
-    const TOKEN = getToken();
 
     console.log('Form data trailer: ', formData);
-    // values.popular = values.popular === 'Yes';
-    // formData.official = formData.official === 'YES';
 
     try {
         const response = await axios.post(
@@ -100,7 +110,7 @@ export const createTrailers = async (formData) => {
             },
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -115,15 +125,13 @@ export const createTrailers = async (formData) => {
 };
 
 export const handleUpdateTrailer = async (trailerId, formData) => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.put(
             API_ENDPOINTS.TRAILER.UPDATE(trailerId),
             formData,
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -135,14 +143,12 @@ export const handleUpdateTrailer = async (trailerId, formData) => {
 };
 
 export const deleteTrailer = async (trailerId) => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.delete(
             API_ENDPOINTS.TRAILER.DELETE(trailerId),
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },

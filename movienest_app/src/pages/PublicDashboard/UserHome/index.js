@@ -3,16 +3,18 @@ import {
     getPopularMovie,
     getPopularMovieTrailers,
     getInThreatersMovieTrailers,
+    getVietnameMovieTrailers,
     getMovieInWeek,
 } from '~/service/user/home';
+import {
+    findAllKoreanMovies,
+    findAllVietnamMovies,
+} from '~/service/admin/movie';
 import classNames from 'classnames/bind';
 import styles from './UserHome.module.scss';
 import Header from '../component/Header';
 import Poster from '../component/Poster';
-import SkeletonComponent from '../component/Skeleton';
 import { getDetailtMovie } from '~/service/user/home';
-import CommentList from '~/components/Layout/components/Comment';
-import { findAllKoreanMovies } from '~/service/admin/movie';
 
 const cx = classNames.bind(styles);
 
@@ -37,6 +39,11 @@ function UserHome() {
 
     const fetchKoreanMovies = async () => {
         const data = await findAllKoreanMovies();
+        return data;
+    };
+
+    const fetchVietnamMovies = async () => {
+        const data = await getVietnameMovieTrailers();
         return data;
     };
 
@@ -66,7 +73,6 @@ function UserHome() {
                 options={['Today', 'This Week']}
                 fetchData={fetchTrendingMovies}
                 defaultValue="Today"
-                // isTrailer={false}
             />
 
             <Poster
@@ -74,6 +80,13 @@ function UserHome() {
                 options={['Popular', 'In Theaters']}
                 fetchData={fetchTrailerMovies}
                 defaultValue="Popular"
+                isTrailer={true}
+            />
+
+            <Poster
+                title="Vietnam Movies"
+                options={[]}
+                fetchData={fetchVietnamMovies}
                 isTrailer={true}
             />
 
@@ -91,12 +104,10 @@ function UserHome() {
                 isTrailer={true}
             />
 
-            <div>
-                <button onClick={handleCallDetailMovie()}>Call api</button>
-            </div>
+            {/*         
 
-            <CommentList />
-            <SkeletonComponent />
+            <CommentList /> */}
+            {/* <SkeletonComponent /> */}
         </>
     );
 }

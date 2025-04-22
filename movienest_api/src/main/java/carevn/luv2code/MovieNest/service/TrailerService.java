@@ -19,6 +19,8 @@ public interface TrailerService {
 
     Trailer getTrailerById(UUID trailerId);
 
+    List<Trailer> getTrailersWithoutMovies();
+
     Trailer updateTrailer(UUID trailerId, TrailerDTO trailerDTO);
 
     void deleteTrailer(UUID trailerId);

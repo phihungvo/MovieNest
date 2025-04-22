@@ -7,8 +7,6 @@ import { uploadFile } from '../uploadFile';
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const searchMovieByKeyWord = async (keyWord) => {
-    const TOKEN = localStorage.getItem('token');
-
     try {
         console.log('Start searching with keyword:', keyWord);
         const response = await axios.post(
@@ -16,7 +14,7 @@ export const searchMovieByKeyWord = async (keyWord) => {
             {},
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -33,13 +31,11 @@ export const getAllMovies = async ({
     pageSize = 5,
     keyWord = '',
 }) => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.get(API_ENDPOINTS.MOVIES.GET_ALL, {
             params: { page, pageSize, keyWord },
             headers: {
-                Authorization: `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
         });
@@ -51,14 +47,12 @@ export const getAllMovies = async ({
 };
 
 export const findAllMovieNoPaging = async () => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.get(
             API_ENDPOINTS.MOVIES.GET_ALL_NO_PAGING,
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -76,8 +70,6 @@ export const findAllMovieNoPaging = async () => {
     }
 };
 export const createMovie = async (formData) => {
-    const TOKEN = getToken();
-
     try {
         const releaseDate = formData.releaseDate?.format
             ? formData.releaseDate.format('YYYY-MM-DD')
@@ -115,7 +107,7 @@ export const createMovie = async (formData) => {
             movieData,
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -168,8 +160,6 @@ export const processImageUpload = async (imageData) => {
 };
 
 export const handleUpdateMovie = async (movieId, formData) => {
-    const TOKEN = getToken();
-
     try {
         let releaseDate = null;
         if (formData.releaseDate) {
@@ -197,7 +187,7 @@ export const handleUpdateMovie = async (movieId, formData) => {
             updatedFormData,
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -215,18 +205,30 @@ export const handleUpdateMovie = async (movieId, formData) => {
     }
 };
 
-export const findAllKoreanMovies = async () => {
-    const TOKEN = getToken();
+// export const findAllVietnamMovies = async () => {
+//     try {
+//         const response = await axios.get(API_ENDPOINTS.MOVIES.VIETNAME_MOVIES, {
+//             headers: {
+//                 Authorization: `Bearer ${getToken()}`,
+//                 'Content-Type': 'application/json',
+//             },
+//         });
 
+//         console.log('Vietname movie: ', response.data)
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error find all movie: ', error);
+//     }
+// };
+
+export const findAllKoreanMovies = async () => {
     try {
         const response = await axios.get(API_ENDPOINTS.MOVIES.KOREAN_MOVIES, {
             headers: {
-                Authorization: `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
         });
-
-        // console.log('Korean movies: ', response)
 
         return response.data;
     } catch (error) {
@@ -235,14 +237,12 @@ export const findAllKoreanMovies = async () => {
 };
 
 export const deleteMovie = async (movieId) => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.delete(
             API_ENDPOINTS.MOVIES.DELETE(movieId),
             {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },

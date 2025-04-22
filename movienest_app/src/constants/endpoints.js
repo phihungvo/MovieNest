@@ -43,6 +43,7 @@ const API_ENDPOINTS = {
         DELETE: (trailerId) => `${BASE_URL}/trailers/${trailerId}`,
         GET_TRAILER_BY_MOVIE_ID: (movieId) =>
             `${BASE_URL}/trailers/movie/${movieId}`,
+        WITHOUT_MOVIE: `${BASE_URL}/trailers/without-movie`,
     },
 
     GENRES: {
@@ -50,6 +51,7 @@ const API_ENDPOINTS = {
         CREATE: `${BASE_URL}/genres`,
         DELETE: (genresId) => `${BASE_URL}/genres/${genresId}`,
     },
+    
     ACTOR: {
         GET_ALL: `${BASE_URL}/actor/getAllPagable`,
         GET_ALL_NO_PAGING: `${BASE_URL}/actor/findAll`,

@@ -188,15 +188,19 @@ public class MovieServiceImpl implements MovieService {
         }
 
         if (movieDTO.getTrailers() != null) {
-            movieExisted.getTrailers().clear();
-
             List<Trailer> trailerList = trailerRepository.findAllById(movieDTO.getTrailers());
-//            movieExisted.setTrailers(trailerList);
+
+            for (Trailer oldTrailer : movieExisted.getTrailers()) {
+                oldTrailer.setMovie(null);
+            }
+
             for (Trailer trailer : trailerList) {
                 trailer.setMovie(movieExisted);
-                movieExisted.getTrailers().add(trailer);
             }
+
+            movieExisted.setTrailers(trailerList);
         }
+
 
         if (movieDTO.getComments() != null && !movieDTO.getComments().isEmpty()) {
             List<Comment> commentList = commentRepository.findAllById(movieDTO.getComments());

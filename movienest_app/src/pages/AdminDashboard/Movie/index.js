@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import classNames from 'classnames/bind';
 import { Form, message } from 'antd';
 import moment from 'moment';
 import {
@@ -10,7 +9,6 @@ import {
     DeleteOutlined,
     EditOutlined,
 } from '@ant-design/icons';
-import { Select, Button } from 'antd';
 import styles from './Movie.module.scss';
 import {
     getAllMovies,
@@ -23,9 +21,7 @@ import SmartTable from '~/components/Layout/components/SmartTable';
 import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
-import { getAllTrailers, getAllTrailerNoPaging } from '~/service/admin/trailer';
-import uploadFile from '~/service/admin/uploadFile';
-import { keyboard } from '@testing-library/user-event/dist/keyboard';
+import { getTrailersWithoutMovie } from '~/service/admin/trailer';
 
 const cx = (className) => styles[className];
 
@@ -340,13 +336,13 @@ function Movie() {
             placeholder: 'Nhập mô tả phim',
         },
         {
-            label: 'Ngày phát hành',
+            label: 'Ngày công chiếu',
             name: 'releaseDate',
             type: 'date',
             rules: [
                 {
                     required: true,
-                    message: 'Ngày phát hành là trường bắt buộc!',
+                    message: 'Ngày công chiếu là trường bắt buộc!',
                 },
             ],
             format: 'DD/MM/YYYY',
@@ -367,7 +363,7 @@ function Movie() {
     useEffect(() => {
         handleGetAllMovies();
         handleGetAllGenres();
-        handleGetAllTrailers();
+        handleGetTrailerWithoutMovie();
     }, []);
 
     const handleTableChange = (pagination) => {
@@ -430,6 +426,7 @@ function Movie() {
                 formData,
             );
 
+            await handleGetTrailerWithoutMovie();
             handleGetAllMovies();
             setIsModalOpen(false);
         } catch (error) {
@@ -471,26 +468,14 @@ function Movie() {
         }
     };
 
-    const handleGetAllTrailers = async () => {
+    const handleGetTrailerWithoutMovie = async () => {
         try {
-            const response = await getAllTrailerNoPaging();
+            const response = await getTrailersWithoutMovie();
 
             const trailerList = response;
 
             setTrailerSources(trailerList);
-            // if (Array.isArray(trailerList)) {
-            //     setPagination((prev) => ({
-            //         ...prev,
-            //         current: page,
-            //         pageSize: pageSize,
-            //         total: response.totalElements,
-            //     }));
-            // } else {
-            //     console.error('Invalid data format:', response);
-            //     setMovieSources([]);
-            // }
-
-            // console.log('Get all trailers>>>: ', trailerList);
+         
         } catch (error) {
             console.error('Failed to get all trailers:', error);
         }

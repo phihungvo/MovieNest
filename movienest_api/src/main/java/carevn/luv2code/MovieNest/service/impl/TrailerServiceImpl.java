@@ -84,6 +84,11 @@ public class TrailerServiceImpl implements TrailerService {
     }
 
     @Override
+    public List<Trailer> getTrailersWithoutMovies() {
+        return trailerRepository.findTrailerWithoutMovies();
+    }
+
+    @Override
     public Trailer updateTrailer(UUID trailerId, TrailerDTO trailerDTO) {
         Trailer trailer = trailerRepository.findById(trailerId)
                 .orElseThrow(() -> new AppException(ErrorCode.TRAILER_NOT_FOUND));

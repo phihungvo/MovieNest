@@ -22,4 +22,8 @@ public interface TrailerRepository extends JpaRepository<Trailer, UUID> {
     boolean existsByTitleAndKey(String title, String key);
 
     Page<Trailer> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    @Query("SELECT t FROM Trailer t WHERE t.movie IS NULL")
+    List<Trailer> findTrailerWithoutMovies();
+
 }

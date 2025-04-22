@@ -88,30 +88,23 @@ export const getPopularMovie = async () => {
     }
 };
 
-// Lấy phim đang chiếu phổ biến (popular) và thông tin video trailers của các phim đó
-export const getPopularMovieTrailers = async () => {
-    const TOKEN = getToken();
-    console.log('TOKEN from localStorage (or cookie): ', TOKEN);
-
+const getMoviesWithTrailers = async (endpoint) => {
     try {
-        // First get popular movies
-        const moviesResponse = await axios.get(API_ENDPOINTS.MOVIES.POPULAR, {
+        const moviesResponse = await axios.get(endpoint, {
             headers: {
-                Authorization: `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
         });
 
         const movies = moviesResponse.data;
-        console.log('popular movie: ', movies);
+        console.log(`Movies from ${endpoint}: `, movies);
 
         const moviesWithTrailers = await Promise.all(
             movies.slice(0, 20).map(async (movie) => {
                 try {
                     const trailerResponse = await getTrailerByMovieId(movie.id);
 
-                    console.log('Trailer response popular: ', trailerResponse);
-
                     return {
                         ...movie,
                         trailer_key:
@@ -132,95 +125,27 @@ export const getPopularMovieTrailers = async () => {
                 }
             }),
         );
-
+        // Lọc ra những phim có trailer
         return moviesWithTrailers.filter((movie) => movie.trailer_key !== null);
     } catch (error) {
-        console.error('Error fetching popular movie trailers:', error);
+        console.error(`Error fetching movies from ${endpoint}:`, error);
         return [];
     }
 };
 
-// Lấy phim đang chiếu trong rạp (in theaters) và thông tin video trailers của các phim đó
+
+export const getVietnameMovieTrailers = async () => {
+    return getMoviesWithTrailers(API_ENDPOINTS.MOVIES.VIETNAME_MOVIES);
+}
+
+export const getPopularMovieTrailers = async () => {
+    return getMoviesWithTrailers(API_ENDPOINTS.MOVIES.POPULAR);
+}
+
 export const getInThreatersMovieTrailers = async () => {
-    const TOKEN = getToken();
-    try {
-        const moviesResponse = await axios.get(
-            API_ENDPOINTS.MOVIES.IN_THEATER,
-            {
-                headers: {
-                    Authorization: `Bearer ${TOKEN}`,
-                    'Content-Type': 'application/json',
-                },
-            },
-        );
-
-        const movies = moviesResponse.data;
-        console.log('movie in theater: ', moviesResponse.data);
-
-        // Lặp qua từng phim và lấy video trailer.
-        const moviesWithTrailers = await Promise.all(
-            movies.slice(0, 10).map(async (movie) => {
-                try {
-                    const trailerResponse = await getTrailerByMovieId(movie.id);
-
-                    console.log(
-                        'Trailer for in thearter movie: ||| >>>>: ',
-                        trailerResponse,
-                    );
-
-                    // const imageOfMovie = await axios.get(
-                    //     `${BASE_URL}/movie/${movie.id}/images`,
-                    //     {
-                    //         params: {
-                    //             api_key: API_KEY,
-                    //         },
-                    //     },
-                    // );
-
-                    // const file_path = imageOfMovie.data.backdrops[0]
-                    // const file_path =
-                    //     imageOfMovie.data.backdrops &&
-                    //     imageOfMovie.data.backdrops.length > 0
-                    //         ? imageOfMovie.data.backdrops[0].file_path
-                    //         : null;
-                    // console.log('file path>>>>>: ', file_path.file_path)
-                    // console.log('file path>>>>>: ', file_path);
-
-                    // const trailers = videoResponse.data.results.filter(
-                    //     (video) =>
-                    //         video.type === 'Trailer' &&
-                    //         video.site === 'YouTube',
-                    // );
-
-                    return {
-                        ...movie,
-                        trailer_key:
-                            trailerResponse.length > 0
-                                ? trailerResponse[0].key
-                                : null,
-                    };
-                } catch (error) {
-                    console.error(
-                        `Error fetching videos for movie ${movie.id}:`,
-                        error,
-                    );
-                    return {
-                        ...movie,
-                        trailer_key: null,
-                        image_path: null,
-                    };
-                }
-            }),
-        );
-
-        return moviesWithTrailers.filter((movie) => movie.trailer_key !== null);
-    } catch (error) {
-        console.error('Error fetching in theaters movie trailers:', error);
-        return [];
-    }
+    return getMoviesWithTrailers(API_ENDPOINTS.MOVIES.IN_THEATER);
 };
 
-// https://api.themoviedb.org/3/movie/99861?api_key=aad34a977eb04581217d21401cd37a60
 export const getDetailtMovie = async (movieId) => {
     try {
         const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {

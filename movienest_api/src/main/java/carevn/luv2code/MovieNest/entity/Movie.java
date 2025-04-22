@@ -1,9 +1,7 @@
 package carevn.luv2code.MovieNest.entity;
 
 import carevn.luv2code.MovieNest.enums.Country;
-import carevn.luv2code.MovieNest.enums.MovieType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -11,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -66,7 +63,7 @@ public class Movie {
     )
     List<Genres> genres;
 
-    @OneToMany(mappedBy = "movie", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "movie", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     List<Trailer> trailers;
 
     @OneToMany(mappedBy = "movie", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

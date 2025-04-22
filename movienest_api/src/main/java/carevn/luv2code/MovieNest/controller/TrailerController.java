@@ -2,6 +2,7 @@ package carevn.luv2code.MovieNest.controller;
 
 import carevn.luv2code.MovieNest.dto.TrailerDTO;
 import carevn.luv2code.MovieNest.entity.Trailer;
+import carevn.luv2code.MovieNest.service.MovieService;
 import carevn.luv2code.MovieNest.service.TrailerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,12 @@ import java.util.UUID;
 @RequestMapping("/api/trailers")
 public class TrailerController {
 
+    private final MovieService movieService;
     private TrailerService trailerService;
 
-    public TrailerController(TrailerService trailerService) {
+    public TrailerController(TrailerService trailerService, MovieService movieService) {
         this.trailerService = trailerService;
+        this.movieService = movieService;
     }
 
     @PostMapping("/create")
@@ -41,6 +44,11 @@ public class TrailerController {
     @GetMapping("/getAllNoPaging")
     public ResponseEntity<List<Trailer>> getAllNoPagingTrailers(){
         return ResponseEntity.ok(trailerService.findAllTrailersNoPagination());
+    }
+
+    @GetMapping("/without-movie")
+    public ResponseEntity<List<Trailer>> getTrailersWithoutMovies(){
+        return ResponseEntity.ok(trailerService.getTrailersWithoutMovies());
     }
 
     @GetMapping("/movie/{movieId}")
