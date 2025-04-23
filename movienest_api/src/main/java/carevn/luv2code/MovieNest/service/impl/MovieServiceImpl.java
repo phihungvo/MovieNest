@@ -68,6 +68,8 @@ public class MovieServiceImpl implements MovieService {
         movie.setReleaseDate(movieDTO.getReleaseDate());
         movie.setPosterPath(movieDTO.getPosterPath());
         movie.setBackdropPath(movieDTO.getBackdropPath());
+        movie.setRuntime(movieDTO.getRuntime());
+        movie.setDirector(movieDTO.getDirector());
         if (movieDTO.getVoteAverage() != null) movie.setVoteAverage(movieDTO.getVoteAverage());
         if (movieDTO.getPopular() != null) movie.setPopular(movieDTO.getPopular());
         if (movieDTO.getInTheater() != null) movie.setInTheater(movieDTO.getInTheater());
@@ -174,6 +176,8 @@ public class MovieServiceImpl implements MovieService {
         movieExisted.setReleaseDate(movieDTO.getReleaseDate());
         movieExisted.setPosterPath(movieDTO.getPosterPath());
         movieExisted.setBackdropPath(movieDTO.getBackdropPath());
+        movieExisted.setRuntime(movieDTO.getRuntime());
+        movieExisted.setDirector(movieDTO.getDirector());
         if (movieDTO.getVoteAverage() != null) movieExisted.setVoteAverage(movieDTO.getVoteAverage());
         if (movieDTO.getPopular() != null) movieExisted.setPopular(movieDTO.getPopular());
         if (movieDTO.getInTheater() != null) movieExisted.setInTheater(movieDTO.getInTheater());

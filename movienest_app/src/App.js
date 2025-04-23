@@ -6,6 +6,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import { AuthProvider } from './routes/AuthContext';
 import Login from './pages/General/Login';
 import Register from './pages/General/Register';
+import MovieDetail from './pages/PublicDashboard/MovieDetail';
 
 function App() {
     return (
@@ -15,18 +16,22 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 
-                    {/* Public Routes */}
-                    {publicRoutes.map(({ path, component: Page }, index) => (
-                        <Route
-                            key={index}
-                            path={path}
-                            element={
-                                <UserHome>
-                                    <Page />
-                                </UserHome>
-                            }
-                        />
-                    ))}
+                    {/* Route trang chủ */}
+                    <Route path="/" element={<UserHome />} />
+
+                    {/* Route chi tiết phim */}
+                    <Route path="/movie/:movieId" element={<MovieDetail />} />
+
+                    {/* Các public routes khác (nếu cần) */}
+                    {publicRoutes
+                        .filter(
+                            (route) =>
+                                route.path !== '/' &&
+                                route.path !== '/movie/:movieId',
+                        )
+                        .map(({ path, component: Page }, index) => (
+                            <Route key={index} path={path} element={<Page />} />
+                        ))}
 
                     {/* Private Routes */}
                     {privateRoutes.map(

@@ -7,11 +7,14 @@ import Login from '../pages/General/Login';
 import Register from '../pages/General/Register';
 import Actor from '../pages/AdminDashboard/Actor';
 import User from '~/pages/AdminDashboard/User';
+import MovieDetail from '~/pages/PublicDashboard/MovieDetail';
 
 const publicRoutes = [
     { path: '/', component: UserHome, title: 'User Home' },
     { path: '/login', component: Login, title: 'Login' },
     { path: '/register', component: Register, title: 'Register' },
+    { path: '/movie/:movieId', component: MovieDetail, title: 'Movie Detail' },
+
 ];
 
 const privateRoutes = [

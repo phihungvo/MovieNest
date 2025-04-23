@@ -69,6 +69,7 @@ export const findAllMovieNoPaging = async () => {
         console.error('Error find all movie: ', error);
     }
 };
+
 export const createMovie = async (formData) => {
     try {
         const releaseDate = formData.releaseDate?.format

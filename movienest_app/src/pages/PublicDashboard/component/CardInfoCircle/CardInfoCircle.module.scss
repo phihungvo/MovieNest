@@ -1,0 +1,18 @@
+/* Định dạng từng card phim */
+.card-film {
+    min-width: 200px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 18px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    outline: none;
+    position: relative;
+}
+

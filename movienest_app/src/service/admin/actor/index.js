@@ -5,7 +5,6 @@ import API_ENDPOINTS from '~/constants/endpoints';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// http://localhost:8080/api/actor/create
 export const createActor = async (data) => {
     const TOKEN = localStorage.getItem('token');
     console.log('Token>>>>: ', TOKEN);
@@ -44,7 +43,6 @@ export const createActor = async (data) => {
     }
 };
 
-// http://localhost:8080/api/actor/getAllPagable
 export const getAllPagable = async ({ page = 0, pageSize = 5 }) => {
     const TOKEN = getToken();
 
@@ -65,28 +63,17 @@ export const getAllPagable = async ({ page = 0, pageSize = 5 }) => {
     }
 };
 
-// http://localhost:8080/api/actor/findAll
 export const getAllActorNoPaging = async () => {
-    const TOKEN = getToken();
-
     try {
-        const response = await axios.get(
-            API_ENDPOINTS.ACTOR.GET_ALL_NO_PAGING,
-            {
-                headers: {
-                    Authorization: `Bearer ${TOKEN}`,
-                    'Content-Type': 'application/json',
-                },
-            },
-        );
+        const response = await axios.get(API_ENDPOINTS.ACTOR.GET_ALL_NO_PAGING);
 
+        console.log('All Actor ------: ', response.data);
         return response.data;
     } catch (error) {
         message.error('Error fetching actor with no pageble: ', error);
     }
 };
 
-// http://localhost:8080/api/actor/update/074548c9-1a56-4fd5-9e18-f9aaae1c8f7e
 export const handleUpdateActor = async (actorId, formData) => {
     const TOKEN = getToken();
 
@@ -111,7 +98,6 @@ export const handleUpdateActor = async (actorId, formData) => {
     }
 };
 
-// http://localhost:8080/api/actor/delete/074548c9-1a56-4fd5-9e18-f9aaae1c8f7e
 export const deleteActor = async (actorId) => {
     const TOKEN = getToken();
 

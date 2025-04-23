@@ -15,6 +15,7 @@ import styles from './UserHome.module.scss';
 import Header from '../component/Header';
 import Poster from '../component/Poster';
 import { getDetailtMovie } from '~/service/user/home';
+import { getAllActorNoPaging } from '~/service/admin/actor';
 
 const cx = classNames.bind(styles);
 
@@ -51,6 +52,10 @@ function UserHome() {
         await getDetailtMovie(99861);
     };
 
+    const handleCallAllActors = async () => {
+        return await getAllActorNoPaging();
+    }
+
     return (
         <>
             <Header />
@@ -73,6 +78,7 @@ function UserHome() {
                 options={['Today', 'This Week']}
                 fetchData={fetchTrendingMovies}
                 defaultValue="Today"
+                cardInfo={true}
             />
 
             <Poster
@@ -81,6 +87,7 @@ function UserHome() {
                 fetchData={fetchTrailerMovies}
                 defaultValue="Popular"
                 isTrailer={true}
+                cardInfo={true}
             />
 
             <Poster
@@ -88,6 +95,7 @@ function UserHome() {
                 options={[]}
                 fetchData={fetchVietnamMovies}
                 isTrailer={true}
+                cardInfo={true}
             />
 
             <Poster
@@ -95,6 +103,7 @@ function UserHome() {
                 options={[]}
                 fetchData={fetchPopularMovies}
                 // isTrailer={false}
+                cardInfo={true}
             />
 
             <Poster
@@ -102,7 +111,10 @@ function UserHome() {
                 options={[]}
                 fetchData={fetchKoreanMovies}
                 isTrailer={true}
+                cardInfo={true}
             />
+
+            <Poster title="Fomous Actor" options={[]} fetchData={handleCallAllActors} cardInfo={false} />
 
             {/*         
 

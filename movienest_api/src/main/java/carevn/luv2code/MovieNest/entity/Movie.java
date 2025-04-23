@@ -47,6 +47,10 @@ public class Movie {
 
     float popularity;
 
+    int runtime;
+
+    String director;
+
 //    @Enumerated(EnumType.STRING)
 //    @Column(name = "movie_type")
 //    MovieType movieType;

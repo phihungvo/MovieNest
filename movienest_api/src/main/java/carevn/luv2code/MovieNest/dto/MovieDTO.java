@@ -31,7 +31,9 @@ public class MovieDTO {
 
      Boolean popular;
 
-//     String movieType;
+     int runtime;
+
+     String director;
 
      String country;
 

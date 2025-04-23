@@ -142,6 +142,18 @@ function Movie() {
             width: 80,
         },
         {
+            title: 'Director',
+            dataIndex: 'director',
+            key: 'director',
+            width: 130,
+        },
+        {
+            title: 'Runtime (Minutes)',
+            dataIndex: 'runtime',
+            key: 'runtime',
+            width: 50,
+        },
+        {
             title: 'Adult',
             dataIndex: 'adult',
             key: 'adult',
@@ -236,6 +248,7 @@ function Movie() {
     ];
 
     const movieModalFields = [
+        // 1. Thông tin cơ bản
         {
             label: 'Tiêu đề',
             name: 'title',
@@ -250,6 +263,18 @@ function Movie() {
             options: countryList,
             placeholder: 'Chọn quốc gia',
         },
+        {
+            label: 'Thời lượng phim',
+            name: 'runtime',
+            type: 'number',
+            min: 0,
+        },
+        {
+            label: 'Đạo diễn',
+            name: 'director',
+            type: 'text',
+        },
+        // 2. Đánh giá & phổ biến
         {
             label: 'Điểm đánh giá trung bình',
             name: 'voteAverage',
@@ -276,6 +301,32 @@ function Movie() {
             type: 'yesno',
             options: ['Yes', 'No'],
         },
+    
+        // 3. Thể loại & trailer
+        {
+            label: 'Thể loại',
+            name: 'genres',
+            type: 'select',
+            multiple: true,
+            dataSourceKey: 'genres',
+            labelKey: 'name',
+            valueKey: 'id',
+            placeholder: 'Chọn thể loại phim',
+            showSearch: true,
+        },
+        {
+            label: 'Trailers',
+            name: 'trailers',
+            type: 'select',
+            multiple: true,
+            dataSourceKey: 'trailers',
+            labelKey: 'title',
+            valueKey: 'id',
+            placeholder: 'Chọn trailer',
+            showSearch: true,
+        },
+    
+        // 4. Trạng thái phát hành
         {
             label: 'Dành cho người lớn',
             name: 'adult',
@@ -288,29 +339,8 @@ function Movie() {
             type: 'yesno',
             options: ['Yes', 'No'],
         },
-        {
-            label: 'Thể loại',
-            name: 'genres',
-            type: 'select',
-            multiple: true,
-            dataSourceKey: 'genres', // Sử dụng key để tham chiếu đến dataSources
-            labelKey: 'name', // Chỉ định trường để hiển thị làm label
-            valueKey: 'id', // Chỉ định trường để sử dụng làm value
-            placeholder: 'Chọn thể loại phim',
-            showSearch: true,
-        },
-        {
-            label: 'Trailers',
-            name: 'trailers',
-            type: 'select',
-            multiple: true,
-            dataSourceKey: 'trailers', 
-            labelKey: 'title', 
-            valueKey: 'id',
-            placeholder: 'Chọn trailer',
-            showSearch: true,
-        },
-
+    
+        // 5. Media
         {
             label: 'Poster',
             name: 'posterPath',
@@ -327,6 +357,8 @@ function Movie() {
             listType: 'picture-card',
             maxCount: 1,
         },
+    
+        // 6. Mô tả & ngày công chiếu
         {
             label: 'Mô tả',
             name: 'overview',
@@ -339,15 +371,11 @@ function Movie() {
             label: 'Ngày công chiếu',
             name: 'releaseDate',
             type: 'date',
-            rules: [
-                {
-                    required: true,
-                    message: 'Ngày công chiếu là trường bắt buộc!',
-                },
-            ],
+            rules: [{ required: true, message: 'Ngày công chiếu là trường bắt buộc!' }],
             format: 'DD/MM/YYYY',
         },
     ];
+    
 
     const prepareDataSources = () => {
         return {

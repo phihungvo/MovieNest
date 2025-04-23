@@ -33,6 +33,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsServiceImpl userDetailsService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -44,29 +45,34 @@ public class SecurityConfig {
 
                 // Configure authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
+                                // Public endpoints
+                                .requestMatchers("/api/auth/**").permitAll()
 
-                        .requestMatchers("/api/storage/files/**", "/api/movie/korea-movie", "/api/trailers/movie/**").permitAll()
+                                .requestMatchers(
+                                        "/api/storage/files/**",
+                                        "/api/movie/korea-movie",
+                                        "/api/trailers/movie/**",
+                                        "api/actor/findAll"
+                                ).permitAll()
 
-                        // User endpoints
-                        .requestMatchers("/api/user/**", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
+                                // User endpoints
+                                .requestMatchers("/api/user/**", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
 
-                        // Admin-only endpoints
-                        .requestMatchers(
-                                "/api/admin/**",
+                                // Admin-only endpoints
+                                .requestMatchers(
+                                        "/api/admin/**",
 //                                "/api/storage/**",
-                                "/api/genres/**",
-                                "/api/trailers/**",
-                                "/api/comment/**",
-                                "/api/actor/**"
-                        ).hasRole("ADMIN")
+                                        "/api/genres/**",
+                                        "/api/trailers/**",
+                                        "/api/comment/**",
+                                        "/api/actor/**"
+                                ).hasRole("ADMIN")
 
-                        // Moderator endpoints
-                        .requestMatchers("/api/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
+                                // Moderator endpoints
+                                .requestMatchers("/api/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
 
-                        // Default: all other requests must be authenticated
-                        .anyRequest().authenticated()
+                                // Default: all other requests must be authenticated
+                                .anyRequest().authenticated()
                 )
 
                 // Configure CORS settings
