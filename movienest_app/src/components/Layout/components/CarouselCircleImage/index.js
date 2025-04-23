@@ -22,7 +22,6 @@ export default function CarouselCircleImage({ datasource }) {
             <Carousel arrows infinite={false}>
                 <div className={cx('card-wrapper')}>
                     <div className={cx('img-inside-card')}>
-
                     </div>
                 </div>
             </Carousel>

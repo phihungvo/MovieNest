@@ -4,46 +4,35 @@ import classNames from 'classnames/bind';
 import styles from './MovieDetail.module.scss';
 import { getMovieImage } from '~/service/admin/uploadFile';
 import { findMovieById } from '~/service/user/movie';
-// Import các API service để lấy chi tiết phim
-// import { getMovieDetail } from '~/service/movie';
+import {
+    CaretRightOutlined,
+    HeartOutlined,
+    PlayCircleOutlined,
+    ShareAltOutlined,
+    StarOutlined,
+    WhatsAppOutlined,
+} from '@ant-design/icons';
+import Poster from '../component/Poster';
+import { getAllActorNoPaging } from '~/service/admin/actor';
+import Header from '../component/Header';
 
 const cx = classNames.bind(styles);
 
 function MovieDetail() {
     const { movieId } = useParams();
     const [movie, setMovie] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [imageUrl, setImageUrl] = useState('');
+    const [expandDescription, setExpandDescription] = useState(false);
+    const [tabState, setTabState] = useState(0);
 
     useEffect(() => {
         const fetchMovieDetail = async () => {
-            setLoading(true);
             try {
-                // Gọi API để lấy chi tiết phim
-                // const response = await getMovieDetail(movieId);
-                // setMovie(response.data);
-
-                // Phần này sẽ cần thay thế bằng API thực tế của bạn
-                // Đây chỉ là dữ liệu mẫu
-                const mockData = {
-                    id: movieId,
-                    title: `Phim ${movieId}`,
-                    overview: 'Mô tả chi tiết về bộ phim...',
-                    releaseDate: '2023-04-23',
-                    posterPath: '/images/default-movie-poster.jpg',
-                    backdropPath: '/images/default-movie-backdrop.jpg',
-                    voteAverage: 8.5,
-                    genres: ['Hành động', 'Phiêu lưu'],
-                    runtime: 120,
-                    trailer_key: 'abc123',
-                };
-
                 const movieData = await findMovieById(movieId);
-
                 console.log('response movie detail page: ', movieData);
 
-                const mockData2 = {
-                    ...mockData,
+                const processedData = {
+                    id: movieId,
                     title: movieData.title,
                     overview: movieData.overview,
                     releaseDate: new Date(
@@ -58,30 +47,36 @@ function MovieDetail() {
                             : [],
                     runtime: movieData.runtime,
                     trailer_key: 'abc123',
+                    director: movieData.director || 'Chưa cập nhật',
+                    actors: movieData.actors || ['Chưa cập nhật'],
+                    episodeCount: movieData.episodeCount || 0,
+                    year:
+                        new Date(movieData.releaseDate).getFullYear() || 'N/A',
+                    country: movieData.country || 'Chưa cập nhật',
+                    rating: movieData.voteAverage || 0,
                 };
 
-                setMovie(mockData2);
+                setMovie(processedData);
 
-                // Load hình ảnh nếu cần
-                if (mockData.posterPath) {
+                if (movieData.posterPath) {
                     try {
                         // Nếu là URL đầy đủ
                         if (
-                            mockData.posterPath.startsWith('http://') ||
-                            mockData.posterPath.startsWith('https://')
+                            movieData.posterPath.startsWith('http://') ||
+                            movieData.posterPath.startsWith('https://')
                         ) {
-                            setImageUrl(mockData.posterPath);
+                            setImageUrl(movieData.posterPath);
                         }
                         // Nếu là đường dẫn TMDB
-                        else if (!mockData.posterPath.includes('/api/')) {
+                        else if (!movieData.posterPath.includes('/api/')) {
                             setImageUrl(
-                                `https://image.tmdb.org/t/p/w500${mockData.posterPath}`,
+                                `https://image.tmdb.org/t/p/w500${movieData.posterPath}`,
                             );
                         }
                         // Nếu là đường dẫn local
                         else {
                             const imgUrl = await getMovieImage(
-                                mockData.posterPath,
+                                movieData.posterPath,
                             );
                             setImageUrl(imgUrl);
                         }
@@ -92,8 +87,6 @@ function MovieDetail() {
                 }
             } catch (error) {
                 console.error('Lỗi khi tải chi tiết phim:', error);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -102,73 +95,168 @@ function MovieDetail() {
         }
     }, [movieId]);
 
-    if (loading) {
-        return <div className={cx('loading')}>Đang tải thông tin phim...</div>;
-    }
-
     if (!movie) {
         return (
             <div className={cx('error')}>Không tìm thấy thông tin phim!</div>
         );
     }
 
-    return (
-        <div className={cx('movie-detail')}>
-            <div
-                className={cx('backdrop')}
-                style={{ backgroundImage: `url(${movie.backdropPath})` }}
-            >
-                <div className={cx('overlay')}></div>
-            </div>
+    const optionTabs = ['Chọn tập', 'Diễn viên', 'Đề xuất cho bạn'];
+    const buttonOptions = [
+        {
+            title: 'Chiếu phát',
+            icon: <CaretRightOutlined />,
+        },
+        {
+            title: 'Chia sẻ',
+            icon: <ShareAltOutlined />,
+        },
+        {
+            title: 'APP',
+            icon: <WhatsAppOutlined />,
+        },
+        {
+            title: 'Sưu tập',
+            icon: <HeartOutlined />,
+        },
+    ];
 
-            <div className={cx('content')}>
-                <div className={cx('poster')}>
-                    <img
-                        src={imageUrl || '/images/default-movie-poster.jpg'}
-                        alt={movie.title}
-                    />
+    const handleCallAllActors = async () => {
+        return await getAllActorNoPaging();
+    };
+
+    const renderTabContent = () => {
+        switch (tabState) {
+            case 0:
+                return <div>Danh sách tập phim sẽ hiển thị ở đây.</div>;
+            case 1:
+                return (
+                    <div className={cx('actor-list')}>
+                        {/* <Poster
+                            options={[]}
+                            fetchData={handleCallAllActors}
+                            cardInfo={false}
+                        /> */}
+                    </div>
+                );
+            case 2:
+                return <div>Phim đề xuất cho bạn sẽ hiển thị ở đây.</div>;
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <>
+            <Header activeSearch={false} />
+
+            <div className={cx('movie-detail-container')}>
+                <div className={cx('backdrop-container')}>
+                    <div
+                        className={cx('backdrop-image')}
+                        style={{
+                            backgroundImage: `url(${movie.backdropPath})`,
+                        }}
+                    ></div>
+                    <div className={cx('backdrop-gradient')}></div>
                 </div>
 
-                <div className={cx('info')}>
-                    <h1 className={cx('title')}>{movie.title}</h1>
+                <div className={cx('content-container')}>
+                    <div className={cx('movie-header')}>
+                        <h1 className={cx('movie-title')}>{movie.title}</h1>
 
-                    <div className={cx('meta')}>
-                        <span className={cx('release-date')}>
-                            {movie.releaseDate}
-                        </span>
-                        <span className={cx('runtime')}>
-                            {movie.runtime} phút
-                        </span>
-                        <div className={cx('genres')}>
+                        <div className={cx('movie-stats')}>
+                            <span className={cx('rating')}>
+                                <StarOutlined />
+                                {movie.rating.toFixed(1)}
+                            </span>
+                            {movie.year && (
+                                <span className={cx('stat-item')}>
+                                    | {movie.year}
+                                </span>
+                            )}
+                            {movie.episodeCount > 0 && (
+                                <span className={cx('stat-item')}>
+                                    | {movie.episodeCount} tập
+                                </span>
+                            )}
+                        </div>
+
+                        <div className={cx('movie-tags')}>
+                            {movie.country && (
+                                <span className={cx('tag')}>
+                                    {movie.country}
+                                </span>
+                            )}
                             {movie.genres?.map((genre, index) => (
-                                <span key={index} className={cx('genre')}>
+                                <span key={index} className={cx('tag')}>
                                     {genre}
                                 </span>
                             ))}
                         </div>
-                    </div>
 
-                    <div className={cx('rating')}>
-                        <span className={cx('vote')}>
-                            {movie.voteAverage?.toFixed(1)}
-                        </span>
-                    </div>
-
-                    <div className={cx('overview')}>
-                        <h3>Nội dung phim</h3>
-                        <p>{movie.overview}</p>
-                    </div>
-
-                    {movie.trailer_key && (
-                        <div className={cx('trailer')}>
-                            <button className={cx('trailer-button')}>
-                                Xem Trailer
-                            </button>
+                        <div className={cx('crew-info')}>
+                            <div className={cx('crew-item')}>
+                                <span className={cx('crew-label')}>
+                                    Đạo diễn:{' '}
+                                </span>
+                                <span className={cx('crew-value')}>
+                                    {movie.director}
+                                </span>
+                            </div>
+                            <div className={cx('crew-item')}>
+                                <span className={cx('crew-label')}>
+                                    Diễn viên chính:{' '}
+                                </span>
+                                <span className={cx('crew-value')}>
+                                    {Array.isArray(movie.actors)
+                                        ? movie.actors.join(', ')
+                                        : movie.actors}
+                                </span>
+                            </div>
                         </div>
-                    )}
+
+                        <div className={cx('movie-description')}>
+                            {movie.overview}
+                        </div>
+
+                        <div className={cx('action-buttons')}>
+                            {buttonOptions.map((item, index) => (
+                                <button
+                                    className={cx(
+                                        'btn',
+                                        index === 0
+                                            ? 'btn-primary'
+                                            : 'btn-secondary',
+                                    )}
+                                    key={index}
+                                >
+                                    {item.icon}
+                                    {item.title}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={cx('movie-tabs')}>
+                        {optionTabs.map((tab, index) => (
+                            <div
+                                key={index}
+                                className={cx('tab', {
+                                    active: tabState === index,
+                                })}
+                                onClick={() => setTabState(index)}
+                            >
+                                {tab}
+                            </div>
+                        ))}
+                    </div>
+                    <div className={cx('movie-tab-content')}>
+                        <div>{renderTabContent()}</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

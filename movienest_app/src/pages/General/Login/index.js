@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-import { Button, Checkbox, Form, Input, message } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { login } from '~/service/admin/user';
 import { jwtDecode } from 'jwt-decode';
 import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
 import SmartButton from '~/components/Layout/components/SmartButton';
-import {
-    PhoneOutlined,
-    AppleOutlined,
-    GoogleOutlined,
-} from '@ant-design/icons';
-import { useAuth } from '~/routes/AuthContext'; 
+import { PhoneOutlined, AppleOutlined, GoogleOutlined } from '@ant-design/icons';
+import { useAuth } from '~/routes/AuthContext';
 
 const cx = classNames.bind(styles);
 
@@ -35,18 +31,18 @@ function Login() {
             const decodedToken = jwtDecode(token);
 
             const roles = decodedToken.role || [];
-            const isAdmin = roles.includes('ADMIN')
+            const isAdmin = roles.includes('ADMIN');
+            const username = decodedToken.username || decodedToken.sub || 'Unknown';
 
-            localStorage.setItem(
-                'role',
-                isAdmin ? 'admin' : 'user',
-            );
+            localStorage.setItem('role', isAdmin ? 'admin' : 'user');
 
+            // Cập nhật thông tin vào context
             authLogin({
                 token,
                 role: isAdmin ? 'admin' : 'user',
-                roles: roles
-            })
+                roles: roles,
+                username: username, // 👈 Thêm username vào đây
+            });
 
             message.success('Đăng nhập thành công!');
             
@@ -62,8 +58,7 @@ function Login() {
 
             if (error.response) {
                 if (error.response.status === 403) {
-                    errorMsg =
-                        'Không có quyền truy cập. Vui lòng kiểm tra lại thông tin đăng nhập.';
+                    errorMsg = 'Không có quyền truy cập. Vui lòng kiểm tra lại thông tin đăng nhập.';
                 } else if (error.response.data && error.response.data.message) {
                     errorMsg = error.response.data.message;
                 }
@@ -121,7 +116,7 @@ function Login() {
                             style={{
                                 backgroundColor: '#0ca37f',
                                 color: '#fff',
-                                padding: '16px 0',  
+                                padding: '16px 0',
                             }}
                         >
                             Login
@@ -130,9 +125,9 @@ function Login() {
 
                     <p>
                         Chưa có tài khoản?{' '}
-                        <a onClick={() => navigate('/register')}> Đăng ký</a>{' '}
+                        <a onClick={() => navigate('/register')}> Đăng ký</a>
                     </p>
-                    <div class="divider">Hoặc</div>
+                    <div className="divider">Hoặc</div>
 
                     <div className={cx('or-buttons')}>
                         <SmartButton

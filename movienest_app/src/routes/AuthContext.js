@@ -8,34 +8,37 @@ export const AuthProvider = ({ children }) => {
 
     // Kiểm tra xem có token trong localStorage khi component mount
     useEffect(() => {
-      const token = localStorage.getItem('token');
-      const role = localStorage.getItem('role');
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
 
-      if (token) {
-        try {
-          const decodedToken = jwtDecode(token);
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
 
-          const currentTime = Date.now() / 1000;
-          if (decodedToken.exp && decodedToken.exp < currentTime){
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-          }else {
-            // setUser({token, role, roles: decodedToken.role || []});
-            setUser({token, roles: decodedToken.role || []});
-          }
-        }catch (error) {
-          console.log('Error when decode token: ', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
+                const currentTime = Date.now() / 1000;
+                if (decodedToken.exp && decodedToken.exp < currentTime) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
+                } else {
+                    setUser({
+                        token,
+                        roles: decodedToken.role || [],
+                        username: decodedToken.username || decodedToken.sub || 'Unknown',
+                    });
+                }
+            } catch (error) {
+                console.log('Error when decoding token: ', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+            }
         }
-      }
     }, []);
 
     const login = (userData) => setUser(userData);
     const logout = () => {
-      localStorage.removeItem('token');
-      setUser(null);
-    }
+        localStorage.removeItem('token');
+        setUser(null);
+    };
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

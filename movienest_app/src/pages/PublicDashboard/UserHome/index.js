@@ -58,7 +58,7 @@ function UserHome() {
 
     return (
         <>
-            <Header />
+            <Header/>
             <div className={cx('banner')}>
                 <div className={cx('content-inner')}>
                     <h1>Welcome.</h1>

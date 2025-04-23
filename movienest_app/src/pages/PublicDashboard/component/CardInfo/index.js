@@ -121,7 +121,7 @@ function CardInfo({ movieResult, isTrailer }) {
 
     return (
         <div className={cx('card-film')}>
-            {movieResult.map((movie) => (
+            {Array.isArray(movieResult) && movieResult.map((movie) => (
                 <Card
                     key={movie.id}
                     hoverable

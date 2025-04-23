@@ -2,6 +2,7 @@ package carevn.luv2code.MovieNest.service.impl;
 
 import carevn.luv2code.MovieNest.service.FileStorageService;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,11 @@ import java.util.stream.Stream;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    private final Path root = Paths.get("uploads");
+    private final Path root;
+
+    public FileStorageServiceImpl(@Value("${file.upload-dir}") String uploadDir) {
+        this.root = Paths.get(uploadDir).toAbsolutePath().normalize();
+    }
 
     @PostConstruct
     public void initialize() {

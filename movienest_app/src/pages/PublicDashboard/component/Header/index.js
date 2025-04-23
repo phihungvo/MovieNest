@@ -17,17 +17,18 @@ import { useDebounce } from '~/hooks';
 import { searchMovies, getDetailtMovie } from '~/service/user/home';
 import { useNavigate } from 'react-router-dom';
 import { searchMovieByKeyWord } from '~/service/admin/movie';
+import { getToken } from '~/constants/token';
+import { useAuth } from '~/routes/AuthContext';
 
 const cx = classNames.bind(styles);
 
-function Header() {
+function Header({ activeSearch = true }) {
     const trendingStates = ['Today', 'This Week'];
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    
-    // const [selectedState, setSelectedState] = useState(trendingStates[0]);
+    const { user } = useAuth();
 
     const debounced = useDebounce(searchValue, 400);
 
@@ -66,15 +67,15 @@ function Header() {
     }, [debounced]);
 
     const publicRoutes = [
-        {title: 'Movies', path: '/movies'},
-        {title: 'TV Shows', path: '/tv-shows'},
-        {title: 'People', path: '/people'},
-        {title: 'More', path: '/more'}
-    ]
+        { title: 'Movies', path: '/movies' },
+        { title: 'TV Shows', path: '/tv-shows' },
+        { title: 'People', path: '/people' },
+        { title: 'More', path: '/more' },
+    ];
 
     const handleLogin = () => {
-        navigate('/login'); 
-    }
+        navigate('/login');
+    };
 
     return (
         <>
@@ -82,8 +83,8 @@ function Header() {
                 <div className={cx('inner')}>
                     <div className={cx('sub_media')}>
                         <div className={cx('leftMenu')}>
-                            <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" />
-                            <NavMenu publicRoutes={publicRoutes}/>
+                            <img src="https://i.imgur.com/ZEbJI8l.png" />
+                            <NavMenu publicRoutes={publicRoutes} />
                         </div>
                         <div className={cx('rightMenu')}>
                             <FontAwesomeIcon
@@ -94,7 +95,6 @@ function Header() {
                                 className={cx('icon')}
                                 icon={faLanguage}
                             />
-
                             <div className={cx('badge')}>
                                 <FontAwesomeIcon
                                     className={cx('icon')}
@@ -103,51 +103,53 @@ function Header() {
                                 <div className={cx('count')}> 1 </div>
                             </div>
                             <Tippy content="Hồ sơ và cài đặt!">
-                                <div className={cx('icon')} onClick={() => handleLogin()}>
-                                    <img src="https://haycafe.vn/wp-content/uploads/2022/10/Hinh-anh-gai-xinh-Viet-Nam-cuoi-tuoi-tan.jpg" />
+                                <div
+                                    className={cx('icon')}
+                                    onClick={() => handleLogin()}
+                                >
+                                    <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"  alt="avatar" />
                                 </div>
                             </Tippy>
-                            <FontAwesomeIcon
-                                className={cx('icon', 'search')}
-                                icon={faMagnifyingGlass}
-                            />
+                            <p>{user?.username}</p>
                         </div>
                     </div>
                 </div>
             </header>
-            <div className={cx('search-bar')}>
-                <div className={cx('search-form')}>
-                    <FontAwesomeIcon
-                        className={cx()}
-                        icon={faMagnifyingGlass}
-                    />
+            {activeSearch && (
+                <div className={cx('search-bar')}>
+                    <div className={cx('search-form')}>
+                        <FontAwesomeIcon
+                            className={cx()}
+                            icon={faMagnifyingGlass}
+                        />
 
-                    <input
-                        ref={inputRef}
-                        value={searchValue}
-                        className={cx('search-input')}
-                        placeholder="Search for a movie, tv show or person ..."
-                        onChange={hanleInputChange}
-                    />
+                        <input
+                            ref={inputRef}
+                            value={searchValue}
+                            className={cx('search-input')}
+                            placeholder="Search for a movie, tv show or person ..."
+                            onChange={hanleInputChange}
+                        />
 
-                    <div className={'status_loading'}>
-                        {!!searchValue && !loading && (
-                            <button
-                                className={cx('clear')}
-                                onClick={handleClear}
-                            >
-                                <FontAwesomeIcon icon={faCircleXmark} />
-                            </button>
-                        )}
-                        {loading && (
-                            <FontAwesomeIcon
-                                className={cx('loading')}
-                                icon={faSpinner}
-                            />
-                        )}
+                        <div className={'status_loading'}>
+                            {!!searchValue && !loading && (
+                                <button
+                                    className={cx('clear')}
+                                    onClick={handleClear}
+                                >
+                                    <FontAwesomeIcon icon={faCircleXmark} />
+                                </button>
+                            )}
+                            {loading && (
+                                <FontAwesomeIcon
+                                    className={cx('loading')}
+                                    icon={faSpinner}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
             {searchResult?.length > 0 && (
                 <SearchMovie movieData={searchResult} />
             )}

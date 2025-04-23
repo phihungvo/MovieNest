@@ -6,6 +6,8 @@
     height: var(--header-height);
     background-color: #032541;
     align-items: center;
+    // position: absolute;
+    // z-index: 999;
 }
 
 .inner {
@@ -34,7 +36,7 @@
 
     img {
         width: 154px;
-        height: 30px;
+        height: 150px;
     }
 }
 
@@ -42,7 +44,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 50%; //
+    width: 50%;
     height: 40px;
     width: 238px;
     color: #fff;
