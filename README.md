@@ -1,5 +1,5 @@
 # 🎬 MovieNest Project
-Deploy product: http://14.225.204.231/
+Deploy product: http://movienest.click/
 - Admin account:
   
   ```python
