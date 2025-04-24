@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MovieNestApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <envs>
+      <env name="FILE_UPLOAD_DIR" value="/uploads" />
       <env name="JWT_EXPIRATION" value="36000000000" />
       <env name="JWT_SECRET" value="QQU0Alvur6b2dBvD5pcC4C3mlRgSm9OUTfrGJMFtFlU=" />
       <env name="SPRING_DATASOURCE_PASSWORD" value="Hungyeuy@2410" />

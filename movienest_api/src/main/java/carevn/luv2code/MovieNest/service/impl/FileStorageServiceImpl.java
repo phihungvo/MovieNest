@@ -20,11 +20,11 @@ import java.util.stream.Stream;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    private final Path root;
+    private final Path root = Paths.get("uploads");
 
-    public FileStorageServiceImpl(@Value("${file.upload-dir}") String uploadDir) {
-        this.root = Paths.get(uploadDir).toAbsolutePath().normalize();
-    }
+//    public FileStorageServiceImpl(@Value("${file.upload-dir}") String uploadDir) {
+//        this.root = Paths.get(uploadDir).toAbsolutePath().normalize();
+//    }
 
     @PostConstruct
     public void initialize() {

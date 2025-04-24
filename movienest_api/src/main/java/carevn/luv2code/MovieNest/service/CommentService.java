@@ -3,6 +3,7 @@ package carevn.luv2code.MovieNest.service;
 import carevn.luv2code.MovieNest.dto.CommentDTO;
 import carevn.luv2code.MovieNest.dto.requests.CommentUpdateRequest;
 import carevn.luv2code.MovieNest.entity.Comment;
+import carevn.luv2code.MovieNest.enums.ReactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -32,6 +33,8 @@ public interface CommentService {
     List<CommentDTO> getCommentByMovieId(UUID movieId);
 
     CommentDTO replyToComment(UUID parentId, CommentDTO comment);
+
+    void reactToComment(UUID commentId, UUID userId, ReactionType reactionType);
 
 //    void softDeleteComment(UUID commentId);
 }

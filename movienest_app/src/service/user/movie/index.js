@@ -15,7 +15,7 @@ export const findMovieById = async (movieId) => {
             },
         );
 
-        console.log('Movie detail: ', response.data)
+        // console.log('Movie detail: ', response.data)
         return response.data;
     } catch (error) {
         console.error('Error find all movie: ', error);

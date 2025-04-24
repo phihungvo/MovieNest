@@ -1,0 +1,208 @@
+.comment-container {
+    margin: 20px 0;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    
+    .divider {
+      background-color: rgba(255, 255, 255, 0.1);
+      margin: 16px 0;
+    }
+    
+    .new-comment {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      
+      .avatar {
+        flex-shrink: 0;
+      }
+      
+      .comment-input {
+        flex-grow: 1;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+        
+        &:focus {
+          border-color: #1890ff;
+          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+      }
+      
+      .submit-button {
+        flex-shrink: 0;
+        background-color: #1890ff;
+        border: none;
+        
+        &:hover {
+          background-color: #40a9ff;
+        }
+      }
+    }
+  
+    .comment-list {
+      margin-bottom: 16px;
+      
+      .comment-item {
+        position: relative;
+        padding: 16px 16px 0 16px;
+        margin-bottom: 12px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        
+        .comment-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8px;
+          
+          .avatar {
+            margin-right: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+          }
+          
+          .comment-info {
+            .author {
+              color: white;
+              display: block;
+              font-weight: 600;
+            }
+            
+            .datetime {
+              color: rgba(255, 255, 255, 0.5);
+              font-size: 12px;
+            }
+          }
+        }
+        
+        .comment-content {
+          margin-bottom: 12px;
+          color: white;
+          padding-left: 40px;
+          line-height: 1.5;
+        }
+        
+        .comment-actions {
+          padding-left: 40px;
+          margin-bottom: 8px;
+          
+          .action-button {
+            color: rgba(255, 255, 255, 0.65);
+            
+            &:hover {
+              color: #1890ff;
+            }
+          }
+        }
+        
+        .replies-section {
+          margin-top: 16px;
+          margin-left: 40px;
+          padding: 8px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border-radius: 6px;
+          
+          .reply-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 8px;
+            
+            &:last-child {
+              border-bottom: none;
+              margin-bottom: 0;
+            }
+            
+            .reply-content {
+              margin-bottom: 8px;
+              color: white;
+              padding-left: 32px;
+            }
+          }
+        }
+        
+        .reply-input-container {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          margin-top: 12px;
+          padding-left: 40px;
+          
+          .reply-input {
+            flex-grow: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            
+            &::placeholder {
+              color: rgba(255, 255, 255, 0.5);
+            }
+          }
+          
+          .reply-button {
+            flex-shrink: 0;
+            background-color: #1890ff;
+            border: none;
+            
+            &:hover {
+              background-color: #40a9ff;
+            }
+          }
+        }
+      }
+    }
+    
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      
+      .pagination {
+        :global {
+          .ant-pagination-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            
+            a {
+              color: white;
+            }
+            
+            &-active {
+              background-color: #1890ff;
+              border-color: #1890ff;
+              
+              a {
+                color: white;
+              }
+            }
+          }
+          
+          .ant-pagination-prev,
+          .ant-pagination-next {
+            button {
+              background-color: rgba(255, 255, 255, 0.1);
+              color: white;
+              
+              &:hover {
+                border-color: #1890ff;
+              }
+            }
+          }
+          
+          .ant-select-selector {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+          }
+          
+          .ant-select-arrow {
+            color: rgba(255, 255, 255, 0.5);
+          }
+        }
+      }
+    }
+  }

@@ -15,7 +15,7 @@ services:
       - JWT_EXPIRATION=360000000
       - FILE_UPLOAD_DIR=/uploads
     volumes:
-      - movienest_uploads:/uploads  
+      - movienest_uploads:/uploads:rw
     depends_on:
       - mysql
     networks:
@@ -63,13 +63,9 @@ services:
       - movienest_network
 
 volumes:
-  - upload_data:/uploads
-  - mysql_data:/var/lib/mysql
-
-volumes:
   mysql_data:
     driver: local
-  movienest_uploads: # volume mới để lưu file upload
+  movienest_uploads:
     driver: local
 
 networks:

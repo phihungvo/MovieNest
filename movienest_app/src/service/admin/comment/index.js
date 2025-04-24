@@ -4,15 +4,13 @@ import API_ENDPOINTS from '~/constants/endpoints';
 import { getToken } from '~/constants/token';
 
 export const getAllComments = async ({ page = 0, pageSize = 5 }) => {
-    const TOKEN = getToken();
-
     try {
         const response = await axios.get(
             API_ENDPOINTS.COMMENTS.GET_ALL_COMMENT,
             {
                 params: { page, pageSize },
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
@@ -63,16 +61,17 @@ export const createComment = async (data) => {
 };
 
 export const updateComment = async (commentId, formData) => {
-    const TOKEN = getToken();
-    const url = API_ENDPOINTS.COMMENTS.UPDATE_PUT(commentId);
-    console.log('form data update comment: ', formData);
     try {
-        const response = await axios.put(url, formData, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
+        const response = await axios.put(
+            API_ENDPOINTS.COMMENTS.UPDATE_PUT(commentId),
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
 
         if (!response) {
             message.success('Comment updated Failed !');
@@ -89,16 +88,17 @@ export const updateComment = async (commentId, formData) => {
 };
 
 export const updateCommentForUser = async (commentId, formData) => {
-    const TOKEN = getToken();
-    const url = API_ENDPOINTS.COMMENTS.UPDATE(commentId);
-
     try {
-        const response = axios.patch(url, formData, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
+        const response = axios.patch(
+            API_ENDPOINTS.COMMENTS.UPDATE(commentId),
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
 
         if (!response) {
             message.success('Comment updated Failed !');
@@ -115,19 +115,66 @@ export const updateCommentForUser = async (commentId, formData) => {
 };
 
 export const deleteComment = async (commentId) => {
-    const TOKEN = getToken();
-    const url = API_ENDPOINTS.COMMENTS.DELETE(commentId);
     try {
-        const response = await axios.delete(url, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
+        const response = await axios.delete(
+            API_ENDPOINTS.COMMENTS.DELETE(commentId),
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
 
         console.log('response: ', response.data);
     } catch (error) {
         console.error('Error deleting comment: ', error);
         throw error;
+    }
+};
+
+export const reactionToAComment = async (commentId, userId, reactionType) => {
+    console.log('user id: ', userId, ' : ', 'reaction type: ', reactionType);
+    try {
+        const response = await axios.post(
+            API_ENDPOINTS.COMMENTS.REACTION_TO_A_COMMENT(commentId),
+            {
+                userId: userId,
+                reaction: reactionType,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        console.log('response reaction to a comment: ', response.data);
+    } catch (error) {
+        console.error('Error deleting comment: ', error);
+        throw error;
+    }
+};
+
+export const replyToComment = async (parentId, commentData) => {
+    try {
+        const response = await axios.post(
+            `${API_ENDPOINTS.COMMENTS.BASE_URL}/${parentId}/reply`,
+            {
+                content: commentData.content,
+                movieId: commentData.movieId,
+                userId: commentData.movieId,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+
+        return response.data;
+    } catch (error) {
+        message.error('Không thể reply comment!');
     }
 };

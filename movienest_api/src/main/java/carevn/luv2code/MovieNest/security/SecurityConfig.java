@@ -52,7 +52,9 @@ public class SecurityConfig {
                                         "/api/storage/files/**",
                                         "/api/movie/korea-movie",
                                         "/api/trailers/movie/**",
-                                        "api/actor/findAll"
+                                        "api/actor/findAll",
+                                        "api/comment/getAll/**",
+                                        "api/comment/create/**"
                                 ).permitAll()
 
                                 // User endpoints

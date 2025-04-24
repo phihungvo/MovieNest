@@ -30,6 +30,10 @@ public class Comment {
 
     String content;
 
+    int likeCount;
+
+    int dislikeCount;
+
     Date createAt;
 
     Date updatedAt;

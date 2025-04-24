@@ -66,6 +66,8 @@ const API_ENDPOINTS = {
         UPDATE_PUT: (id) => `${BASE_URL}/comment/${id}`,
         UPDATE_FOR_USER: (id) => `${BASE_URL}/comment/${id}`,
         DELETE: (commentId) => `${BASE_URL}/comment/${commentId}`,
+        REPLY_TO_A_COMMENT: (commentId) => `${BASE_URL}/comment/${commentId}/reply`,
+        REACTION_TO_A_COMMENT: (commentId) => `${BASE_URL}/comment/${commentId}/reaction`,
     },
 };
 

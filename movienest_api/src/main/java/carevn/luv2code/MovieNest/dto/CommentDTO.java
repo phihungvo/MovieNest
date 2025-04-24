@@ -23,6 +23,10 @@ public class CommentDTO {
     @NotNull
     String content;
 
+    int likeCount;
+
+    int dislikeCount;
+
     Date createAt;
 
     Date updatedAt;

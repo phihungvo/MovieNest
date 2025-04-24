@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './MovieDetail.module.scss';
@@ -15,6 +15,10 @@ import {
 import Poster from '../component/Poster';
 import { getAllActorNoPaging } from '~/service/admin/actor';
 import Header from '../component/Header';
+import CommentList from '~/components/Layout/components/CommentList';
+import { getAllComments } from '~/service/admin/comment';
+import { useAuth } from '~/routes/AuthContext';
+
 
 const cx = classNames.bind(styles);
 
@@ -22,14 +26,15 @@ function MovieDetail() {
     const { movieId } = useParams();
     const [movie, setMovie] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
-    const [expandDescription, setExpandDescription] = useState(false);
     const [tabState, setTabState] = useState(0);
+    const [comments, setComments] = useState([]);
+    const { user } = useAuth();
+    const currentUserId = user?.userId;
 
     useEffect(() => {
         const fetchMovieDetail = async () => {
             try {
                 const movieData = await findMovieById(movieId);
-                console.log('response movie detail page: ', movieData);
 
                 const processedData = {
                     id: movieId,
@@ -60,20 +65,12 @@ function MovieDetail() {
 
                 if (movieData.posterPath) {
                     try {
-                        // Nếu là URL đầy đủ
                         if (
                             movieData.posterPath.startsWith('http://') ||
                             movieData.posterPath.startsWith('https://')
                         ) {
                             setImageUrl(movieData.posterPath);
                         }
-                        // Nếu là đường dẫn TMDB
-                        else if (!movieData.posterPath.includes('/api/')) {
-                            setImageUrl(
-                                `https://image.tmdb.org/t/p/w500${movieData.posterPath}`,
-                            );
-                        }
-                        // Nếu là đường dẫn local
                         else {
                             const imgUrl = await getMovieImage(
                                 movieData.posterPath,
@@ -95,13 +92,30 @@ function MovieDetail() {
         }
     }, [movieId]);
 
+    useEffect(() => {
+        const fetchComments = async () => {
+            if (tabState === 3) {
+                const response = await getAllComments({ page: 0, pageSize: 5 });
+                setComments(response?.content || []);
+            }
+        };
+    
+        fetchComments();
+    }, [tabState]);
+
+    
     if (!movie) {
         return (
             <div className={cx('error')}>Không tìm thấy thông tin phim!</div>
         );
     }
 
-    const optionTabs = ['Chọn tập', 'Diễn viên', 'Đề xuất cho bạn'];
+    const optionTabs = [
+        'Chọn tập',
+        'Diễn viên',
+        'Đề xuất cho bạn',
+        'Bình luận',
+    ];
     const buttonOptions = [
         {
             title: 'Chiếu phát',
@@ -125,6 +139,11 @@ function MovieDetail() {
         return await getAllActorNoPaging();
     };
 
+    const handleGetAllComments = async () => {
+        const response = await getAllComments();
+        console.log('comment response: ',response)
+    }
+
     const renderTabContent = () => {
         switch (tabState) {
             case 0:
@@ -132,6 +151,7 @@ function MovieDetail() {
             case 1:
                 return (
                     <div className={cx('actor-list')}>
+                        Danh sách diễn viên sẽ hiển thị ở đây.
                         {/* <Poster
                             options={[]}
                             fetchData={handleCallAllActors}
@@ -141,6 +161,8 @@ function MovieDetail() {
                 );
             case 2:
                 return <div>Phim đề xuất cho bạn sẽ hiển thị ở đây.</div>;
+            case 3:
+                return <CommentList movieId={movieId} userId={currentUserId}/>;
             default:
                 return null;
         }

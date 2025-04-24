@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.controller;
 
 import carevn.luv2code.MovieNest.dto.CommentDTO;
+import carevn.luv2code.MovieNest.dto.requests.CommentReactionRequest;
 import carevn.luv2code.MovieNest.dto.requests.CommentUpdateRequest;
 import carevn.luv2code.MovieNest.entity.Comment;
 import carevn.luv2code.MovieNest.service.CommentService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -86,6 +88,14 @@ public class CommentController {
         Page<CommentDTO> comments = commentService.getAllComments(page, size);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
+
+    @PostMapping("/{commentId}/reaction")
+    public ResponseEntity<?> reactToComment(@PathVariable UUID commentId,
+                                            @RequestBody CommentReactionRequest request) {
+        commentService.reactToComment(commentId, request.getUserId(), request.getReaction());
+        return ResponseEntity.ok(Map.of("message", "Reaction updated successfully"));
+    }
+
 
 //    @GetMapping("/user/{userId}")
 //    public ResponseEntity<List<CommentDTO>> getCommentByUserId(@PathVariable(name = "userId") UUID userId) {

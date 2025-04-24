@@ -35,16 +35,13 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-//    public String generateToken(String email) {
-//        return generateToken(new HashMap<>(), email);
-//    }
-
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         claims.put("role", user.getRoles().stream()
                 .map(Enum::name)
                 .collect(Collectors.toList()));
+        claims.put("userId", user.getId());
 
         return Jwts
                 .builder()

@@ -118,7 +118,6 @@ function UserHome() {
 
             {/*         
 
-            <CommentList /> */}
             {/* <SkeletonComponent /> */}
         </>
     );

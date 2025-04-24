@@ -31,16 +31,19 @@ function Login() {
             const decodedToken = jwtDecode(token);
 
             const roles = decodedToken.role || [];
+            const userId = decodedToken.userId;
             const isAdmin = roles.includes('ADMIN');
             const username = decodedToken.username || decodedToken.sub || 'Unknown';
 
             localStorage.setItem('role', isAdmin ? 'admin' : 'user');
+            // localStorage.setItem('userId', userId);
 
             // Cập nhật thông tin vào context
             authLogin({
                 token,
                 role: isAdmin ? 'admin' : 'user',
                 roles: roles,
+                userId: userId,
                 username: username, // 👈 Thêm username vào đây
             });
 

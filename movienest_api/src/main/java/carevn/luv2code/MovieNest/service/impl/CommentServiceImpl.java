@@ -3,12 +3,15 @@ package carevn.luv2code.MovieNest.service.impl;
 import carevn.luv2code.MovieNest.dto.CommentDTO;
 import carevn.luv2code.MovieNest.dto.requests.CommentUpdateRequest;
 import carevn.luv2code.MovieNest.entity.Comment;
+import carevn.luv2code.MovieNest.entity.CommentReaction;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.enums.CommentStatus;
+import carevn.luv2code.MovieNest.enums.ReactionType;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.CommentMapper;
+import carevn.luv2code.MovieNest.repository.CommentReactionRepository;
 import carevn.luv2code.MovieNest.repository.CommentRepository;
 import carevn.luv2code.MovieNest.repository.MovieRepository;
 import carevn.luv2code.MovieNest.repository.UserRepository;
@@ -40,14 +43,18 @@ public class CommentServiceImpl implements CommentService {
 
     private final UserRepository userRepository;
 
+    private final CommentReactionRepository reactionRepository;;
+
     public CommentServiceImpl(CommentRepository commentRepository,
                               CommentMapper commentMapper,
                               MovieRepository movieRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              CommentReactionRepository reactionRepository) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
         this.movieRepository = movieRepository;
         this.userRepository = userRepository;
+        this.reactionRepository = reactionRepository;
     }
 
     @Override
@@ -130,8 +137,6 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-
-
     @Override
     public CommentDTO getCommentById(UUID commentId) {
         Comment comment = commentRepository.findById(commentId)
@@ -149,6 +154,8 @@ public class CommentServiceImpl implements CommentService {
             CommentDTO dto = new CommentDTO();
             dto.setId(comment.getId());
             dto.setContent(comment.getContent());
+            dto.setLikeCount(comment.getLikeCount());
+            dto.setDislikeCount(comment.getDislikeCount());
             dto.setCreateAt(comment.getCreateAt());
             dto.setUpdatedAt(comment.getUpdatedAt());
             dto.setEdited(comment.isEdited());
@@ -205,8 +212,54 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(savedReply);
     }
 
-//    @Override
-//    public void softDeleteComment(UUID commentId) {
-//        commentRepository.softDeleteComment(commentId);
-//    }
+    @Override
+    @Transactional
+    public void reactToComment(UUID commentId, UUID userId, ReactionType reactionType) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Optional<CommentReaction> existingReaction = reactionRepository.findByCommentAndUser(comment, user);
+
+        if (existingReaction.isPresent()) {
+            CommentReaction current = existingReaction.get();
+
+            if (current.getType() == reactionType) {
+                // Nếu đã like/dislike rồi => hủy
+                reactionRepository.delete(current);
+                if (reactionType == ReactionType.LIKE) {
+                    comment.setLikeCount(comment.getLikeCount() - 1);
+                } else {
+                    comment.setDislikeCount(comment.getDislikeCount() - 1);
+                }
+            } else {
+                // Chuyển từ like sang dislike hoặc ngược lại
+                if (current.getType() == ReactionType.LIKE) {
+                    comment.setLikeCount(comment.getLikeCount() - 1);
+                    comment.setDislikeCount(comment.getDislikeCount() + 1);
+                } else {
+                    comment.setLikeCount(comment.getLikeCount() + 1);
+                    comment.setDislikeCount(comment.getDislikeCount() - 1);
+                }
+                current.setType(reactionType);
+                reactionRepository.save(current);
+            }
+        } else {
+            // Chưa có reaction nào
+            CommentReaction newReaction = new CommentReaction(null, comment, user, reactionType);
+            reactionRepository.save(newReaction);
+
+            if (reactionType == ReactionType.LIKE) {
+                comment.setLikeCount(comment.getLikeCount() + 1);
+            } else {
+                comment.setDislikeCount(comment.getDislikeCount() + 1);
+            }
+        }
+
+        commentRepository.save(comment);
+    }
+
+
 }
