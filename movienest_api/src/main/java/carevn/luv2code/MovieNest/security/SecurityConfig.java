@@ -80,7 +80,10 @@ public class SecurityConfig {
                 // Configure CORS settings
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+                    configuration.setAllowedOrigins(List.of(
+                            "http://localhost:3000",
+                            "https://movienest.click"
+                    ));
                     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                     configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);
@@ -116,7 +119,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")  // Thay đổi từ "/api/**" sang "/**"
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://localhost:3000", "https://movienest.click")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Thêm OPTIONS
                         .allowedHeaders("*")
                         .allowCredentials(true);

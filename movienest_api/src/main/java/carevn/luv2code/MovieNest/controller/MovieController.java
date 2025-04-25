@@ -5,16 +5,13 @@ import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.enums.Country;
 import carevn.luv2code.MovieNest.service.MovieService;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/movie")
 public class MovieController {
