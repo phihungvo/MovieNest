@@ -121,18 +121,46 @@ function CardInfo({ movieResult, isTrailer }) {
 
     return (
         <div className={cx('card-film')}>
-            {Array.isArray(movieResult) && movieResult.map((movie) => (
-                <Card
-                    key={movie.id}
-                    hoverable
-                    style={
-                        isTrailer
-                            ? { width: 300, height: 320, marginLeft: 15 }
-                            : { width: 150, height: 320, marginLeft: 15 }
-                    }
-                    cover={
-                        isTrailer ? (
-                            <div className={cx('card-content')}>
+            {Array.isArray(movieResult) &&
+                movieResult.map((movie) => (
+                    <Card
+                        key={movie.id}
+                        hoverable
+                        style={
+                            isTrailer
+                                ? { width: 300, height: 320, marginLeft: 15 }
+                                : { width: 150, height: 320, marginLeft: 15 }
+                        }
+                        cover={
+                            isTrailer ? (
+                                <div className={cx('card-content')}>
+                                    <img
+                                        alt={movie.title}
+                                        src={
+                                            imageUrls[movie.id] ||
+                                            '/images/loading-placeholder.gif'
+                                        }
+                                        style={{
+                                            width: '100%',
+                                            height: '225px',
+                                            objectFit: 'cover',
+                                            borderTopLeftRadius: '25px',
+                                            borderTopRightRadius: '25px',
+                                        }}
+                                    />
+                                    <div className={cx('play-icon')}>
+                                        <button
+                                            onClick={() =>
+                                                handleClickPlayButton(movie)
+                                            }
+                                        >
+                                            <PlayCircleOutlined
+                                                className={cx('icon')}
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
                                 <img
                                     alt={movie.title}
                                     src={
@@ -140,72 +168,41 @@ function CardInfo({ movieResult, isTrailer }) {
                                         '/images/loading-placeholder.gif'
                                     }
                                     style={{
-                                        width: '100%',
+                                        width: '150px',
                                         height: '225px',
                                         objectFit: 'cover',
                                         borderTopLeftRadius: '25px',
                                         borderTopRightRadius: '25px',
                                     }}
+                                    onClick={() =>
+                                        handleMovieDetailClick(movie.id)
+                                    }
                                 />
-                                <div className={cx('play-icon')}>
-                                    <button
-                                        onClick={() =>
-                                            handleClickPlayButton(movie)
-                                        }
-                                    >
-                                        <PlayCircleOutlined
-                                            className={cx('icon')}
-                                        />
-                                    </button>
-                                </div>
-                            </div>
+                            )
+                        }
+                    >
+                        {isTrailer ? (
+                            <></>
                         ) : (
-                            <img
-                                alt={movie.title}
-                                src={
-                                    imageUrls[movie.id] ||
-                                    '/images/loading-placeholder.gif'
-                                }
-                                style={{
-                                    width: '150px',
-                                    height: '225px',
-                                    objectFit: 'cover',
-                                    borderTopLeftRadius: '25px',
-                                    borderTopRightRadius: '25px',
-                                }}
-                                onClick={() => handleMovieDetailClick(movie.id)}
+                            <ProgressOverlay
+                                popularity={movie.voteAverage}
+                                size={35}
                             />
-                        )
-                    }
-                >
-                    {isTrailer ? (
-                        <></>
-                    ) : (
-                        // <div className={cx('progress-overlay')} >
-                        //     <Flex wrap gap="small">
-                        //         <Progress
-                        //             type="circle"
-                        //             percent={Math.min(Math.floor(movie.popularity), 100)}
-                        //             size={35}
-                        //             strokeColor='#21d07a'
-                        //             trailColor='#1f4a29'
-                        //         />
-                        //     </Flex>
-                        // </div>
-                        // console.log('movie: ', movie)
-
-                        <ProgressOverlay
-                            popularity={movie.voteAverage}
-                            size={35}
+                        )}
+                        <Meta
+                            className={cx('info')}
+                            title={movie.title}
+                            description={
+                                movie.releaseDate
+                                    ? new Date(
+                                          movie.releaseDate ||
+                                              movie.release_date,
+                                      ).toLocaleDateString('vi-VN')
+                                    : ''
+                            }
                         />
-                    )}
-                    <Meta
-                        className={cx('info')}
-                        title={movie.title}
-                        description={movie.releaseDate || movie.release_date}
-                    />
-                </Card>
-            ))}
+                    </Card>
+                ))}
 
             {showTrailer && (
                 <>

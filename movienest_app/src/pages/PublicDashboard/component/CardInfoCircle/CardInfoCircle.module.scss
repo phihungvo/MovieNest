@@ -1,3 +1,4 @@
+
 /* Định dạng từng card phim */
 .card-film {
     min-width: 200px;
@@ -16,3 +17,14 @@
     position: relative;
 }
 
+/* Thêm style cho tên actor */
+.actor-name {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: -5px;
+    color: white;
+    height: 20px;
+}

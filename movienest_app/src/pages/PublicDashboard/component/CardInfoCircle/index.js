@@ -16,22 +16,24 @@ function CardInfoCircle({ movieResult }) {
                 <Card
                     key={movie.id}
                     hoverable
-                    style={
-                            { width: 150, height: 200, marginLeft: 15 }
-                    }
+                    style={{ width: 150, height: 200, marginLeft: 15 }}
                     cover={
                         <img
                             alt={movie.name}
                             src={movie.profilePath}
                             style={{
-                                width: '150px',
-                                height: '150px',
-                                objectFit: 'cover',
-                                borderRadius: '50%'
+                                width: '100%',
+                                height: '170px',
+                                objectFit: 'cover'
                             }}
                         />
                     }
-                ></Card>
+                >
+                    <div className={cx('actor-name')}>
+                        {/* {movie.name}  'Khanh Van' */}
+                        Tran Thanh
+                    </div>
+                </Card>
             ))}
         </div>
     );

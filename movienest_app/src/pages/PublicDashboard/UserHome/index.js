@@ -6,6 +6,7 @@ import {
     getVietnameMovieTrailers,
     getMovieInWeek,
 } from '~/service/user/home';
+import { ArrowUpOutlined } from '@ant-design/icons';
 import {
     findAllKoreanMovies,
     findAllVietnamMovies,
@@ -16,10 +17,19 @@ import Header from '../component/Header';
 import Poster from '../component/Poster';
 import { getDetailtMovie } from '~/service/user/home';
 import { getAllActorNoPaging } from '~/service/admin/actor';
+import MovieBanner from './banner';
+import AppFooter from '../component/Footer';
 
 const cx = classNames.bind(styles);
 
 function UserHome() {
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
+
     const fetchTrendingMovies = async (state) => {
         return state === 'Today'
             ? await getMovieToday()
@@ -54,30 +64,19 @@ function UserHome() {
 
     const handleCallAllActors = async () => {
         return await getAllActorNoPaging();
-    }
+    };
 
     return (
         <>
-            <Header/>
-            <div className={cx('banner')}>
-                <div className={cx('content-inner')}>
-                    <h1>Welcome.</h1>
-                    <h2>
-                        Millions of movies, TV shows and people to discover.
-                        Explore now.
-                    </h2>
-                    <div className={cx('search-inp')}>
-                        <input placeholder="Search for a movie, tv show, person......" />
-                        <button>Search</button>
-                    </div>
-                </div>
-            </div>
+            <Header />
+
+            <MovieBanner />
 
             <Poster
                 title="Trending Movies"
-                options={['Today', 'This Week']}
+                options={['This Week', 'Today']}
                 fetchData={fetchTrendingMovies}
-                defaultValue="Today"
+                defaultValue="This Week"
                 cardInfo={true}
             />
 
@@ -114,11 +113,14 @@ function UserHome() {
                 cardInfo={true}
             />
 
-            <Poster title="Fomous Actor" options={[]} fetchData={handleCallAllActors} cardInfo={false} />
+            <Poster
+                title="Famous Actor"
+                options={[]}
+                fetchData={handleCallAllActors}
+                cardInfo={false}
+            />
 
-            {/*         
-
-            {/* <SkeletonComponent /> */}
+            <AppFooter />
         </>
     );
 }

@@ -17,6 +17,7 @@ function SmartTable({columns, dataSources, loading, pagination, onTableChange}) 
                 dataSource={dataSources}
                 loading={loading}
                 rowKey="id"
+                size='small'
                 pagination={{
                     ...pagination,
                     showSizeChanger: true,

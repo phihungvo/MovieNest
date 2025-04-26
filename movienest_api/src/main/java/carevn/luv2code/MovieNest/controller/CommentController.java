@@ -57,7 +57,8 @@ public class CommentController {
     public ResponseEntity<CommentDTO> replyToComment(
             @PathVariable UUID parentId,
             @RequestBody CommentDTO replyDTO
-    ){
+    ) {
+        // Call the service to handle the reply logic
         CommentDTO createdReply = commentService.replyToComment(parentId, replyDTO);
         return new ResponseEntity<>(createdReply, HttpStatus.CREATED);
     }

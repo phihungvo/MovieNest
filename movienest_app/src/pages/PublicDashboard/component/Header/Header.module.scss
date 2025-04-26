@@ -4,17 +4,26 @@
     justify-content: center;
     width: 100%;
     height: var(--header-height);
-    background-color: #032541;
+    background-color: rgba(10, 13, 15, 0); /* Trong suốt ban đầu */
     align-items: center;
-    // position: absolute;
-    // z-index: 999;
+    position: fixed; /* Cố định header ở trên cùng */
+    z-index: 999; /* Đảm bảo header luôn nằm trên các phần tử khác */
+    top: 0;
+    left: 0;
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi mượt */
+    box-shadow: none; /* Không có shadow ở trạng thái ban đầu */
+}
+
+.wrapper.scrolled {
+    background-color: rgba(3, 37, 65, 1); /* Màu đậm khi cuộn */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Thêm shadow nhẹ khi cuộn */
 }
 
 .inner {
     width: 1300px;
     height: 56px;
     position: relative;
-    background-color: #032541;
+    // background-color: transparent; /* Thay đổi thành trong suốt */
     top: 0;
     left: 0;
     padding: 0 40px;
@@ -23,7 +32,6 @@
 .sub_media {
     display: flex;
     justify-content: space-between;
-    height: 490px;
     height: 56px;
     align-items: center;
     overflow: hidden;
@@ -33,10 +41,10 @@
     display: flex;
     justify-content: flex-start;
     color: red;
-
+    
     img {
-        width: 154px;
-        height: 150px;
+        width: 200px;
+        height: 200px;
     }
 }
 
@@ -44,28 +52,26 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 50%;
     height: 40px;
     width: 238px;
     color: #fff;
 }
-
-
+ 
 .icon {
     width: 23px;
     height: 23px;
     border-radius: 50%;
-    overflow: hidden; // Cắt phần thừa
+    overflow: hidden; /* Cắt phần thừa */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); // Đổ bóng nhẹ
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
     cursor: pointer;
-
+    
     img {
-        width: 100%; // Chiếm toàn bộ không gian div
+        width: 100%; /* Chiếm toàn bộ không gian div */
         height: 100%;
-        object-fit: cover; // Đảm bảo ảnh không bị méo
+        object-fit: cover; /* Đảm bảo ảnh không bị méo */
     }
 }
 
@@ -93,12 +99,17 @@
 }
 
 .search-bar {
-    height: 44px;
+    height: 64px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid rgb(227, 227, 227);
+    position: fixed;
+    top: var(--header-height);
+    background-color: white;
+    z-index: 998;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .search-form {
@@ -130,8 +141,7 @@
     height: 20px;
 }
 
-.clear,
-.loading {
+.clear, .loading {
     position: absolute;
     transform: translate(-50%, -50%);
     font-size: 18px;
@@ -150,8 +160,19 @@
     from {
         transform: translate(-50%, -50%) rotate(0deg);
     }
-
+    
     to {
         transform: translate(-50%, -50%) rotate(360deg);
     }
+}
+
+
+/* Thêm padding-top cho content để tránh bị che khuất */
+body {
+    padding-top: calc(var(--header-height) + 44px);
+}
+
+/* Thêm class cho container chính để tránh bị che khuất */
+.main-content {
+    margin-top: calc(var(--header-height) + 44px);
 }

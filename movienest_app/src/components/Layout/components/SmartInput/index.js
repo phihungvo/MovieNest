@@ -24,7 +24,12 @@ function SmartInput({
             value={value}
             onChange={onChange}
             onPressEnter={onPressEnter}
-            style={{ width: inputWidth, height: inputHeight }}
+            style={{
+                width: inputWidth,
+                height: inputHeight,
+                background: '#111318',
+                color: 'white',
+            }}
             prefix={
                 icon && (
                     <span style={{ fontSize: '20px', color: '#1890ff' }}>
@@ -36,7 +41,11 @@ function SmartInput({
                 allowClear && value ? (
                     <CloseCircleFilled
                         onClick={handleClear}
-                        style={{ color: '#999', cursor: 'pointer', fontSize: '16px' }}
+                        style={{
+                            color: '#999',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                        }}
                     />
                 ) : null
             }

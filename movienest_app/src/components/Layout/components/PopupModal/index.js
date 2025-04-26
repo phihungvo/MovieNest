@@ -20,7 +20,7 @@ function PopupModal({
     setIsModalOpen,
     title,
     fields = [],
-    dataSources = {}, // Đổi thành object để linh hoạt hơn
+    dataSources = {},
     onSubmit,
     initialValues,
     isDeleteMode,
@@ -37,22 +37,17 @@ function PopupModal({
     const [processedFields, setProcessedFields] = useState([]);
     const form = formInstance;
 
-    // Xử lý fields với dữ liệu động khi component khởi tạo hoặc khi dependencies thay đổi
     useEffect(() => {
         if (!fields || fields.length === 0) return;
 
         const updatedFields = fields.map((field) => {
-            // Tạo bản sao của field để tránh thay đổi props
             const updatedField = { ...field };
 
-            // Xử lý các trường select mà cần dataSources
             if (field.dataSourceKey && dataSources[field.dataSourceKey]) {
                 const dataSource = dataSources[field.dataSourceKey];
 
-                // Chuyển đổi dataSource thành mảng options cho trường select
                 if (Array.isArray(dataSource)) {
                     updatedField.options = dataSource.map((item) => {
-                        // Nếu dataSource là array of objects
                         if (typeof item === 'object') {
                             return {
                                 label:
@@ -60,17 +55,15 @@ function PopupModal({
                                     item[field.labelKey || 'title'] ||
                                     `Item ${item[field.valueKey || 'id']}`,
                                 value: item[field.valueKey || 'id'],
-                                data: item, // Lưu toàn bộ data để có thể sử dụng sau này nếu cần
+                                data: item, 
                             };
                         }
-                        // Nếu dataSource là array of strings/numbers
                         return {
                             label: item,
                             value: item,
                         };
                     });
                 }
-                // Nếu dataSource đã là object với format {label, value}
                 else if (
                     typeof dataSource === 'object' &&
                     !Array.isArray(dataSource)
@@ -84,7 +77,6 @@ function PopupModal({
                 }
             }
 
-            // Xử lý các trường select đơn giản có options tĩnh
             if (field.type === 'yesno' || field.type === 'boolean') {
                 updatedField.type = 'select';
                 updatedField.options = field.options || ['Yes', 'No'];
@@ -202,7 +194,6 @@ function PopupModal({
         }
     };
 
-    // Nhóm các trường thành các hàng (2 trường mỗi hàng trừ khi fullWidth = true)
     const groupedFields = [];
     if (processedFields && processedFields.length > 0) {
         let row = [];

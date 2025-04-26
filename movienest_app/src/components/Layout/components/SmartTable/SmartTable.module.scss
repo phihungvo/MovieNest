@@ -1,23 +1,50 @@
-
-.table-container{
+.table-container {
     padding-top: 20px;
-}
-
-.customTable :global(.ant-table-thead) {
-    background-color: #1890ff; /* Màu xanh dương */
-}
-
-.customTable :global(.ant-table-thead) th {
-    color: white; /* Chữ màu trắng */
-    font-weight: bold;
-}
-
-.fixed-row-height {
-    height: 20px; // hoặc giá trị bạn muốn
+  }
   
-    // Canh giữa nội dung theo chiều dọc
-    td {
-      vertical-align: middle;
-    }
+  /* Table nền tối đơn giản */
+  :global(.ant-table) {
+    background-color: #111318 !important;
+    color: #ffffff !important;
+    // border: none !important;
+  }
+  
+  /* Header của bảng */
+  :global(.ant-table-thead > tr > th) {
+    background-color: #111318 !important;
+    color: #ffffff !important;
+    // border-bottom: 1px solid #ffffff !important;
+    font-weight: 600;
+  }
+  
+  /* Body của bảng */
+  :global(.ant-table-tbody > tr > td) {
+    background-color: #111318 !important;
+    color: #cccccc !important;
+    // border-bottom: 1px solid #ffffff !important;
+  }
+  
+  :global(.ant-table-tbody > tr:hover > td) {
+    background-color: #1a1d24 !important;
+  }
+  
+  /* Pagination */
+  :global(.ant-pagination-item),
+  :global(.ant-pagination-prev),
+  :global(.ant-pagination-next) {
+    background-color: #111318 !important;
+    border: none !important;
+  }
+  
+  :global(.ant-pagination-item a) {
+    color: #cccccc !important;
+  }
+  
+  :global(.ant-pagination-item-active) {
+    background-color: #252a34 !important;
+  }
+  
+  :global(.ant-pagination-item-active a) {
+    color: #ffffff !important;
   }
   

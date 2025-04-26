@@ -37,7 +37,6 @@ import {
 import API_ENDPOINTS from '~/constants/endpoints';
 const { TextArea } = Input;
 
-
 function CommentList({ movieId, userId }) {
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
@@ -72,7 +71,6 @@ function CommentList({ movieId, userId }) {
     };
 
     useEffect(() => {
-
         // const fetchUserInfo = async () => {
         //     try {
         //         const userInfo = await getUserInfo(userId);
@@ -104,7 +102,7 @@ function CommentList({ movieId, userId }) {
     };
 
     const toggleReply = (commentId) => {
-        console.log('reply comment id : ',commentId)
+        console.log('reply comment id : ', commentId);
         setExpandedComments((prev) => ({
             ...prev,
             [commentId]: !prev[commentId],
@@ -128,10 +126,13 @@ function CommentList({ movieId, userId }) {
                 userId: userId,
             };
 
-            await createComment(newCommentData);
-            message.success('Bình luận đã được gửi thành công');
-            setNewCommentText('');
-            fetchComments();
+            const response = await createComment(newCommentData);
+
+            if (response) {
+                message.success('Bình luận đã được gửi thành công');
+                setNewCommentText('');
+                fetchComments();
+            }
         } catch (error) {
             message.error('Không thể gửi bình luận');
         }
@@ -156,10 +157,13 @@ function CommentList({ movieId, userId }) {
                 [commentId]: '',
             }));
 
-            message.success('Phản hồi đã được gửi thành công');
-            fetchComments(); // Refresh comments to include the new reply
+            if (response) {
+                message.success('Phản hồi đã được gửi thành công');
+                fetchComments();
+            }
+         
         } catch (error) {
-            message.error('Không thể gửi phản hồi');
+            console.error('Không thể gửi phản hồi');
         }
     };
 
@@ -168,7 +172,7 @@ function CommentList({ movieId, userId }) {
             await updateCommentForUser(commentId, { action: 'LIKE' });
             fetchComments();
         } catch (error) {
-            message.error('Không thể thích bình luận');
+            console.error("Can't like comment!");
         }
     };
 
@@ -177,7 +181,7 @@ function CommentList({ movieId, userId }) {
             await updateCommentForUser(commentId, { action: 'DISLIKE' });
             fetchComments();
         } catch (error) {
-            message.error('Không thể bày tỏ không thích bình luận');
+            console.error("Can't dislike comment!");
         }
     };
 
@@ -226,19 +230,18 @@ function CommentList({ movieId, userId }) {
     };
 
     const handlePageChange = (page) => {
-        setCurrentPage(page - 1); // Adjust for 0-based indexing
+        setCurrentPage(page - 1);
     };
 
     const handlePageSizeChange = (current, size) => {
         setPageSize(size);
-        setCurrentPage(0); // Reset to the first page when page size changes
+        setCurrentPage(0);
     };
 
     const isCommentOwner = (comment) => {
         return comment.userId === userId;
     };
 
-    // Menu cho từng comment
     const getCommentMenu = (comment) => {
         const items = [];
 

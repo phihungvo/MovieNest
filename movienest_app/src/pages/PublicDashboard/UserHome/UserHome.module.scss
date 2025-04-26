@@ -67,3 +67,24 @@
 
 
 }
+
+
+.scroll-to-top {
+    width: 36px;
+    height: 36px;
+    background-color: #2a2a2a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a8a8a8;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    left: 0;
+  }
+  
+  .scroll-to-top:hover {
+    background-color: #ff9c00;
+    color: #000;
+  }

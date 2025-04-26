@@ -14,25 +14,44 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import SearchMovie from '../Search/index';
 import { useDebounce } from '~/hooks';
-import { searchMovies, getDetailtMovie } from '~/service/user/home';
-import { useNavigate } from 'react-router-dom';
 import { searchMovieByKeyWord } from '~/service/admin/movie';
-import { getToken } from '~/constants/token';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/routes/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function Header({ activeSearch = true }) {
-    const trendingStates = ['Today', 'This Week'];
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
     const { user } = useAuth();
 
     const debounced = useDebounce(searchValue, 400);
-
     const inputRef = useRef();
+
+    // Xử lý sự kiện scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            // Tính toán độ trong suốt dựa trên vị trí scroll
+            const scrollPosition = window.scrollY;
+            
+            // Nếu scroll xuống quá 50px, thêm class scrolled
+            if (scrollPosition > 50) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        
+        // Dọn dẹp event listener khi component unmount
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     const handleClear = () => {
         setSearchValue('');
@@ -79,7 +98,7 @@ function Header({ activeSearch = true }) {
 
     return (
         <>
-            <header className={cx('wrapper')}>
+            <header className={cx('wrapper', { scrolled })}>
                 <div className={cx('inner')}>
                     <div className={cx('sub_media')}>
                         <div className={cx('leftMenu')}>
@@ -107,7 +126,7 @@ function Header({ activeSearch = true }) {
                                     className={cx('icon')}
                                     onClick={() => handleLogin()}
                                 >
-                                    <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"  alt="avatar" />
+                                    <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg" alt="avatar" />
                                 </div>
                             </Tippy>
                             <p>{user?.username}</p>
@@ -115,7 +134,7 @@ function Header({ activeSearch = true }) {
                     </div>
                 </div>
             </header>
-            {activeSearch && (
+            {/* {activeSearch && (
                 <div className={cx('search-bar')}>
                     <div className={cx('search-form')}>
                         <FontAwesomeIcon
@@ -152,7 +171,7 @@ function Header({ activeSearch = true }) {
             )}
             {searchResult?.length > 0 && (
                 <SearchMovie movieData={searchResult} />
-            )}
+            )} */}
         </>
     );
 }

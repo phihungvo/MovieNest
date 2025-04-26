@@ -37,4 +37,7 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 //    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.user LEFT JOIN FETCH c.movie LEFT JOIN FETCH c.childComments WHERE c.movie.id = :movieId")
 //    Page<Comment> findByMovieId(@Param("movieId") UUID movieId, Pageable pageable);
 
+
+    // NEW API VERSION 2
+
 }
