@@ -7,7 +7,8 @@ const API_ENDPOINTS = {
     },
     FILE: {
         UPLOAD: `${BASE_URL}/storage/upload`,
-        CHECK_EXISTED: (file) => `${BASE_URL}/storage/checkFileExists/${file.name}`,
+        CHECK_EXISTED: (file) =>
+            `${BASE_URL}/storage/checkFileExists/${file.name}`,
         GET_INFO: `${BASE_URL}/storage/files`,
         GET_FILE: (filePath) => `${BASE_URL}/storage/files/${filePath}`,
     },
@@ -51,7 +52,7 @@ const API_ENDPOINTS = {
         CREATE: `${BASE_URL}/genres`,
         DELETE: (genresId) => `${BASE_URL}/genres/${genresId}`,
     },
-    
+
     ACTOR: {
         GET_ALL: `${BASE_URL}/actor/getAllPagable`,
         GET_ALL_NO_PAGING: `${BASE_URL}/actor/findAll`,
@@ -62,12 +63,15 @@ const API_ENDPOINTS = {
 
     COMMENTS: {
         GET_ALL_COMMENT: `${BASE_URL}/comment/getAll`,
+        GET_COMMENT_BY_MOVIE_ID: (movieId) => `${BASE_URL}/comment/movie/${movieId}`,
         CREATE: `${BASE_URL}/comment/create`,
         UPDATE_PUT: (id) => `${BASE_URL}/comment/${id}`,
         UPDATE_FOR_USER: (id) => `${BASE_URL}/comment/${id}`,
         DELETE: (commentId) => `${BASE_URL}/comment/${commentId}`,
-        REPLY_TO_A_COMMENT: (commentId) => `${BASE_URL}/comment/${commentId}/reply`,
-        REACTION_TO_A_COMMENT: (commentId) => `${BASE_URL}/comment/${commentId}/reaction`,
+        REPLY_TO_A_COMMENT: (commentId) =>
+            `${BASE_URL}/comment/${commentId}/reply`,
+        REACTION_TO_A_COMMENT: (commentId) =>
+            `${BASE_URL}/comment/${commentId}/reaction`,
     },
 };
 

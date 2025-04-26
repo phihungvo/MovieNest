@@ -22,10 +22,6 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private final Path root = Paths.get("uploads");
 
-//    public FileStorageServiceImpl(@Value("${file.upload-dir}") String uploadDir) {
-//        this.root = Paths.get(uploadDir).toAbsolutePath().normalize();
-//    }
-
     @PostConstruct
     public void initialize() {
         init();
@@ -34,7 +30,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public void init() {
         try {
-            Files.createDirectories(root);
+            Files.createDirectories(root); // Ensure the directory exists
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }

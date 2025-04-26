@@ -30,7 +30,7 @@ public interface CommentService {
 
     List<CommentDTO> getCommentByUserId(UUID userId);
 
-    List<CommentDTO> getCommentByMovieId(UUID movieId);
+    Page<CommentDTO> getCommentByMovieId(UUID movieId, int page, int size);
 
     CommentDTO replyToComment(UUID parentId, CommentDTO comment);
 

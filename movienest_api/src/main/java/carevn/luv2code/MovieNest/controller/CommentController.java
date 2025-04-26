@@ -32,9 +32,13 @@ public class CommentController {
     }
 
     @GetMapping("/movie/{movieId}")
-    public ResponseEntity<List<CommentDTO>> getCommentsByMovie(@PathVariable UUID movieId) {
-        List<CommentDTO> commentDTOs = commentService.getCommentByMovieId(movieId);
-        return new ResponseEntity<>(commentDTOs, HttpStatus.OK);
+    public ResponseEntity<Page<CommentDTO>> getCommentsByMovieId(
+            @PathVariable UUID movieId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<CommentDTO> comments = commentService.getCommentByMovieId(movieId, page, size);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

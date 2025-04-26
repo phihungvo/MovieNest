@@ -26,24 +26,46 @@ export const getAllComments = async ({ page = 0, pageSize = 5 }) => {
     }
 };
 
-export const createComment = async (data) => {
-    const TOKEN = getToken();
-
+export const getCommentsByMovieId = async ({
+    movieId,
+    page = 0,
+    pageSize = 5,
+}) => {
     try {
-        const response = await axios.post(
-            API_ENDPOINTS.COMMENTS.CREATE,
+        const response = await axios.get(
+            API_ENDPOINTS.COMMENTS.GET_COMMENT_BY_MOVIE_ID(movieId),
             {
-                content: data.content,
-                movieId: data.movieId,
-                userId: data.userId,
-            },
-            {
+                params: {
+                    page: page,
+                    pageSize: pageSize,
+                },
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             },
         );
+
+        console.log('Get comment by movie id: ', response.data);
+        return response.data;
+    } catch (error) {
+        console.error(
+            'Error fetching comments:',
+            error.response ? error.response.data : error.message,
+        );
+    }
+};
+
+export const createComment = async (data) => {
+    const TOKEN = getToken();
+    console.log('Comment data for create: ', data);
+    try {
+        const response = await axios.post(API_ENDPOINTS.COMMENTS.CREATE, data, {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                'Content-Type': 'application/json',
+            },
+        });
 
         if (!response) {
             message.success('Comment Create Failed !');
@@ -157,13 +179,14 @@ export const reactionToAComment = async (commentId, userId, reactionType) => {
 };
 
 export const replyToComment = async (parentId, commentData) => {
+    console.log('Reply data: ', parentId, ' and ', commentData);
     try {
         const response = await axios.post(
-            `${API_ENDPOINTS.COMMENTS.BASE_URL}/${parentId}/reply`,
+            API_ENDPOINTS.COMMENTS.REPLY_TO_A_COMMENT(parentId),
             {
                 content: commentData.content,
                 movieId: commentData.movieId,
-                userId: commentData.movieId,
+                userId: commentData.userId,
             },
             {
                 headers: {

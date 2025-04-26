@@ -183,14 +183,52 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> getCommentByMovieId(UUID movieId) {
-        List<Comment> comments = commentRepository.getCommentsByMovieId(movieId);
-        return commentMapper.toDtoList(comments);
+    public Page<CommentDTO> getCommentByMovieId(UUID movieId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Comment> comments = commentRepository.findByMovieId(movieId, pageable);
+
+        return comments.map(comment -> {
+            CommentDTO dto = new CommentDTO();
+            dto.setId(comment.getId());
+            dto.setContent(comment.getContent());
+            dto.setLikeCount(comment.getLikeCount());
+            dto.setDislikeCount(comment.getDislikeCount());
+            dto.setCreateAt(comment.getCreateAt());
+            dto.setUpdatedAt(comment.getUpdatedAt());
+            dto.setUserId(comment.getUser().getId());
+            dto.setEdited(comment.isEdited());
+            dto.setHidden(comment.isHidden());
+            dto.setStatus(comment.getStatus());
+            dto.setMovieName(comment.getMovie().getTitle());
+            dto.setUsername(comment.getUser().getUsername());
+            if (comment.getChildComments() != null && !comment.getChildComments().isEmpty()) {
+                dto.setReplies(commentMapper.toDtoList(comment.getChildComments()));
+            }
+            return dto;
+        });
     }
+
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<CommentDTO> getCommentsByMovieId(UUID movieId, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<Comment> comments = commentRepository.findTopLevelCommentsWithReplies(movieId, pageable);
+//
+//        // Map từ entity sang DTO
+//        return comments.map(comment -> {
+//            CommentDTO commentDTO = commentMapper.toDto(comment);
+//            // Nếu có childComments (replies), map chúng thành DTO
+//            if (comment.getChildComments() != null && !comment.getChildComments().isEmpty()) {
+//                commentDTO.setReplies(commentMapper.toDtoList(comment.getChildComments()));
+//            }
+//            return commentDTO;
+//        });
+//    }
+
 
     @Override
     @Transactional
-    public CommentDTO replyToComment(UUID parentId, CommentDTO replyDTO){
+    public CommentDTO replyToComment(UUID parentId, CommentDTO replyDTO) {
         Comment parentComment = commentRepository.findById(parentId)
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
@@ -198,8 +236,8 @@ public class CommentServiceImpl implements CommentService {
         reply.setCreateAt(new Date());
         reply.setUpdatedAt(new Date());
         reply.setParentComment(parentComment);
-
         reply.setMovie(parentComment.getMovie());
+        reply.setStatus(CommentStatus.PENDING);
 
         if (replyDTO.getUserId() != null) {
             User user = userRepository.findById(replyDTO.getUserId())
@@ -207,9 +245,17 @@ public class CommentServiceImpl implements CommentService {
             reply.setUser(user);
         }
 
+        // Thêm reply vào childComments của parent
+        parentComment.getChildComments().add(reply);
+
         Comment savedReply = commentRepository.save(reply);
 
-        return commentMapper.toDto(savedReply);
+        // Cập nhật DTO với parentId để client biết
+        CommentDTO resultDTO = commentMapper.toDto(savedReply);
+        resultDTO.setParentId(parentId);
+//        resultDTO.setReplies();
+
+        return resultDTO;
     }
 
     @Override

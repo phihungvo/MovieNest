@@ -54,7 +54,9 @@ public class SecurityConfig {
                                         "/api/trailers/movie/**",
                                         "api/actor/findAll",
                                         "api/comment/getAll/**",
-                                        "api/comment/create/**"
+                                        "api/comment/create/**",
+                                        "api/comment/movie/**",
+                                        "api/comment/{commentId}/reply"
                                 ).permitAll()
 
                                 // User endpoints

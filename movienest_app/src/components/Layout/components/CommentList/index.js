@@ -31,6 +31,8 @@ import {
     updateComment,
     deleteComment,
     reactionToAComment,
+    getCommentsByMovieId,
+    replyToComment,
 } from '~/service/admin/comment';
 import API_ENDPOINTS from '~/constants/endpoints';
 const { TextArea } = Input;
@@ -54,7 +56,12 @@ function CommentList({ movieId, userId }) {
     const fetchComments = async () => {
         setIsLoading(true);
         try {
-            const data = await getAllComments({ page: currentPage, pageSize });
+            const data = await getCommentsByMovieId({
+                movieId,
+                page: currentPage,
+                pageSize,
+            });
+            console.log('Data comment: ', data);
             setAllComments(data.content || []);
             setTotalComments(data.totalElements || 0);
         } catch (error) {
@@ -97,6 +104,7 @@ function CommentList({ movieId, userId }) {
     };
 
     const toggleReply = (commentId) => {
+        console.log('reply comment id : ',commentId)
         setExpandedComments((prev) => ({
             ...prev,
             [commentId]: !prev[commentId],
@@ -139,18 +147,8 @@ function CommentList({ movieId, userId }) {
                 userId: userId,
             };
 
-            await axios.post(
-                // `${API_ENDPOINTS.COMMENTS.REPLY_TO_A_COMMENT(commentId)}`,
-
-                `${API_ENDPOINTS.COMMENTS.BASE_URL}/${commentId}/reply`,
-                replyData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${getToken()}`,
-                        'Content-Type': 'application/json',
-                    },
-                },
-            );
+            const response = await replyToComment(commentId, replyData);
+            console.log('Response comment reply: ', response);
 
             // Reset input reply
             setReplyText((prev) => ({
@@ -159,7 +157,7 @@ function CommentList({ movieId, userId }) {
             }));
 
             message.success('Phản hồi đã được gửi thành công');
-            fetchComments();
+            fetchComments(); // Refresh comments to include the new reply
         } catch (error) {
             message.error('Không thể gửi phản hồi');
         }
@@ -228,17 +226,15 @@ function CommentList({ movieId, userId }) {
     };
 
     const handlePageChange = (page) => {
-        setCurrentPage(page - 1);
+        setCurrentPage(page - 1); // Adjust for 0-based indexing
     };
 
     const handlePageSizeChange = (current, size) => {
         setPageSize(size);
-        setCurrentPage(0); // Khi thay đổi kích thước trang, quay về trang đầu tiên
+        setCurrentPage(0); // Reset to the first page when page size changes
     };
 
     const isCommentOwner = (comment) => {
-        console.log("Comment data:", comment);
-        console.log('compare: ', comment.userId, ' and userId ', userId);
         return comment.userId === userId;
     };
 
@@ -468,61 +464,7 @@ function CommentList({ movieId, userId }) {
                                                     styles['reply-content']
                                                 }
                                             >
-                                                {editingComment === reply.id ? (
-                                                    <div
-                                                        className={
-                                                            styles[
-                                                                'edit-container'
-                                                            ]
-                                                        }
-                                                    >
-                                                        <TextArea
-                                                            value={editText}
-                                                            onChange={(e) =>
-                                                                setEditText(
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            autoSize={{
-                                                                minRows: 2,
-                                                                maxRows: 4,
-                                                            }}
-                                                            className={
-                                                                styles[
-                                                                    'edit-input'
-                                                                ]
-                                                            }
-                                                        />
-                                                        <div
-                                                            className={
-                                                                styles[
-                                                                    'edit-actions'
-                                                                ]
-                                                            }
-                                                        >
-                                                            <Button
-                                                                size="small"
-                                                                onClick={
-                                                                    cancelEditComment
-                                                                }
-                                                            >
-                                                                Hủy
-                                                            </Button>
-                                                            <Button
-                                                                type="primary"
-                                                                size="small"
-                                                                onClick={
-                                                                    saveEditComment
-                                                                }
-                                                            >
-                                                                Lưu
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    reply.content
-                                                )}
+                                                {reply.content}
                                             </div>
 
                                             <div

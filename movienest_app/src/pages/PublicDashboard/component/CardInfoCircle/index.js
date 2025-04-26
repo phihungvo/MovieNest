@@ -10,7 +10,6 @@ import { getMovieImage } from '~/service/admin/uploadFile';
 const cx = classNames.bind(styles);
 
 function CardInfoCircle({ movieResult }) {
-    console.log('Movie result=====: ', movieResult)
     return (
         <div className={cx('card-film')}>
             {movieResult.map((movie) => (

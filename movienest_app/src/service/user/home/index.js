@@ -98,7 +98,7 @@ const getMoviesWithTrailers = async (endpoint) => {
         });
 
         const movies = moviesResponse.data;
-        console.log(`Movies from ${endpoint}: `, movies);
+        // console.log(`Movies from ${endpoint}: `, movies);
 
         const moviesWithTrailers = await Promise.all(
             movies.slice(0, 20).map(async (movie) => {

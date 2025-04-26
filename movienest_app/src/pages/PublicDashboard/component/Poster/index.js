@@ -28,8 +28,6 @@ function Poster({
                 const result = await fetchData(state);
                 if (isMounted) setResults(result);
 
-                console.log('Result data from fetching: ', result)
-
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
