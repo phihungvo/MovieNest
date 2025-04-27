@@ -43,7 +43,7 @@ const AppFooter = () => {
                             MovieNest - Trang xem phim Online với giao diện mới
                             được bổ trí và thiết kế thân thiện với người dùng.
                             Nguồn phim được tổng hợp từ các website lớn với đa
-                            dạng các đầu phim và thể loại vô cùng phong phú.
+                            dạng các đầu phim và thể loại vô cùng phong phú (Trang web phục vụ mục đích học tập).
                         </Paragraph>
                         <Text className={cx('copyright')}>
                             © 2025 by MovieNest

@@ -126,7 +126,7 @@ function Header({ activeSearch = true }) {
                                     className={cx('icon')}
                                     onClick={() => handleLogin()}
                                 >
-                                    <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg" alt="avatar" />
+                                    {/* <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg" alt="avatar" /> */}
                                 </div>
                             </Tippy>
                             <p>{user?.username}</p>

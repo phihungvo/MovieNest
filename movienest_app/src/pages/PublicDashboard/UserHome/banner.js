@@ -188,7 +188,6 @@ const MovieBanner = () => {
       }
   ];
 
-//   https://www.heavenofhorror.com/wp-content/uploads/2024/03/exhuma-2024-horror-review.jpg
   const nextSlide = () => {
     carouselRef.current.next();
   };
@@ -199,7 +198,7 @@ const MovieBanner = () => {
 
   return (
     <div className="movie-banner-container">
-      <Carousel ref={carouselRef} effect="fade" autoplay autoplaySpeed={6000} dots={false}>
+      <Carousel ref={carouselRef} effect="fade" autoplay autoplaySpeed={5000} dots={false}>
         {movies.map((movie) => (
           <div key={movie.id}>
             <div 

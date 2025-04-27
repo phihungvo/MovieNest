@@ -97,8 +97,7 @@ function HomeDashboard() {
                         </Card>
                     </Col>
                 </Row>
-                <Row gutter={16} style={{ marginBottom: '24px' }}>
-                    {/* Cột bên trái: 2 dòng số liệu */}
+                <Row gutter={16} style={{ marginBottom: '24px'}}>
                     <Col span={16}>
                         <Row gutter={[16, 16]}>
                             <Col span={12}>

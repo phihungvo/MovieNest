@@ -4,8 +4,6 @@ import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.entity.User;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface UserService {
 
     User findByUsername(String username);

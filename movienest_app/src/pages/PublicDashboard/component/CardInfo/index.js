@@ -128,8 +128,8 @@ function CardInfo({ movieResult, isTrailer }) {
                         hoverable
                         style={
                             isTrailer
-                                ? { width: 300, height: 320, marginLeft: 15 }
-                                : { width: 150, height: 320, marginLeft: 15 }
+                                ? { width: 300, height: 320, marginLeft: 15 ,  flexShrink: 0 }
+                                : { width: 150, height: 320, marginLeft: 15,  flexShrink: 0  }
                         }
                         cover={
                             isTrailer ? (
