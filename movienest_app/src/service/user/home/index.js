@@ -17,7 +17,6 @@ const tmdbApi = axios.create({
     baseURL: BASE_URL,
 });
 
-// https://api.themoviedb.org/3/search/multi?query=b&page=500&api_key=aad34a977eb04581217d21401cd37a60
 export const searchMovies = async (query) => {
     try {
         const response = await axios.get(`${BASE_URL}/search/multi`, {
@@ -56,14 +55,9 @@ export const getMovieToday = async () => {
 };
 
 export const getMovieInWeek = async () => {
-    const TOKEN = getToken();
+    // const TOKEN = getToken();
     try {
-        const response = await axios.get(API_ENDPOINTS.MOVIES.THIS_WEEK, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await axios.get(API_ENDPOINTS.MOVIES.THIS_WEEK);
         return response.data;
     } catch (error) {
         console.error('Error fetching movies in this week: ', error);
@@ -74,12 +68,7 @@ export const getMovieInWeek = async () => {
 export const getPopularMovie = async () => {
     const TOKEN = getToken();
     try {
-        const response = await axios.get(API_ENDPOINTS.MOVIES.POPULAR, {
-            headers: {
-                Authorization: `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await axios.get(API_ENDPOINTS.MOVIES.POPULAR);
 
         return response.data;
     } catch (error) {
@@ -90,12 +79,7 @@ export const getPopularMovie = async () => {
 
 const getMoviesWithTrailers = async (endpoint) => {
     try {
-        const moviesResponse = await axios.get(endpoint, {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-                'Content-Type': 'application/json',
-            },
-        });
+        const moviesResponse = await axios.get(endpoint);
 
         const movies = moviesResponse.data;
         // console.log(`Movies from ${endpoint}: `, movies);
@@ -132,7 +116,6 @@ const getMoviesWithTrailers = async (endpoint) => {
         return [];
     }
 };
-
 
 export const getVietnameMovieTrailers = async () => {
     return getMoviesWithTrailers(API_ENDPOINTS.MOVIES.VIETNAME_MOVIES);

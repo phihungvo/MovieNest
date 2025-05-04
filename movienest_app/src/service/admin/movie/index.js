@@ -224,12 +224,7 @@ export const handleUpdateMovie = async (movieId, formData) => {
 
 export const findAllKoreanMovies = async () => {
     try {
-        const response = await axios.get(API_ENDPOINTS.MOVIES.KOREAN_MOVIES, {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await axios.get(API_ENDPOINTS.MOVIES.KOREAN_MOVIES);
 
         return response.data;
     } catch (error) {

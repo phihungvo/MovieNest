@@ -78,13 +78,7 @@ export const getTrailerById = async (trailerId) => {
 export const getTrailerByMovieId = async (movieId) => {
     try {
         const response = await axios.get(
-            API_ENDPOINTS.TRAILER.GET_TRAILER_BY_MOVIE_ID(movieId),
-            {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                    'Content-Type': 'application/json',
-                },
-            },
+            API_ENDPOINTS.TRAILER.GET_TRAILER_BY_MOVIE_ID(movieId)
         );
         return response.data;
     } catch (error) {

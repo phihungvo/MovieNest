@@ -52,7 +52,6 @@ public class TrailerController {
     }
 
     @GetMapping("/movie/{movieId}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Trailer>> getTrailersByMovieId(@PathVariable("movieId") UUID movieId) {
         return ResponseEntity.ok(trailerService.getTrailersByMovieId(movieId));
     }

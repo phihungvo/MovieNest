@@ -55,7 +55,11 @@ public class SecurityConfig {
                                         "api/actor/findAll",
                                         "api/comment/getAll/**",
                                         "api/comment/create/**",
-                                        "api/comment/movie/**",
+                                        "api/movie/**",
+                                        "api/movie/this-week",
+                                        "api/movie/popular",
+                                        "api/movie/vietnamese-movie",
+                                        "api/movie/korean-movie",
                                         "api/comment/{commentId}/reply"
                                 ).permitAll()
 
