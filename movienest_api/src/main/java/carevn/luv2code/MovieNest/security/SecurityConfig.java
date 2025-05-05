@@ -5,6 +5,7 @@ package carevn.luv2code.MovieNest.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -48,6 +49,10 @@ public class SecurityConfig {
                                 // Public endpoints
                                 .requestMatchers("/api/auth/**").permitAll()
 
+                                .requestMatchers(HttpMethod.PUT, "/api/comment/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/api/comment/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/comment/**").permitAll()
+                        
                                 .requestMatchers(
                                         "/api/storage/files/**",
                                         "/api/movie/korea-movie",
@@ -60,6 +65,7 @@ public class SecurityConfig {
                                         "api/movie/popular",
                                         "api/movie/vietnamese-movie",
                                         "api/movie/korean-movie",
+                                        "api/comment/movie/**",
                                         "api/comment/{commentId}/reply"
                                 ).permitAll()
 

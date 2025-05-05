@@ -105,12 +105,6 @@ public class CommentServiceImpl implements CommentService {
             comment.setContent(request.getContent());
             comment.setEdited(true);
         }
-        comment.setStatus(CommentStatus.PENDING);
-
-        if (request.getIsHidden() != null) {
-            comment.setHidden(request.getIsHidden());
-        }
-
         comment.setUpdatedAt(new Date());
 
         return commentMapper.toDtoWithReplies(commentRepository.save(comment));
@@ -130,7 +124,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(UUID commentId) {
-        // Soft delete: Chỉ ẩn comment thay vì xóa
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
@@ -169,7 +162,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> getAllCommentsNotHidden() {
-        // Chỉ lấy các comment gốc không bị ẩn
         List<Comment> comments = commentRepository.getRootCommentsNotHidden();
         return commentMapper.toDtoList(comments);
     }
@@ -185,42 +177,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<CommentDTO> getCommentByMovieId(UUID movieId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Comment> comments = commentRepository.findByMovieId(movieId, pageable);
+        Page<Comment> rootComments = commentRepository.findByMovieIdAndParentCommentIsNull(movieId, pageable);
 
-        return comments.map(comment -> {
+        // Chuyển đổi sang DTO và đảm bảo các reply được bao gồm
+        return rootComments.map(rootComment -> {
             try {
-                CommentDTO dto = new CommentDTO();
-                // Thiết lập các thuộc tính với kiểm tra null
-                dto.setId(comment.getId());
-                dto.setContent(comment.getContent());
-                dto.setLikeCount(comment.getLikeCount());
-                dto.setDislikeCount(comment.getDislikeCount());
-                dto.setCreateAt(comment.getCreateAt());
-                dto.setUpdatedAt(comment.getUpdatedAt());
-
-                if (comment.getUser() != null) {
-                    dto.setUserId(comment.getUser().getId());
-                    dto.setUsername(comment.getUser().getUsername());
-                }
-
-                dto.setEdited(comment.isEdited());
-                dto.setHidden(comment.isHidden());
-                dto.setStatus(comment.getStatus());
-
-                if (comment.getParentComment() != null) {
-                    dto.setParentId(comment.getParentComment().getId());
-                }
-
-                if (comment.getMovie() != null) {
-                    dto.setMovieName(comment.getMovie().getTitle());
-                }
-
-                if (comment.getChildComments() != null && !comment.getChildComments().isEmpty()) {
-                    dto.setReplies(commentMapper.toDtoList(comment.getChildComments()));
-                }
-                return dto;
+                return commentMapper.toDtoWithReplies(rootComment);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Lỗi khi chuyển đổi Comment sang DTO: ", e);
                 throw new RuntimeException("Lỗi khi chuyển đổi Comment sang DTO: " + e.getMessage(), e);
             }
         });

@@ -26,15 +26,6 @@ const sideBar = [
         icon: <HomeOutlined />,
         url: '/admin/dashboard',
     },
-    // {
-    //     title: 'Email',
-    //     color: '#795648',
-    //     icon: <MailOutlined />,
-    //     children: [
-    //         { title: 'Inbox', icon: <InboxOutlined /> },
-    //         { title: 'Sent', icon: <SendOutlined /> },
-    //     ],
-    // },
     {
         title: 'Movie',
         color: '#7b53c0',

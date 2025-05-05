@@ -16,7 +16,6 @@ export const getAllComments = async ({ page = 0, pageSize = 5 }) => {
             },
         );
 
-        console.log('comment data: ', response.data);
         return response.data;
     } catch (error) {
         console.error(
@@ -46,7 +45,6 @@ export const getCommentsByMovieId = async ({
             },
         );
 
-        console.log('Get comment by movie id: ', response.data);
         return response.data;
     } catch (error) {
         console.error(
@@ -57,21 +55,18 @@ export const getCommentsByMovieId = async ({
 };
 
 export const createComment = async (data) => {
-    const TOKEN = getToken();
-    console.log('Comment data for create: ', data);
     try {
         const response = await axios.post(API_ENDPOINTS.COMMENTS.CREATE, data, {
             headers: {
-                Authorization: `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
         });
 
-        if (!response) {
-            message.success('Comment Create Failed !');
+        if (response) {
+            message.success('Bình luận đã được gửi thành công!');
         }
 
-        console.log('data: >>>> ', response.data);
         return response.data;
     } catch (error) {
         console.error(
@@ -95,11 +90,9 @@ export const updateComment = async (commentId, formData) => {
             },
         );
 
-        if (!response) {
-            message.success('Comment updated Failed !');
+        if (response) {
+            message.success('Bình luận đã được cập nhật');
         }
-
-        console.log('data: >>>> ', response.data);
     } catch (error) {
         console.error(
             'Error updating comment:',
@@ -110,23 +103,17 @@ export const updateComment = async (commentId, formData) => {
 };
 
 export const updateCommentForUser = async (commentId, formData) => {
+    console.log('Form data: ', formData);
     try {
         const response = axios.patch(
             API_ENDPOINTS.COMMENTS.UPDATE(commentId),
             formData,
-            {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                    'Content-Type': 'application/json',
-                },
-            },
         );
 
         if (!response) {
             message.success('Comment updated Failed !');
         }
 
-        console.log('data: >>>> ', response.data);
     } catch (error) {
         console.error(
             'Error updating comment:',
@@ -140,15 +127,11 @@ export const deleteComment = async (commentId) => {
     try {
         const response = await axios.delete(
             API_ENDPOINTS.COMMENTS.DELETE(commentId),
-            {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                    'Content-Type': 'application/json',
-                },
-            },
         );
 
-        console.log('response: ', response.data);
+        if (response) {
+            message.success('Bình luận đã được xóa');
+        }
     } catch (error) {
         console.error('Error deleting comment: ', error);
         throw error;
@@ -156,20 +139,13 @@ export const deleteComment = async (commentId) => {
 };
 
 export const reactionToAComment = async (commentId, userId, reactionType) => {
-    console.log('user id: ', userId, ' : ', 'reaction type: ', reactionType);
     try {
         const response = await axios.post(
             API_ENDPOINTS.COMMENTS.REACTION_TO_A_COMMENT(commentId),
             {
                 userId: userId,
-                reaction: reactionType,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                    'Content-Type': 'application/json',
-                },
-            },
+                reaction: reactionType['reactionType']
+            }
         );
         console.log('response reaction to a comment: ', response.data);
     } catch (error) {
@@ -178,15 +154,14 @@ export const reactionToAComment = async (commentId, userId, reactionType) => {
     }
 };
 
-export const replyToComment = async (parentId, commentData) => {
-    console.log('Reply data: ', parentId, ' and ', commentData);
+export const replyToComment = async (parentId, replyData) => {
     try {
         const response = await axios.post(
             API_ENDPOINTS.COMMENTS.REPLY_TO_A_COMMENT(parentId),
             {
-                content: commentData.content,
-                movieId: commentData.movieId,
-                userId: commentData.userId,
+                content: replyData.content,
+                movieId: replyData.movieId,
+                userId: replyData.userId,
             },
             {
                 headers: {
@@ -195,6 +170,10 @@ export const replyToComment = async (parentId, commentData) => {
                 },
             },
         );
+
+        if (response) {
+            message.success('Phản hồi đã được gửi thành công');
+        }
 
         return response.data;
     } catch (error) {

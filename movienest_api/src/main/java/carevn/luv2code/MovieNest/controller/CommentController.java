@@ -63,13 +63,20 @@ public class CommentController {
         return new ResponseEntity<>(createdReply, HttpStatus.CREATED);
     }
 
+//    @PutMapping("/{commentId}")
+//    public ResponseEntity<CommentDTO> updateComment(
+//            @PathVariable UUID commentId,
+//            @RequestBody CommentDTO commentDTO
+//    ){
+//        CommentDTO updatedComment = commentService.updateComment(commentId, commentDTO);
+//        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
+//    }
+
     @PutMapping("/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(
-            @PathVariable UUID commentId,
-            @RequestBody CommentDTO commentDTO
-    ){
-        CommentDTO updatedComment = commentService.updateComment(commentId, commentDTO);
-        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable UUID commentId,
+                                                    @RequestBody CommentUpdateRequest commentUpdateRequest) {
+        CommentDTO commentDTO = commentService.updateCommentForUser(commentId, commentUpdateRequest);
+        return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
     @PatchMapping("/{commentId}")

@@ -15,10 +15,9 @@ import {
 import Poster from '../component/Poster';
 import { getAllActorNoPaging } from '~/service/admin/actor';
 import Header from '../component/Header';
-import CommentList from '~/components/Layout/components/CommentList';
+import {CommentList} from '~/components/Layout/components/CommentList';
 import { getAllComments } from '~/service/admin/comment';
 import { useAuth } from '~/routes/AuthContext';
-
 
 const cx = classNames.bind(styles);
 

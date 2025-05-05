@@ -36,7 +36,7 @@ function Header({ activeSearch = true }) {
         const handleScroll = () => {
             // Tính toán độ trong suốt dựa trên vị trí scroll
             const scrollPosition = window.scrollY;
-            
+
             // Nếu scroll xuống quá 50px, thêm class scrolled
             if (scrollPosition > 50) {
                 setScrolled(true);
@@ -46,7 +46,7 @@ function Header({ activeSearch = true }) {
         };
 
         window.addEventListener('scroll', handleScroll);
-        
+
         // Dọn dẹp event listener khi component unmount
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -96,13 +96,22 @@ function Header({ activeSearch = true }) {
         navigate('/login');
     };
 
+    const handleLogoClick = () => {
+        navigate('/');
+    };
+
     return (
         <>
             <header className={cx('wrapper', { scrolled })}>
                 <div className={cx('inner')}>
                     <div className={cx('sub_media')}>
                         <div className={cx('leftMenu')}>
-                            <img src="https://i.imgur.com/ZEbJI8l.png" />
+                            <img
+                                src="https://i.imgur.com/ZEbJI8l.png"
+                                alt="Logo"
+                                onClick={handleLogoClick}
+                                style={{ cursor: 'pointer' }}
+                            />
                             <NavMenu publicRoutes={publicRoutes} />
                         </div>
                         <div className={cx('rightMenu')}>

@@ -34,10 +34,11 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     @EntityGraph(attributePaths = {"user", "movie", "childComments"})
     Page<Comment> findByMovieId(UUID movieId, Pageable pageable);
+
+    // Lấy tất cả các comment gốc (không có parent) theo movieId
+    Page<Comment> findByMovieIdAndParentCommentIsNull(UUID movieId, Pageable pageable);
+
 //    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.user LEFT JOIN FETCH c.movie LEFT JOIN FETCH c.childComments WHERE c.movie.id = :movieId")
 //    Page<Comment> findByMovieId(@Param("movieId") UUID movieId, Pageable pageable);
-
-
-    // NEW API VERSION 2
 
 }

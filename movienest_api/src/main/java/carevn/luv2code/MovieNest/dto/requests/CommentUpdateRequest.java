@@ -6,6 +6,4 @@ import lombok.Data;
 @Data
 public class CommentUpdateRequest {
     private String content;
-    private CommentStatus status;
-    private Boolean isHidden;
 }

@@ -32,7 +32,6 @@ export const createActor = async (data) => {
             message.success('Actor Create Successfully !');
         }
 
-        console.log('data: >>>> ', response.data);
         return response.data;
     } catch (error) {
         console.error(
@@ -67,7 +66,6 @@ export const getAllActorNoPaging = async () => {
     try {
         const response = await axios.get(API_ENDPOINTS.ACTOR.GET_ALL_NO_PAGING);
 
-        console.log('All Actor ------: ', response.data);
         return response.data;
     } catch (error) {
         message.error('Error fetching actor with no pageble: ', error);
