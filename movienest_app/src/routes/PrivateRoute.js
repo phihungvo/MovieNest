@@ -1,20 +1,23 @@
-import { Navigate } from "react-router-dom";
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-const PrivateRoute = ({ element, role }) => {
+const PrivateRoute = ({ element, role, title }) => {
   const { user } = useAuth();
-  const { isDarkMode } = useAuth();
+      const location = useLocation();
+
+  const elementWithTitle = React.cloneElement(element, { pageTitle: title });
 
   // Check user login ?
   if (!user || !user.token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (role && user.role !== role) {
     return <Navigate to="/" replace />;
   }
 
-  return element;
+  return elementWithTitle;
 };
 
 export default PrivateRoute;

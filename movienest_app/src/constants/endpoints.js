@@ -63,7 +63,8 @@ const API_ENDPOINTS = {
 
     COMMENTS: {
         GET_ALL_COMMENT: `${BASE_URL}/comment/getAll`,
-        GET_COMMENT_BY_MOVIE_ID: (movieId) => `${BASE_URL}/comment/movie/${movieId}`,
+        GET_COMMENT_BY_MOVIE_ID: (movieId) =>
+            `${BASE_URL}/comment/movie/${movieId}`,
         CREATE: `${BASE_URL}/comment/create`,
         UPDATE_PUT: (id) => `${BASE_URL}/comment/${id}`,
         UPDATE_FOR_USER: (id) => `${BASE_URL}/comment/${id}`,
@@ -72,6 +73,13 @@ const API_ENDPOINTS = {
             `${BASE_URL}/comment/${commentId}/reply`,
         REACTION_TO_A_COMMENT: (commentId) =>
             `${BASE_URL}/comment/${commentId}/reaction`,
+    },
+    BANNER: {
+        CREATE: `${BASE_URL}/banner/create`,
+        GET_ALL_NO_PAGING: `${BASE_URL}/banner`,
+        GET_ALL: `${BASE_URL}/banner/getAll`,
+        UPDATE: (bannerId) => `${BASE_URL}/banner/update/${bannerId}`,
+        DELETE: (bannerId) => `${BASE_URL}/banner/${bannerId}`,
     },
 };
 

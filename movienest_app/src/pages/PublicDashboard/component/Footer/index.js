@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Typography, Space, Divider } from 'antd';
 import {
     FacebookOutlined,
@@ -17,6 +17,25 @@ const { Footer } = Layout;
 const { Title, Text, Paragraph } = Typography;
 
 const AppFooter = () => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    // Check scroll position
+    useEffect(() => {
+        const toggleVisibility = () => {
+            if (window.pageYOffset > 300) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+        };
+
+        window.addEventListener('scroll', toggleVisibility);
+
+        return () => {
+            window.removeEventListener('scroll', toggleVisibility);
+        };
+    }, []);
+
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -158,7 +177,7 @@ const AppFooter = () => {
                         </Link>
                     </Space>
 
-                    <div className={cx('scroll-to-top')} onClick={scrollToTop}>
+                    <div className={cx('scroll-to-top', { visible: isVisible })} onClick={scrollToTop}>
                         <ArrowUpOutlined />
                     </div>
                 </div>

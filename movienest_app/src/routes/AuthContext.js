@@ -6,10 +6,9 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    // Kiểm tra xem có token trong localStorage khi component mount
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const role = localStorage.getItem('role');
+        // const role = localStorage.getItem('role');
 
         if (token) {
             try {
@@ -40,6 +39,10 @@ export const AuthProvider = ({ children }) => {
     const login = (userData) => setUser(userData);
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        // localStorage.removeItem('userId');
+        
+        // Reset user state
         setUser(null);
     };
 

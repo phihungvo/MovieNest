@@ -3,19 +3,27 @@
     height: 66px;
     width: 100%;
     border-bottom: 1px solid rgba(0, 0, 0, 0.0625);
-    background-color: #111318;
+    background-color: white;
 }
+
 .header-container {
     position: relative;
-}
-.nav-left {
-}
-.nav-right {
-    position: absolute;
-    top: 0;
-    right: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    text-align: center;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.nav-left {
+    h2 {
+        margin: 0;
+    }
+}
+
+.nav-right {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

@@ -61,7 +61,6 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
-        // Generate JWT token with user details
         String token = jwtService.generateToken(userOptional.get());
 
         return ResponseEntity.ok(new AuthenticationResponse(token));
@@ -69,7 +68,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        // Register the user and generate token
         String token = authService.register(request);
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }

@@ -27,7 +27,7 @@ function SmartInput({
             style={{
                 width: inputWidth,
                 height: inputHeight,
-                background: '#111318',
+                // background: '#111318',
                 color: 'white',
             }}
             prefix={

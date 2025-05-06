@@ -34,10 +34,10 @@ function User() {
 
     const columns = [
         {
-            title: 'UserName',
-            dataIndex: 'username',
-            key: 'username',
-            width: 200,
+            title: 'User Name',
+            dataIndex: 'userName',
+            key: 'userName',
+            width: 150,
             fixed: 'left',
         },
         {
@@ -46,27 +46,33 @@ function User() {
             key: 'email',
             width: 150,
         },
-        { title: 'address', dataIndex: 'address', key: 'address', width: 150 },
-        {
-            title: 'phone_number',
-            dataIndex: 'phone_number',
-            key: 'phone_number',
-            width: 200,
-        },
         {
             title: 'Role',
             dataIndex: 'roles',
             key: 'roles',
             width: 100,
-            render: (roles) => (roles ? 'USER' : 'ADMIN'),
         },
         {
             title: 'Create At',
-            dataIndex: 'create_at',
-            key: 'create_at',
-            width: 200,
+            dataIndex: 'createAt',
+            key: 'createAt',
+            width: 180,
             render: (date) =>
                 date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
+        },
+        { title: 'address',
+             dataIndex: 'address',
+              key: 'address',
+               width: 150,
+            render: (add) => 
+            add ? add : 'Viet Nam' },
+        {
+            title: 'Phone Number',
+            dataIndex: 'phoneNumber',
+            key: 'phoneNumber',
+            width: 200,
+            render: (phone) =>
+                phone ? phone : 'N/A',
         },
         {
             title: 'Actions',
@@ -192,16 +198,6 @@ function User() {
 
     return (
         <div className={cx('trailer-wrapper')}>
-            <div className={cx('trailer-header')}>
-                <h2>User Management</h2>
-            </div>
-            <hr
-                style={{
-                    borderColor: '#e5e7eb',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                }}
-            />
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"

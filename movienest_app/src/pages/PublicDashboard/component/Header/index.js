@@ -12,11 +12,15 @@ import {
     faMagnifyingGlass,
     faPlus,
 } from '@fortawesome/free-solid-svg-icons';
+import { message } from 'antd';
 import SearchMovie from '../Search/index';
 import { useDebounce } from '~/hooks';
 import { searchMovieByKeyWord } from '~/service/admin/movie';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '~/routes/AuthContext';
+import { Menu, Dropdown } from 'antd';
+import { LogoutOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons';
+import SmartButton from '~/components/Layout/components/SmartButton';
 
 const cx = classNames.bind(styles);
 
@@ -26,18 +30,15 @@ function Header({ activeSearch = true }) {
     const [loading, setLoading] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const debounced = useDebounce(searchValue, 400);
     const inputRef = useRef();
 
-    // Xử lý sự kiện scroll
     useEffect(() => {
         const handleScroll = () => {
-            // Tính toán độ trong suốt dựa trên vị trí scroll
             const scrollPosition = window.scrollY;
 
-            // Nếu scroll xuống quá 50px, thêm class scrolled
             if (scrollPosition > 50) {
                 setScrolled(true);
             } else {
@@ -58,7 +59,7 @@ function Header({ activeSearch = true }) {
         inputRef.current.focus();
     };
 
-    const hanleInputChange = (e) => {
+    const handleInputChange = (e) => {
         setSearchValue(e.target.value);
     };
 
@@ -75,7 +76,6 @@ function Header({ activeSearch = true }) {
                 const results = await searchMovieByKeyWord(debounced);
                 setSearchResult(results);
                 setLoading(false);
-                console.log('Success when get movies.', results);
             } catch (error) {
                 setLoading(false);
                 console.log('Error when get movies.');
@@ -100,6 +100,27 @@ function Header({ activeSearch = true }) {
         navigate('/');
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+        message.success('Đăng xuất thành công!');
+    };
+
+    const userMenu = (
+        <Menu>
+            <Menu.Item key="profile" icon={<UserOutlined />}>
+                Hồ sơ
+            </Menu.Item>
+            <Menu.Item key="settings" icon={<SettingOutlined />}>
+                Cài đặt
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
+                Đăng xuất
+            </Menu.Item>
+        </Menu>
+    );
+
     return (
         <>
             <header className={cx('wrapper', { scrolled })}>
@@ -114,6 +135,44 @@ function Header({ activeSearch = true }) {
                             />
                             <NavMenu publicRoutes={publicRoutes} />
                         </div>
+
+                        {activeSearch && (
+                            <div className={cx('search-bar')}>
+                                <div className={cx('search-form')}>
+                                    <FontAwesomeIcon
+                                        className={cx('search-icon')}
+                                        icon={faMagnifyingGlass}
+                                    />
+                                    <input
+                                        ref={inputRef}
+                                        value={searchValue}
+                                        className={cx('search-input')}
+                                        placeholder="Tìm kiếm..."
+                                        onChange={handleInputChange}
+                                    />
+                                    <div className={cx('status_loading')}>
+                                        {!!searchValue && !loading && (
+                                            <button
+                                                className={cx('clear')}
+                                                onClick={handleClear}
+                                            >
+                                                <FontAwesomeIcon icon={faCircleXmark} />
+                                            </button>
+                                        )}
+                                        {loading && (
+                                            <FontAwesomeIcon
+                                                className={cx('loading')}
+                                                icon={faSpinner}
+                                            />
+                                        )}
+                                    </div>
+                                    {searchResult?.length > 0 && (
+                                        <SearchMovie movieData={searchResult} />
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <div className={cx('rightMenu')}>
                             <FontAwesomeIcon
                                 className={cx('icon')}
@@ -130,57 +189,25 @@ function Header({ activeSearch = true }) {
                                 />
                                 <div className={cx('count')}> 1 </div>
                             </div>
-                            <Tippy content="Hồ sơ và cài đặt!">
-                                <div
-                                    className={cx('icon')}
-                                    onClick={() => handleLogin()}
-                                >
-                                    {/* <img src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg" alt="avatar" /> */}
-                                </div>
-                            </Tippy>
-                            <p>{user?.username}</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            {/* {activeSearch && (
-                <div className={cx('search-bar')}>
-                    <div className={cx('search-form')}>
-                        <FontAwesomeIcon
-                            className={cx()}
-                            icon={faMagnifyingGlass}
-                        />
-
-                        <input
-                            ref={inputRef}
-                            value={searchValue}
-                            className={cx('search-input')}
-                            placeholder="Search for a movie, tv show or person ..."
-                            onChange={hanleInputChange}
-                        />
-
-                        <div className={'status_loading'}>
-                            {!!searchValue && !loading && (
-                                <button
-                                    className={cx('clear')}
-                                    onClick={handleClear}
-                                >
-                                    <FontAwesomeIcon icon={faCircleXmark} />
-                                </button>
-                            )}
-                            {loading && (
-                                <FontAwesomeIcon
-                                    className={cx('loading')}
-                                    icon={faSpinner}
+                            {user ? (
+                                <Dropdown overlay={userMenu} trigger={['click']}>
+                                    <div className={cx('user-profile')}>
+                                        <div className={cx('avatar')}>
+                                            <img src="https://i.pravatar.cc/150" alt="avatar" />
+                                        </div>
+                                        <span className={cx('username')}>{user.username}</span>
+                                    </div>
+                                </Dropdown>
+                            ) : (
+                                <SmartButton
+                                    title="Đăng nhập" 
+                                    onClick={() => navigate('/login')}
                                 />
                             )}
                         </div>
                     </div>
                 </div>
-            )}
-            {searchResult?.length > 0 && (
-                <SearchMovie movieData={searchResult} />
-            )} */}
+            </header>
         </>
     );
 }

@@ -373,16 +373,6 @@ function Trailer() {
 
     return (
         <div className={cx('trailer-wrapper')}>
-            <div className={cx('trailer-header')}>
-                <h2>Trailer Management</h2>
-            </div>
-            <hr
-                style={{
-                    borderColor: '#e5e7eb',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                }}
-            />
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"

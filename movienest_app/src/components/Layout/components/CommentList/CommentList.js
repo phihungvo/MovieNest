@@ -18,7 +18,6 @@ import {
 } from '~/service/admin/comment';
 import CommentItem from './CommentItem';
 import NewCommentForm from './NewCommentForm';
-// import { DeleteConfirmModal } from './DeleteConfirmModal';
 
 const { TextArea } = Input;
 
@@ -81,7 +80,7 @@ function CommentList({ movieId, userId }) {
 
     return (
         <div className={styles['comment-container']}>
-            {/* Add new comment section */}
+            {/* New comment section */}
             <NewCommentForm
                 userId={userId}
                 newCommentText={newCommentText}
@@ -121,10 +120,6 @@ function CommentList({ movieId, userId }) {
                     />
                 </div>
             )}
-
-            {/* <DeleteConfirmModal
-                onDeleteConfirm={() => confirmDelete(comment.id)}             
-            /> */}
         </div>
     );
 }

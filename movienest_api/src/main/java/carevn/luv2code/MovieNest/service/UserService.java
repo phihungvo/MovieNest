@@ -8,9 +8,9 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void save(User user);
+    void save(UserDTO userDTO);
 
     void updateUser(UserDTO userDTO);
 
-    Page<User> findAll(int page, int size);
+    Page<UserDTO> findAll(int page, int size);
 }

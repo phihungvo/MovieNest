@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -51,10 +52,6 @@ public class Movie {
 
     String director;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "movie_type")
-//    MovieType movieType;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "country")
     Country country;
@@ -73,4 +70,7 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     List<Comment> comments;
+
+    @OneToMany(mappedBy = "movie" , cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Banner> banners = new ArrayList<>();
 }

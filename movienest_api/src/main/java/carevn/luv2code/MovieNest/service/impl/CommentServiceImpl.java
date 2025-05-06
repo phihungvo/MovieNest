@@ -155,7 +155,7 @@ public class CommentServiceImpl implements CommentService {
             dto.setHidden(comment.isHidden());
             dto.setStatus(comment.getStatus());
             dto.setMovieName(comment.getMovie().getTitle());
-            dto.setUsername(comment.getUser().getUsername());
+            dto.setUserName(comment.getUser().getUserName());
             return dto;
         });
     }

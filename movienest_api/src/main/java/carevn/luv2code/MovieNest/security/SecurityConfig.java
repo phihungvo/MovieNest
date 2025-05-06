@@ -75,7 +75,7 @@ public class SecurityConfig {
                                 // Admin-only endpoints
                                 .requestMatchers(
                                         "/api/admin/**",
-//                                "/api/storage/**",
+                               //"/api/storage/**",
                                         "/api/genres/**",
                                         "/api/trailers/**",
                                         "/api/comment/**",

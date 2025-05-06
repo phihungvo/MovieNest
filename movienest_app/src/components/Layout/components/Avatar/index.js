@@ -8,6 +8,7 @@ const cx = classNames.bind(styles);
 function Avatar() {
     const navigate = useNavigate();
     const { user } = useAuth();
+    console.log('user: ', user)
 
     const handleLogin = () => {
         navigate('/login');
@@ -18,7 +19,7 @@ function Avatar() {
             <div className={cx('container')} onClick={() => handleLogin()}>
                 <div className={cx('avatar-container')}>
                     <img
-                        src="https://khoinguonsangtao.vn/wp-content/uploads/2022/09/hinh-anh-gai-xinh-cap-2-3.jpg"
+                        src={`https://i.pravatar.cc/150`}
                         alt="Avatar"
                     />
                 </div>

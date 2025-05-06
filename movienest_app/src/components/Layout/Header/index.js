@@ -10,23 +10,27 @@ const notificationIcons = [
     {
         icon: <BellOutlined />,
         count: 3,
+        type: 'bell'
     },
     {
         icon: <MailOutlined />,
         count: 5,
+        type: 'mail'
     },
 ];
 
-function Header() {
+function Header({ title }) {
     return (
         <>
             <div className={cx('header-nav')}>
                 <div className={cx('header-container')}>
-                    <div className={cx('nav-left')}></div>
+                    <div className={cx('nav-left')}>
+                        <h3>{title}</h3>
+                    </div>
                     <div className={cx('nav-right')}>
-                        {notificationIcons.map((item, index) => (
+                        {notificationIcons.map((item) => (
                             <Notification
-                                key={index}
+                                key={item.type}
                                 icon={item.icon}
                                 count={item.count}
                                 style={{}}

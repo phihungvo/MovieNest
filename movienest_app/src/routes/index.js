@@ -8,6 +8,7 @@ import Register from '../pages/General/Register';
 import Actor from '../pages/AdminDashboard/Actor';
 import User from '~/pages/AdminDashboard/User';
 import MovieDetail from '~/pages/PublicDashboard/MovieDetail';
+import Banner from '~/pages/AdminDashboard/Banner';
 
 const publicRoutes = [
     { path: '/', component: UserHome, title: 'User Home' },
@@ -19,11 +20,12 @@ const publicRoutes = [
 
 const privateRoutes = [
     { path: '/admin/dashboard', component: HomeDashboard, title: 'HomeDashboard', role: 'admin' },
-    { path: '/admin/movie', component: Movie, title: 'Movie', role: 'admin' },
-    { path: '/admin/trailer', component: Trailer, title: 'Trailer', role: 'admin' },
-    { path: '/admin/comment', component: Comment, title: 'Comment', role: 'admin' },
-    { path: '/admin/actor', component: Actor, title: 'Actor', role: 'admin' },
-    { path: '/admin/user', component: User, title: 'User', role: 'admin' },
+    { path: '/admin/movie', component: Movie, title: 'Movie Management', role: 'admin' },
+    { path: '/admin/trailer', component: Trailer, title: 'Trailer Management', role: 'admin' },
+    { path: '/admin/comment', component: Comment, title: 'Comment Management', role: 'admin' },
+    { path: '/admin/actor', component: Actor, title: 'Actor Management', role: 'admin' },
+    { path: '/admin/user', component: User, title: 'User Management', role: 'admin' },
+    { path: '/admin/banner', component: Banner, title: 'Banner Management', role: 'admin' },
 ];
 
 export { publicRoutes, privateRoutes };

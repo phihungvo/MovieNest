@@ -15,6 +15,7 @@ import {
     InboxOutlined,
     SendOutlined,
     CommentOutlined,
+    SettingFilled,
 } from '@ant-design/icons';
 
 const cx = classNames.bind(styles);
@@ -22,63 +23,72 @@ const cx = classNames.bind(styles);
 const sideBar = [
     {
         title: 'Dashboard',
-        color: '#44a2f5',
+        color: '#1890ff',
         icon: <HomeOutlined />,
         url: '/admin/dashboard',
     },
     {
+        title: 'Banner',
+        color: '#52c41a',
+        icon: <FileTextOutlined />,
+        url: '/admin/banner',
+    },
+    {
         title: 'Movie',
-        color: '#7b53c0',
+        color: '#722ed1',
         icon: <EditOutlined />,
         url: '/admin/movie',
     },
     {
         title: 'Trailer',
-        color: '#e91e63',
+        color: '#eb2f96',
         icon: <CalendarOutlined />,
         url: '/admin/trailer',
     },
     {
         title: 'Actor',
-        color: '#01a9f4',
+        color: '#13c2c2',
         icon: <UserOutlined />,
         url: '/admin/actor',
     },
     {
         title: 'Comment',
-        color: '#ff9800',
+        color: '#fa8c16',
         icon: <CommentOutlined />,
         url: '/admin/comment',
     },
     {
         title: 'User',
-        color: '#9c27b0',
+        color: '#8c8c8c',
         icon: <ProfileOutlined />,
         url: '/admin/user',
     },
     {
         title: 'Notifications',
-        color: '#f44336',
+        color: '#f5222d',
         icon: <BellOutlined />,
     },
     {
-        title: 'Settings',
-        color: '#4caf50',
-        icon: <FileTextOutlined />,
+        title: 'Setting',
+        color: '#2f54eb',
+        icon: <SettingFilled />,
     },
     {
         title: 'Store',
-        color: '#3f51b5',
+        color: '#faad14',
         icon: <ShopOutlined />,
     },
 ];
 
-function DashboardLayout({ children }) {
+function DashboardLayout({ children, pageTitle }) {
+    
+    const title = pageTitle || 'Dashboard';
+
     return (
         <div className={cx('wrapper')}>
             <Sidebar dataSource={sideBar} />
             <div className={cx('right-container')}>
-                <Header />
+                <Header title={title} />
                 <div className={cx('content')}>{children}</div>
             </div>
         </div>

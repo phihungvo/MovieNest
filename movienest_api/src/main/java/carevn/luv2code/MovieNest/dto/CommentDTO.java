@@ -37,7 +37,7 @@ public class CommentDTO {
 
     UUID userId;
 
-    String username;
+    String userName;
 
     boolean isEdited;
 

@@ -1,5 +1,6 @@
 package carevn.luv2code.MovieNest.controller;
 
+import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.dto.requests.ApiResponse;
 import carevn.luv2code.MovieNest.entity.User;
 import carevn.luv2code.MovieNest.service.UserService;
@@ -27,18 +28,18 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<Page<User>> findAll(
+    public ResponseEntity<Page<UserDTO>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        Page<User> users = userService.findAll(page, size);
+        Page<UserDTO> users = userService.findAll(page, size);
         return ResponseEntity.ok(users);
     }
 
     @PostMapping("/createUser")
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
-        userService.save(user);
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
+        userService.save(userDTO);
+        return ResponseEntity.ok().body("Create user successfully");
     }
 
 

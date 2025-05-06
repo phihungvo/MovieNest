@@ -4,26 +4,25 @@
     justify-content: center;
     width: 100%;
     height: var(--header-height);
-    background-color: rgba(10, 13, 15, 0); /* Trong suốt ban đầu */
+    background-color: rgba(10, 13, 15, 0);
     align-items: center;
-    position: fixed; /* Cố định header ở trên cùng */
-    z-index: 999; /* Đảm bảo header luôn nằm trên các phần tử khác */
+    position: fixed;
+    z-index: 999;
     top: 0;
     left: 0;
-    transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi mượt */
-    box-shadow: none; /* Không có shadow ở trạng thái ban đầu */
+    transition: background-color 0.3s ease;
+    box-shadow: none;
 }
 
 .wrapper.scrolled {
-    background-color: rgba(3, 37, 65, 1); /* Màu đậm khi cuộn */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Thêm shadow nhẹ khi cuộn */
+    background-color: rgba(3, 37, 65, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .inner {
     width: 1300px;
     height: 56px;
     position: relative;
-    // background-color: transparent; /* Thay đổi thành trong suốt */
     top: 0;
     left: 0;
     padding: 0 40px;
@@ -34,7 +33,7 @@
     justify-content: space-between;
     height: 56px;
     align-items: center;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .leftMenu {
@@ -61,17 +60,17 @@
     width: 23px;
     height: 23px;
     border-radius: 50%;
-    overflow: hidden; /* Cắt phần thừa */
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     
     img {
-        width: 100%; /* Chiếm toàn bộ không gian div */
+        width: 100%;
         height: 100%;
-        object-fit: cover; /* Đảm bảo ảnh không bị méo */
+        object-fit: cover;
     }
 }
 
@@ -99,80 +98,136 @@
 }
 
 .search-bar {
-    height: 64px;
-    width: 100%;
+    height: 44px;
+    min-width: 300px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid rgb(227, 227, 227);
-    position: fixed;
-    top: var(--header-height);
-    background-color: white;
-    z-index: 998;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    justify-content: flex-end;
+    position: relative;
+    margin-right: 20px;
+    z-index: 1001;
 }
 
 .search-form {
-    width: 1300px;
-    height: 44px;
+    width: 300px;
+    height: 36px;
     display: flex;
-    padding: 0 40px;
     align-items: center;
-    margin-left: 50px;
-    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 0 12px;
+    transition: all 0.3s ease;
     position: relative;
+    z-index: 1001;
+    
+    &:hover, &:focus-within {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .search-icon {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 16px;
+        margin-right: 8px;
+    }
 }
 
 .search-input {
-    width: 100%;
+    flex: 1;
     height: 100%;
-    border-bottom: 1px solid rgb(227, 227, 227);
-    padding-right: 30px;
-    /* Chừa khoảng trống cho icon */
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    padding: 0;
+
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    &:focus {
+        outline: none;
+    }
 }
 
 .status_loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    right: 10px;
-    /* Đặt ở góc phải của input */
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-}
-
-.clear, .loading {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-}
-
-.loading {
-    color: gray;
-    animation: spin 1s linear infinite;
+    right: 12px;
+    height: 100%;
 }
 
 .clear {
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    background: transparent;
+    border: none;
+    
+    &:hover {
+        color: #fff;
+    }
+}
+
+.loading {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
     from {
-        transform: translate(-50%, -50%) rotate(0deg);
+        transform: rotate(0deg);
     }
-    
     to {
-        transform: translate(-50%, -50%) rotate(360deg);
+        transform: rotate(360deg);
     }
 }
 
-
-/* Thêm padding-top cho content để tránh bị che khuất */
 body {
     padding-top: calc(var(--header-height) + 44px);
 }
 
-/* Thêm class cho container chính để tránh bị che khuất */
 .main-content {
     margin-top: calc(var(--header-height) + 44px);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 8px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .username {
+        color: #fff;
+        font-size: 14px;
+    }
 }

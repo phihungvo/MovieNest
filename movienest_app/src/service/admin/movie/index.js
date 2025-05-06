@@ -8,7 +8,6 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const searchMovieByKeyWord = async (keyWord) => {
     try {
-        console.log('Start searching with keyword:', keyWord);
         const response = await axios.post(
             API_ENDPOINTS.MOVIES.SEARCH(keyWord),
             {},
@@ -20,6 +19,7 @@ export const searchMovieByKeyWord = async (keyWord) => {
             },
         );
 
+        console.log('Search data: ', response.data);
         return response.data;
     } catch (error) {
         console.error('Error searching movie: ', error);

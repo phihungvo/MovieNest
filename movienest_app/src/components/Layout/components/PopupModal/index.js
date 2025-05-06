@@ -55,7 +55,7 @@ function PopupModal({
                                     item[field.labelKey || 'title'] ||
                                     `Item ${item[field.valueKey || 'id']}`,
                                 value: item[field.valueKey || 'id'],
-                                data: item, 
+                                data: item,
                             };
                         }
                         return {
@@ -63,8 +63,7 @@ function PopupModal({
                             value: item,
                         };
                     });
-                }
-                else if (
+                } else if (
                     typeof dataSource === 'object' &&
                     !Array.isArray(dataSource)
                 ) {
@@ -143,7 +142,7 @@ function PopupModal({
                 : values;
 
             await onSubmit(finalValues);
-            console.log('Final form value: ', finalValues)
+            console.log('Final form value: ', finalValues);
 
             setIsModalOpen(false);
         } catch (error) {
@@ -258,7 +257,7 @@ function PopupModal({
             >
                 {groupedFields.map((row, rowIndex) => (
                     <Row key={rowIndex} gutter={[16, 0]}>
-                        {row.map((field) => {
+                        {row.map((field, fieldIndex) => {
                             const isFullWidth =
                                 row.length === 1 || field.fullWidth;
                             return (
@@ -266,7 +265,7 @@ function PopupModal({
                                     span={isFullWidth ? 24 : 12}
                                     key={
                                         field.name ||
-                                        `field-${rowIndex}-${Math.random()}`
+                                        `field-${rowIndex}-${fieldIndex}`
                                     }
                                 >
                                     {renderField(field)}

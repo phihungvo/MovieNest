@@ -25,7 +25,7 @@ const cx = (className) => styles[className];
 
 function Comment() {
     const [commentSources, setCommentSources] = useState([]);
-    const [modalMode, setModalMode] = useState(null); // 'create', 'edit' or 'delete'
+    const [modalMode, setModalMode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [pagination, setPagination] = useState({
         current: 1,
@@ -213,7 +213,6 @@ function Comment() {
                 total: response.totalElements,
             }));
         }
-        setCommentSources(commentList);
     };
 
     const handleTableChange = (pagination) => {
@@ -249,16 +248,6 @@ function Comment() {
 
     return (
         <div className={cx('comment-wrapper')}>
-            <div className={cx('card-header')}>
-                <h1>Comment Management</h1>
-            </div>
-            <hr
-                style={{
-                    borderColor: '#e5e7eb',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                }}
-            />
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"

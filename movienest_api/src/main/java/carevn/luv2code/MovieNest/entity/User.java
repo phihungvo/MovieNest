@@ -22,12 +22,12 @@ public class User {
     @GeneratedValue
     UUID id;
 
-    @Column(nullable = false)
-    String username;
+    @Column(name = "user_name", nullable = true)
+    String userName;
 
-    String first_name;
+    String firstName;
 
-    String last_name;
+    String lastName;
 
     @Column(unique = true, nullable = false)
     String email;
@@ -37,13 +37,13 @@ public class User {
 
     String address;
 
-    String phone_number;
+    String phoneNumber;
 
-    String profile_picture;
+    String profilePicture;
 
     String bio;
 
-    Date create_at;
+    Date createAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

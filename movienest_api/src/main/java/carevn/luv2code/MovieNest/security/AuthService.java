@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 @Service
@@ -22,29 +23,23 @@ public class AuthService {
     private final JwtService jwtService;
 
     public String register(RegisterRequest request) {
-        // Check if email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
-        // Create new user
         User user = new User();
-        user.setUsername(request.getUsername());
+        user.setUserName(request.getUsername());
+//        user.setCreateAt(new Date());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Set roles - default to USER if not provided
         Set<Role> roles = request.getRoles() != null && !request.getRoles().isEmpty()
                 ? request.getRoles()
                 : Collections.singleton(Role.USER);
         user.setRoles(roles);
 
-        // Save user
         userRepository.save(user);
 
-        // Generate and return JWT token
         return jwtService.generateToken(user);
     }
-
-
 }

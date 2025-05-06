@@ -1,47 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Divider, List, Typography } from 'antd';
+import { List } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import classNames from "classnames/bind";
 import styles from './Search.module.scss';
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
 function SearchMovie({ movieData }) {
     const navigate = useNavigate();
 
-    // const handleSelectMovie = (movie) => {
-    //     // navigate(`/search/results?query=${encodeURIComponent(movie.original_name)}&type=movie`);
-    //     // navigate(`/search-result?name=${encodeURIComponent(movie.original_name)}`);
-    //     navigate(`/search/result?name=${movie.original_name}`);
-    // };
-
     const handleSelectMovie = (movie) => {
-        console.log("Navigating to:", `/search/result?name=${movie.title}`);
-        navigate(`/search/result?name=${movie.title}`);
+        navigate(`/movie/${movie.id}`);
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner-content')}>
+                <div className={cx('search-title')}>Tìm kiếm hot</div>
                 <List
-                    className={cx('item')}
-                    size="small"
-                    bordered
-                    itemLayout="vertical" // Hiển thị danh sách theo chiều dọc
                     dataSource={movieData}
-                    renderItem={(movie) => (
-                        <List.Item
+                    renderItem={(movie, index) => (
+                        <div
+                            key={movie.id}
                             className={cx('item')}
                             onClick={() => handleSelectMovie(movie)}
-                            style={{ cursor: 'pointer' }
-                            }
                         >
-                            <Typography.Text>
-                                <FontAwesomeIcon icon={faMagnifyingGlass} />
-                            </Typography.Text> {movie.title}
-                        </List.Item>
+                            <span className={cx('index')}>{index + 1}</span>
+                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                            <span className={cx('title')}>{movie.title}</span>
+                        </div>
                     )}
                 />
             </div>

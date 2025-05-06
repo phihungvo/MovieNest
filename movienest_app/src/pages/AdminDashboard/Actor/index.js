@@ -261,16 +261,6 @@ function Actor() {
 
     return (
         <div className={cx('actor-wrapper')}>
-            <div className={cx('card-header')}>
-                <h2>Actor Management</h2>
-            </div>
-            <hr
-                style={{
-                    borderColor: '#e5e7eb',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                }}
-            />
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"

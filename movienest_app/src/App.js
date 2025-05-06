@@ -35,13 +35,14 @@ function App() {
 
                     {/* Private Routes */}
                     {privateRoutes.map(
-                        ({ path, component: Page, role }, index) => (
+                        ({ path, component: Page, role, title}, index) => (
                             <Route
                                 key={index}
                                 path={path}
                                 element={
                                     <PrivateRoute
                                         role={role}
+                                        title={title}
                                         element={
                                             <DashboardLayout>
                                                 <Page />

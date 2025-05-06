@@ -36,7 +36,7 @@ function Movie() {
         total: 0,
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState(null); // 'create', 'edit' or 'delete'
+    const [modalMode, setModalMode] = useState(null); 
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [form] = Form.useForm();
@@ -542,16 +542,6 @@ function Movie() {
 
     return (
         <div className={cx('movie-wrapper')}>
-            <div className={cx('card-header')}>
-                <h2>Movie Management</h2>
-            </div>
-            <hr
-                style={{
-                    borderColor: '#e5e7eb',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                }}
-            />
             <div className={cx('sub_header')}>
                 <SmartInput
                     size="large"

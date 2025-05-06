@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,9 +32,10 @@ public class ApplicationInitConfig {
         return args -> {
             if(userRepository.findByEmail(adminEmail).isEmpty()){
                 User user = User.builder()
-                        .username("admin1")
+                        .userName("admin1")
                         .email(adminEmail)
                         .password(passwordEncoder.encode("admin_example"))
+                        .createAt(new Date())
                         .roles(roles)
                         .enabled(true)
                         .accountNonExpired(true)

@@ -37,21 +37,21 @@ export const register = async (username, email, password) => {
         if (response.status === 200) return response.data.token;
     } catch (error) {
         console.log('Register error: ', error);
-        message.error('Register failed !');
     }
 };
 
 export const getAllUser = async ({ page = 0, pageSize = 5 }) => {
-    const TOKEN = getToken();
     try {
         const response = await axios.get(API_ENDPOINTS.USER.GET_ALL, {
             params: { page, pageSize },
             headers: {
-                Authorization: `Bearer ${TOKEN}`,
+                Authorization: `Bearer ${getToken()}`,
                 'Content-Type': 'application/json',
             },
         });
-        return response.content;
+
+        console.log('user response: ', response.data)
+        return response.data;
     } catch (error) {
         console.log('Error when fetching all user ! Error: ', error);
         message.error('Error get all user: ');

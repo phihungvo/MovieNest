@@ -20,7 +20,7 @@ public interface CommentMapper {
 
     @Mapping(source = "movie.id", target="movieId")
     @Mapping(source = "user.id", target="userId")
-    @Mapping(source = "user.username", target = "username")
+    @Mapping(source = "user.userName", target = "userName")
     @Mapping(source = "parentComment.id", target = "parentId")
     @Mapping(target = "replies", ignore = true)
     CommentDTO toDto(Comment comment);
