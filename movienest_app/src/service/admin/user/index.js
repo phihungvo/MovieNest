@@ -87,23 +87,34 @@ export const createUser = async (formData) => {
 };
 
 export const updateUser = async (userId, formData) => {
+
     try {
+        const updateData = { ...formData };
+        
+        if (formData.roles) {
+            updateData.roles = Array.isArray(formData.roles) ? formData.roles : [formData.roles];
+            updateData.enabled = formData.enabled === "Yes";
+        }
+        console.log('updateData: ', updateData);
         const response = await axios.put(
             API_ENDPOINTS.USER.UPDATE(userId),
+            updateData,
             {
-                ...formData,
-                roles: formData.roles.split(',').map((role) => role.trim()),
-            },{
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                     'Content-Type': 'application/json',
                 },
             }
-        )
+        );
 
-        if (response.status === 200)
+        if (response.status === 200) {
             message.success(response.data);
-    }catch (error){
-        console.log('Error when fetching all user ! Error: ', error);
+            return response.data;
+        }
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || 'Error updating user';
+        console.log('Error when updating user! Error: ', errorMessage);
+        message.error(errorMessage);
+        throw error;
     }
-}
+};

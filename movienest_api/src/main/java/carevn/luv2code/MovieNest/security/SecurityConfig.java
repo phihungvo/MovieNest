@@ -46,56 +46,31 @@ public class SecurityConfig {
 
                 // Configure authorization rules
                 .authorizeHttpRequests(auth -> auth
-                                // Public endpoints
-                                .requestMatchers("/api/auth/**").permitAll()
+                        // Public endpoints
+                        .requestMatchers("/api/auth/**").permitAll()
 
-                                .requestMatchers(HttpMethod.PUT, "/api/comment/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "/api/comment/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/comment/**").permitAll()
-                        
-                                .requestMatchers(
-                                        "/api/storage/files/**",
-                                        "/api/movie/korea-movie",
-                                        "/api/trailers/movie/**",
-                                        "api/actor/findAll",
-                                        "api/comment/getAll/**",
-                                        "api/comment/create/**",
-                                        "api/movie/**",
-                                        "api/movie/this-week",
-                                        "api/movie/popular",
-                                        "api/movie/vietnamese-movie",
-                                        "api/movie/korean-movie",
-                                        "api/comment/movie/**",
-                                        "api/comment/{commentId}/reply"
-                                ).permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/comment/**").permitAll().requestMatchers(HttpMethod.DELETE, "/api/comment/**").permitAll().requestMatchers(HttpMethod.POST, "/api/comment/**").permitAll()
 
-                                // User endpoints
-                                .requestMatchers("/api/user/createUser", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/storage/files/**", "/api/movie/korea-movie", "/api/trailers/movie/**", "api/actor/findAll", "api/comment/getAll/**", "api/comment/create/**", "api/movie/**", "api/movie/this-week", "api/movie/popular", "api/movie/vietnamese-movie", "api/movie/korean-movie", "api/comment/movie/**", "api/comment/{commentId}/reply").permitAll()
 
-                                // Admin-only endpoints
-                                .requestMatchers(
-                                        "/api/admin/**",
-                               //"/api/storage/**",
-                                        "/api/genres/**",
-                                        "/api/trailers/**",
-                                        "/api/comment/**",
-                                        "/api/actor/**"
-                                ).hasRole("ADMIN")
+                        // User endpoints
+                        .requestMatchers("/api/user/createUser", "/api/user/getAll", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
 
-                                // Moderator endpoints
-                                .requestMatchers("/api/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
+                        // Admin-only endpoints
+                        .requestMatchers("/api/admin/**",
+                                //"/api/storage/**",
+                                "/api/genres/**", "/api/trailers/**", "/api/comment/**", "/api/actor/**").hasRole("ADMIN")
 
-                                // Default: all other requests must be authenticated
-                                .anyRequest().authenticated()
-                )
+                        // Moderator endpoints
+                        .requestMatchers("/api/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
+
+                        // Default: all other requests must be authenticated
+                        .anyRequest().authenticated())
 
                 // Configure CORS settings
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(List.of(
-                            "http://localhost:3000",
-                            "https://movienest.click"
-                    ));
+                    configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://movienest.click"));
                     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                     configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);
@@ -131,10 +106,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")  // Thay đổi từ "/api/**" sang "/**"
-                        .allowedOrigins("http://localhost:3000", "https://movienest.click")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Thêm OPTIONS
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedOrigins("http://localhost:3000", "https://movienest.click").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").allowedHeaders("*").allowCredentials(true);
             }
         };
     }

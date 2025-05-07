@@ -31,7 +31,6 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserDTO>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size

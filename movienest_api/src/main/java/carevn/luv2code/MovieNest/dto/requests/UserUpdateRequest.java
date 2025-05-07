@@ -34,4 +34,6 @@ public class UserUpdateRequest {
     List<String> roles;
 
     Date createAt;
+
+    boolean enabled;
 }

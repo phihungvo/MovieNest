@@ -40,4 +40,6 @@ public class UserDTO {
 
      Date updateAt;
 
+     boolean enabled;
+
 }

@@ -47,23 +47,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        // Authenticate the user
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        // Fetch user details
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String token = jwtService.generateToken(userOptional.get());
-
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+        return userRepository.findByEmail(request.getEmail())
+                .filter(User::isEnabled)
+                .map(user -> {
+                    String token = jwtService.generateToken(user);
+                    return ResponseEntity.ok(new AuthenticationResponse(token));
+                })
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/register")

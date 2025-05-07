@@ -15,7 +15,7 @@ import {
 import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
-import { Form, message } from 'antd';
+import { Form, message, Tag } from 'antd';
 import { getAllUser, createUser, updateUser } from '~/service/admin/user';
 
 const cx = classNames.bind(styles);
@@ -54,26 +54,45 @@ function User() {
             width: 100,
         },
         {
+            title: 'Enable',
+            dataIndex: 'enabled',
+            key: 'enabled',
+            width: 50,
+            render: (enabled) => {
+                const icon = enabled ? '✔️' : '❌';
+                const color = enabled ? 'green' : 'red';
+                return <Tag color={color}>{icon}</Tag>;
+            },
+        },
+        {
             title: 'Create At',
             dataIndex: 'createAt',
             key: 'createAt',
-            width: 180,
+            width: 150,
             render: (date) =>
                 date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
         },
-        { title: 'address',
-             dataIndex: 'address',
-              key: 'address',
-               width: 150,
-            render: (add) => 
-            add ? add : 'Viet Nam' },
+        {
+            title: 'Update At',
+            dataIndex: 'updateAt',
+            key: 'updateAt',
+            width: 150,
+            render: (date) =>
+                date ? new Date(date).toLocaleString('vi-VN') : 'N/A',
+        },
+        {
+            title: 'Address',
+            dataIndex: 'address',
+            key: 'address',
+            width: 150,
+            render: (add) => (add ? add : 'Viet Nam'),
+        },
         {
             title: 'Phone Number',
             dataIndex: 'phoneNumber',
             key: 'phoneNumber',
             width: 200,
-            render: (phone) =>
-                phone ? phone : 'N/A',
+            render: (phone) => (phone ? phone : 'N/A'),
         },
         {
             title: 'Actions',
@@ -144,17 +163,22 @@ function User() {
             type: 'text',
         },
         {
-            label: 'Bio',
-            name: 'bio',
-            type: 'textarea',
-        },
-        {
             label: 'Role',
             name: 'roles',
             type: 'select',
             options: ['USER', 'ADMIN', 'MODERATOR'],
         },
-    ];    
+        {
+            label: 'Enable',
+            name: 'enabled',
+            type: 'yesno',
+        },
+        {
+            label: 'Bio',
+            name: 'bio',
+            type: 'textarea',
+        },
+    ];
 
     const handleGetAllUsers = async (page = 1, pageSize = 5) => {
         setLoading(true);
@@ -199,7 +223,7 @@ function User() {
     const handleCallCreateUser = async (formData) => {
         await createUser(formData);
         handleGetAllUsers();
-    }
+    };
 
     const handleEditUser = (record) => {
         setSelectedUser(record);
@@ -207,22 +231,22 @@ function User() {
 
         form.setFieldsValue(record);
         setIsModalOpen(true);
-    }
+    };
 
     const handleCallUpdateUser = async (formData) => {
         await updateUser(selectedUser.id, formData);
         handleGetAllUsers();
         setIsModalOpen(false);
-    }
+    };
 
     useEffect(() => {
         handleGetAllUsers();
     }, []);
 
     const handleFormSubmit = (formData) => {
-        if (modalMode === 'create'){
+        if (modalMode === 'create') {
             handleCallCreateUser(formData);
-        }else if (modalMode === 'edit'){
+        } else if (modalMode === 'edit') {
             handleCallUpdateUser(formData);
         }
     };

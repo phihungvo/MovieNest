@@ -30,6 +30,7 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(1017, "Comment not found", HttpStatus.NOT_FOUND),
     ACTOR_EXISTED(1018, "Actor already exists", HttpStatus.CONFLICT),
     ACTOR_NOT_EXISTED(1019, "Actor not existed", HttpStatus.NOT_FOUND),
+    UPDATE_USER_FAILED(1020, "Update user failed", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     int code;

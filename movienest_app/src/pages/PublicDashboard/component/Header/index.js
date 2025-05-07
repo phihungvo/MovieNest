@@ -105,7 +105,7 @@ function Header({ activeSearch = true }) {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        navigate('/');
         message.success('Đăng xuất thành công!');
     };
 

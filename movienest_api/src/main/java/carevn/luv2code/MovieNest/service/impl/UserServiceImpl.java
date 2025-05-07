@@ -62,21 +62,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UUID userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        userMapper.updateUserFromDto(request, user);
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setPassword(request.getPassword());
-        user.setUpdateAt(new Date());
-        if (request.getRoles() != null) {
-            Set<Role> roles = request.getRoles()
-                    .stream()
-                    .map(Role::valueOf)
-                    .collect(Collectors.toSet());
-            user.setRoles(roles);
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+            userMapper.updateUserFromDto(request, user);
+            user.setUpdateAt(new Date());
+            if (!"admin@example.com".equals(request.getEmail())) {
+                user.setEnabled(request.isEnabled());
+                if (request.getRoles() != null) {
+                    Set<Role> roles = request.getRoles()
+                            .stream()
+                            .map(Role::valueOf)
+                            .collect(Collectors.toSet());
+                    user.setRoles(roles);
+                }
+                userRepository.save(user);
+            } else {
+                userRepository.save(user);
+            }
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.UPDATE_USER_FAILED);
         }
-        userRepository.save(user);
     }
 
     @Override
@@ -107,7 +113,9 @@ public class UserServiceImpl implements UserService {
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setCreateAt(user.getCreateAt());
         dto.setUpdateAt(user.getUpdateAt());
+        dto.setEnabled(user.isEnabled());
         dto.setProfilePicture(user.getProfilePicture());
+
         if (user.getRoles() != null) {
             List<String> roleNames = user.getRoles()
                     .stream()
