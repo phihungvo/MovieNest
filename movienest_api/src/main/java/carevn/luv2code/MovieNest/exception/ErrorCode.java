@@ -19,7 +19,7 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1006, "User not existed", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You don't have permission", HttpStatus.FORBIDDEN),
-    EMAIL_EXISTED(1009, "Email already in use", HttpStatus.CONFLICT),
+    EMAIL_EXISTED(1009, "Email already was used by other user!", HttpStatus.CONFLICT),
     MOVIE_ALREADY_EXISTS(1010, "Movie with title already exists", HttpStatus.BAD_REQUEST),
     TRAILER_NOT_FOUND(1011, "Trailer not found", HttpStatus.NOT_FOUND),
     FILE_NOT_FOUND(1012, "File not found", HttpStatus.NOT_FOUND),

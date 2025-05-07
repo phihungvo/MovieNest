@@ -15,8 +15,9 @@ const API_ENDPOINTS = {
 
     USER: {
         GET_ALL: `${BASE_URL}/user/getAll`,
+        CREATE: `${BASE_URL}/user/createUser`,
+        UPDATE: (userId) => `${BASE_URL}/user/${userId}/update`,
     },
-
     MOVIES: {
         GET_ALL: `${BASE_URL}/movie/getAll`,
         GET_ALL_NO_PAGING: `${BASE_URL}/movie/findAllNoPaging`,

@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 ).permitAll()
 
                                 // User endpoints
-                                .requestMatchers("/api/user/**", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/api/user/createUser", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")
 
                                 // Admin-only endpoints
                                 .requestMatchers(

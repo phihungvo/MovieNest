@@ -7,11 +7,14 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
+
+     UUID id;
 
      String userName;
 
@@ -34,5 +37,7 @@ public class UserDTO {
      List<String> roles;
 
      Date createAt;
+
+     Date updateAt;
 
 }

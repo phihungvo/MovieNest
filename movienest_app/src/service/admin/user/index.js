@@ -50,10 +50,60 @@ export const getAllUser = async ({ page = 0, pageSize = 5 }) => {
             },
         });
 
-        console.log('user response: ', response.data)
+        console.log('user response: ', response.data);
         return response.data;
     } catch (error) {
         console.log('Error when fetching all user ! Error: ', error);
         message.error('Error get all user: ');
     }
 };
+
+export const createUser = async (formData) => {
+    try {
+        const response = await axios.post(
+            API_ENDPOINTS.USER.CREATE,
+            {
+                ...formData,
+                roles: formData.roles.split(',').map((role) => role.trim()),
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+
+        if (response.status == 200){
+            message.success('User create successfully!')
+        }
+
+        return response.data;
+    } catch (error) {
+        const messageError = error.response.data.message;
+        console.log('Error when fetching all user ! Error: ', messageError);
+        message.error(messageError);
+    }
+};
+
+export const updateUser = async (userId, formData) => {
+    try {
+        const response = await axios.put(
+            API_ENDPOINTS.USER.UPDATE(userId),
+            {
+                ...formData,
+                roles: formData.roles.split(',').map((role) => role.trim()),
+            },{
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+
+        if (response.status === 200)
+            message.success(response.data);
+    }catch (error){
+        console.log('Error when fetching all user ! Error: ', error);
+    }
+}

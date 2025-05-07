@@ -16,13 +16,10 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 
-                    {/* Route trang chủ */}
                     <Route path="/" element={<UserHome />} />
 
-                    {/* Route chi tiết phim */}
                     <Route path="/movie/:movieId" element={<MovieDetail />} />
 
-                    {/* Các public routes khác (nếu cần) */}
                     {publicRoutes
                         .filter(
                             (route) =>
@@ -33,7 +30,6 @@ function App() {
                             <Route key={index} path={path} element={<Page />} />
                         ))}
 
-                    {/* Private Routes */}
                     {privateRoutes.map(
                         ({ path, component: Page, role, title}, index) => (
                             <Route

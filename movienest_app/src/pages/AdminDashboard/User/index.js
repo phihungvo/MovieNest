@@ -16,7 +16,7 @@ import SmartInput from '~/components/Layout/components/SmartInput';
 import SmartButton from '~/components/Layout/components/SmartButton';
 import PopupModal from '~/components/Layout/components/PopupModal';
 import { Form, message } from 'antd';
-import { getAllUser } from '~/service/admin/user';
+import { getAllUser, createUser, updateUser } from '~/service/admin/user';
 
 const cx = classNames.bind(styles);
 
@@ -30,6 +30,7 @@ function User() {
     });
     const [modalMode, setModalMode] = useState('create');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [form] = Form.useForm();
 
     const columns = [
@@ -84,7 +85,7 @@ function User() {
                         type="primary"
                         icon={<EditOutlined />}
                         buttonWidth={80}
-                        // onClick={() => handleEditTrailer(record)}
+                        onClick={() => handleEditUser(record)}
                     />
                     <SmartButton
                         title="Delete"
@@ -102,7 +103,7 @@ function User() {
     const userModalFields = [
         {
             label: 'User Name',
-            name: 'username',
+            name: 'userName',
             type: 'text',
             rules: [{ required: true, message: 'User Name is required!' }],
         },
@@ -118,9 +119,34 @@ function User() {
             type: 'text',
         },
         {
+            label: 'First Name',
+            name: 'firstName',
+            type: 'text',
+        },
+        {
+            label: 'Last Name',
+            name: 'lastName',
+            type: 'text',
+        },
+        {
+            label: 'Phone Number',
+            name: 'phoneNumber',
+            type: 'text',
+        },
+        {
             label: 'Address',
             name: 'address',
             type: 'text',
+        },
+        {
+            label: 'Profile Picture',
+            name: 'profilePicture',
+            type: 'text',
+        },
+        {
+            label: 'Bio',
+            name: 'bio',
+            type: 'textarea',
         },
         {
             label: 'Role',
@@ -128,12 +154,7 @@ function User() {
             type: 'select',
             options: ['USER', 'ADMIN', 'MODERATOR'],
         },
-        {
-            label: 'Bio',
-            name: 'bio',
-            type: 'textarea',
-        },
-    ];
+    ];    
 
     const handleGetAllUsers = async (page = 1, pageSize = 5) => {
         setLoading(true);
@@ -170,15 +191,41 @@ function User() {
 
     const handleAddUser = () => {
         setModalMode('create');
+        setSelectedUser(null);
         form.resetFields();
         setIsModalOpen(true);
     };
+
+    const handleCallCreateUser = async (formData) => {
+        await createUser(formData);
+        handleGetAllUsers();
+    }
+
+    const handleEditUser = (record) => {
+        setSelectedUser(record);
+        setModalMode('edit');
+
+        form.setFieldsValue(record);
+        setIsModalOpen(true);
+    }
+
+    const handleCallUpdateUser = async (formData) => {
+        await updateUser(selectedUser.id, formData);
+        handleGetAllUsers();
+        setIsModalOpen(false);
+    }
 
     useEffect(() => {
         handleGetAllUsers();
     }, []);
 
-    const handleFormSubmit = (formData) => {};
+    const handleFormSubmit = (formData) => {
+        if (modalMode === 'create'){
+            handleCallCreateUser(formData);
+        }else if (modalMode === 'edit'){
+            handleCallUpdateUser(formData);
+        }
+    };
 
     const handleTableChange = (pagination) => {
         handleGetAllUsers(pagination.current, pagination.pageSize);
@@ -230,6 +277,9 @@ function User() {
                 setIsModalOpen={setIsModalOpen}
                 title={getModalTitle()}
                 fields={modalMode === 'delete' ? [] : userModalFields}
+                onSubmit={handleFormSubmit}
+                initialValues={selectedUser}
+                isDeleteMode={modalMode === 'delete'}
                 formInstance={form}
             />
         </div>

@@ -45,6 +45,8 @@ public class User {
 
     Date createAt;
 
+    Date updateAt;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     Set<Role> roles;
