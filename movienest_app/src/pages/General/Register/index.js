@@ -10,38 +10,55 @@ import {
     AppleOutlined,
     GoogleOutlined,
 } from '@ant-design/icons';
+import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '~/routes/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function Register() {
-    const [form] = Form.useForm();
-
     const navigate = useNavigate();
-
+    const { login: authLogin, logout } = useAuth();
+    const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-
-    const handleNavigate = () => {
-        navigate('/login');
-    };
 
     const onFinish = async (values) => {
         setLoading(true);
         try {
+            // Đăng xuất user hiện tại (nếu có)
+            logout();
+
             const token = await register(
                 values.username,
-                values.email,
-                values.password,
+                values.email, 
+                values.password
             );
 
             if (!token) {
-                message.error('Register failed. Please check your input agains.');
+                message.error('Register failed. Please check your input again.');
+                return;
             }
-
-            message.success('Register successful!');
 
             localStorage.setItem('token', token);
 
-            navigate('/admin/movie');
+            const decodedToken = jwtDecode(token);
+            const roles = decodedToken.role || [];
+            const userId = decodedToken.userId;
+            const username = decodedToken.username || decodedToken.sub || 'Unknown';
+
+            localStorage.setItem('role', 'user');
+
+            authLogin({
+                token,
+                role: 'user',
+                roles: roles,
+                userId: userId,
+                username: username
+            });
+
+            message.success('Register successful!');
+            
+            navigate('/');
+
         } catch (error) {
             console.error('Lỗi:', error);
 

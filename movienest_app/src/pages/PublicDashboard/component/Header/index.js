@@ -201,10 +201,6 @@ function Header({ activeSearch = true }) {
                         )}
 
                         <div className={cx('rightMenu')}>
-                            <FontAwesomeIcon
-                                className={cx('icon')}
-                                icon={faPlus}
-                            />
                             <Dropdown overlay={languageMenu} trigger={['click']}>
                                 <div className={cx('icon', 'language-switcher')}>
                                     <GlobalOutlined style={{ fontSize: '18px' }} />

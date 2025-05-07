@@ -1,28 +1,25 @@
 import { jwtDecode } from 'jwt-decode';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
+    const initializeAuth = () => {
         const token = localStorage.getItem('token');
-        // const role = localStorage.getItem('role');
-
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
-
-                console.log('Decoded token: ',decodedToken);
-
                 const currentTime = Date.now() / 1000;
+                
                 if (decodedToken.exp && decodedToken.exp < currentTime) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('role');
+                    clearAuthData();
                 } else {
+                    const role = localStorage.getItem('role');
                     setUser({
                         token,
+                        role: role || 'user',
                         userId: decodedToken.userId || null,
                         roles: decodedToken.role || [],
                         username: decodedToken.username || decodedToken.sub || 'Unknown',
@@ -30,27 +27,47 @@ export const AuthProvider = ({ children }) => {
                 }
             } catch (error) {
                 console.log('Error when decoding token: ', error);
-                localStorage.removeItem('token');
-                localStorage.removeItem('role');
+                clearAuthData();
             }
         }
-    }, []);
+    };
 
-    const login = (userData) => setUser(userData);
-    const logout = () => {
+    const clearAuthData = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-        // localStorage.removeItem('userId');
-        
-        // Reset user state
+        sessionStorage.clear();
         setUser(null);
     };
 
+    useEffect(() => {
+        initializeAuth();
+    }, []);
+
+    const login = (userData) => {
+        setUser(userData);
+    };
+    
+    const logout = () => {
+        clearAuthData();
+    };
+
+    const authContextValue = {
+        user,
+        login,
+        logout,
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={authContextValue}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};
