@@ -10,6 +10,7 @@ import {
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import styles from './Footer.module.scss';
+import { useLanguage } from '~/contexts/LanguageContext';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,7 @@ const { Title, Text, Paragraph } = Typography;
 
 const AppFooter = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const { translate } = useLanguage();
 
     // Check scroll position
     useEffect(() => {
@@ -54,90 +56,83 @@ const AppFooter = () => {
                                     MovieNest<sup>+</sup>
                                 </Title>
                                 <Text className={cx('tagline')}>
-                                    MovieNest and Chill
+                                    {translate('footer.tagline')}
                                 </Text>
                             </div>
                         </div>
                         <Paragraph className={cx('footer-description')}>
-                            MovieNest - Trang xem phim Online với giao diện mới
-                            được bổ trí và thiết kế thân thiện với người dùng.
-                            Nguồn phim được tổng hợp từ các website lớn với đa
-                            dạng các đầu phim và thể loại vô cùng phong phú (Trang web phục vụ mục đích học tập).
+                            {translate('footer.description')}
                         </Paragraph>
                         <Text className={cx('copyright')}>
-                            © 2025 by MovieNest
+                            {translate('footer.copyright')}
                         </Text>
                     </Col>
 
                     <Col xs={24} sm={12} md={5} lg={5} xl={5}>
                         <Title level={4} className={cx('column-title')}>
-                            Phim mới
+                            {translate('footer.newMovies')}
                         </Title>
                         <ul className={cx('footer-links')}>
                             <li>
-                                <Link to="/phim-khoa-hoc">Phim Khoa Học</Link>
+                                <Link to="/phim-khoa-hoc">{translate('footer.movieCategories.science')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-kinh-di">Phim Kinh Dị</Link>
+                                <Link to="/phim-kinh-di">{translate('footer.movieCategories.horror')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-chieu-rap">Phim Chiếu Rạp</Link>
+                                <Link to="/phim-chieu-rap">{translate('footer.movieCategories.theater')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-hinh-su">Phim Hình Sự</Link>
+                                <Link to="/phim-hinh-su">{translate('footer.movieCategories.crime')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-hanh-dong">Phim Hành Động</Link>
+                                <Link to="/phim-hanh-dong">{translate('footer.movieCategories.action')}</Link>
                             </li>
                         </ul>
                     </Col>
 
                     <Col xs={24} sm={12} md={5} lg={5} xl={5}>
                         <Title level={4} className={cx('column-title')}>
-                            Phim hay
+                            {translate('footer.popularMovies')}
                         </Title>
                         <ul className={cx('footer-links')}>
                             <li>
-                                <Link to="/phim-au-my">Phim Âu Mỹ</Link>
+                                <Link to="/phim-au-my">{translate('footer.regions.hollywood')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-han-quoc">Phim Hàn Quốc</Link>
+                                <Link to="/phim-han-quoc">{translate('footer.regions.korean')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-trung-quoc">
-                                    Phim Trung Quốc
-                                </Link>
+                                <Link to="/phim-trung-quoc">{translate('footer.regions.chinese')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-nhat-ban">Phim Nhật Bản</Link>
+                                <Link to="/phim-nhat-ban">{translate('footer.regions.japanese')}</Link>
                             </li>
                             <li>
-                                <Link to="/phim-thai-lan">Phim Thái Lan</Link>
+                                <Link to="/phim-thai-lan">{translate('footer.regions.thai')}</Link>
                             </li>
                         </ul>
                     </Col>
 
                     <Col xs={24} sm={12} md={6} lg={6} xl={6}>
                         <Title level={4} className={cx('column-title')}>
-                            Thông tin
+                            {translate('footer.information')}
                         </Title>
                         <ul className={cx('footer-links')}>
                             <li>
-                                <Link to="/gioi-thieu">Giới thiệu</Link>
+                                <Link to="/gioi-thieu">{translate('footer.about')}</Link>
                             </li>
                             <li>
-                                <Link to="/lien-he">Liên hệ chúng tôi</Link>
+                                <Link to="/lien-he">{translate('footer.contact')}</Link>
                             </li>
                             <li>
-                                <Link to="/dieu-khoan">Điều khoản sử dụng</Link>
+                                <Link to="/dieu-khoan">{translate('footer.terms')}</Link>
                             </li>
                             <li>
-                                <Link to="/chinh-sach">
-                                    Chính sách riêng tư
-                                </Link>
+                                <Link to="/chinh-sach">{translate('footer.privacy')}</Link>
                             </li>
                             <li>
-                                <Link to="/khieu-nai">Khiếu nại bản quyền</Link>
+                                <Link to="/khieu-nai">{translate('footer.copyright')}</Link>
                             </li>
                         </ul>
                     </Col>
@@ -176,7 +171,7 @@ const AppFooter = () => {
                             <YoutubeOutlined className={cx('social-icon')} />
                         </Link>
                     </Space>
-
+                    <span>{translate('footer.followUs')}:</span>
                     <div className={cx('scroll-to-top', { visible: isVisible })} onClick={scrollToTop}>
                         <ArrowUpOutlined />
                     </div>

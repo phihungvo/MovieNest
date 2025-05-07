@@ -72,6 +72,10 @@
         height: 100%;
         object-fit: cover;
     }
+
+    .anticon {
+        color: #fff;
+    }
 }
 
 .search {
@@ -229,5 +233,14 @@ body {
     .username {
         color: #fff;
         font-size: 14px;
+    }
+}
+
+.language-switcher {
+    cursor: pointer;
+    transition: color 0.3s;
+    
+    &:hover {
+        color: #1890ff;
     }
 }

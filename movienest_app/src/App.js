@@ -7,51 +7,57 @@ import { AuthProvider } from './routes/AuthContext';
 import Login from './pages/General/Login';
 import Register from './pages/General/Register';
 import MovieDetail from './pages/PublicDashboard/MovieDetail';
+import UserInfoManagement from './pages/PublicDashboard/UserInfoManagement';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
     return (
-        <AuthProvider>
-            <Router>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+        <LanguageProvider>
+            <AuthProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
 
-                    <Route path="/" element={<UserHome />} />
+                        <Route path="/" element={<UserHome />} />
 
-                    <Route path="/movie/:movieId" element={<MovieDetail />} />
+                        <Route path="/movie/:movieId" element={<MovieDetail />} />
 
-                    {publicRoutes
-                        .filter(
-                            (route) =>
-                                route.path !== '/' &&
-                                route.path !== '/movie/:movieId',
-                        )
-                        .map(({ path, component: Page }, index) => (
-                            <Route key={index} path={path} element={<Page />} />
-                        ))}
+                        <Route path="/user-info-management" element={<UserInfoManagement />} />
 
-                    {privateRoutes.map(
-                        ({ path, component: Page, role, title}, index) => (
-                            <Route
-                                key={index}
-                                path={path}
-                                element={
-                                    <PrivateRoute
-                                        role={role}
-                                        title={title}
-                                        element={
-                                            <DashboardLayout>
-                                                <Page />
-                                            </DashboardLayout>
-                                        }
-                                    />
-                                }
-                            />
-                        ),
-                    )}
-                </Routes>
-            </Router>
-        </AuthProvider>
+                        {publicRoutes
+                            .filter(
+                                (route) =>
+                                    route.path !== '/' &&
+                                    route.path !== '/movie/:movieId',
+                            )
+                            .map(({ path, component: Page }, index) => (
+                                <Route key={index} path={path} element={<Page />} />
+                            ))}
+
+                        {privateRoutes.map(
+                            ({ path, component: Page, role, title}, index) => (
+                                <Route
+                                    key={index}
+                                    path={path}
+                                    element={
+                                        <PrivateRoute
+                                            role={role}
+                                            title={title}
+                                            element={
+                                                <DashboardLayout>
+                                                    <Page />
+                                                </DashboardLayout>
+                                            }
+                                        />
+                                    }
+                                />
+                            ),
+                        )}
+                    </Routes>
+                </Router>
+            </AuthProvider>
+        </LanguageProvider>
     );
 }
 

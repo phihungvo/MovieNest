@@ -1,0 +1,45 @@
+.security-settings {
+    h2 {
+        color: #ffffff;
+        margin-bottom: 24px;
+        font-size: 24px;
+    }
+
+    h3 {
+        color: #ffffff;
+        margin-bottom: 16px;
+        font-size: 18px;
+    }
+
+    .section {
+        margin-bottom: 32px;
+    }
+
+    :global(.ant-form-item-label) > label {
+        color: #ffffff !important;
+    }
+
+    :global(.ant-input-password) {
+        background: #252830 !important;
+        border: 1px solid #393e4a !important;
+        
+        input {
+            background: #252830 !important;
+            color: #ffffff !important;
+        }
+
+        .anticon {
+            color: #ffffff !important;
+        }
+    }
+
+    .two-factor {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        span {
+            color: #ffffff;
+        }
+    }
+}

@@ -19,10 +19,13 @@ import { getDetailtMovie } from '~/service/user/home';
 import { getAllActorNoPaging } from '~/service/admin/actor';
 import MovieBanner from './banner';
 import AppFooter from '../component/Footer';
+import { useLanguage } from '~/contexts/LanguageContext';
 
 const cx = classNames.bind(styles);
 
 function UserHome() {
+    const { translate } = useLanguage();
+
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -73,7 +76,7 @@ function UserHome() {
             <MovieBanner />
 
             <Poster
-                title="Trending Movies"
+                title={translate('homepage.trending')}
                 options={['This Week', 'Today']}
                 fetchData={fetchTrendingMovies}
                 defaultValue="This Week"
@@ -81,7 +84,7 @@ function UserHome() {
             />
 
             <Poster
-                title="Lasted Trailers"
+                title={translate('homepage.popular')}
                 options={['Popular', 'In Theaters']}
                 fetchData={fetchTrailerMovies}
                 defaultValue="Popular"
@@ -90,7 +93,7 @@ function UserHome() {
             />
 
             <Poster
-                title="Vietnam Movies"
+                title={translate('homepage.vietnamMovies')}
                 options={[]}
                 fetchData={fetchVietnamMovies}
                 isTrailer={true}
@@ -98,7 +101,7 @@ function UserHome() {
             />
 
             <Poster
-                title="Popular Movies"
+                title={translate('homepage.popularMovies')}
                 options={[]}
                 fetchData={fetchPopularMovies}
                 // isTrailer={false}
@@ -106,7 +109,7 @@ function UserHome() {
             />
 
             <Poster
-                title="Korean Movies"
+                title={translate('homepage.koreanMovies')}
                 options={[]}
                 fetchData={fetchKoreanMovies}
                 isTrailer={true}
@@ -114,7 +117,7 @@ function UserHome() {
             />
 
             <Poster
-                title="Famous Actor"
+                title={translate('homepage.famousActor')}
                 options={[]}
                 fetchData={handleCallAllActors}
                 cardInfo={false}

@@ -4,7 +4,6 @@ import Sidebar from '../components/Sidebar';
 import Header from '../Header';
 import {
     HomeOutlined,
-    MailOutlined,
     EditOutlined,
     CalendarOutlined,
     ProfileOutlined,
@@ -12,8 +11,6 @@ import {
     BellOutlined,
     FileTextOutlined,
     ShopOutlined,
-    InboxOutlined,
-    SendOutlined,
     CommentOutlined,
     SettingFilled,
 } from '@ant-design/icons';
@@ -86,7 +83,7 @@ function DashboardLayout({ children, pageTitle }) {
 
     return (
         <div className={cx('wrapper')}>
-            <Sidebar dataSource={sideBar} />
+            <Sidebar hiddenLogo={true} dataSource={sideBar} />
             <div className={cx('right-container')}>
                 <Header title={title} />
                 <div className={cx('content')}>{children}</div>

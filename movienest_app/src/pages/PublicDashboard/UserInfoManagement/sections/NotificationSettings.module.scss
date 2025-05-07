@@ -1,0 +1,61 @@
+.notification-settings {
+    h2 {
+        color: #ffffff;
+        margin-bottom: 24px;
+        font-size: 24px;
+    }
+
+    h3 {
+        color: #ffffff;
+        margin-bottom: 16px;
+        font-size: 18px;
+    }
+
+    .section {
+        margin-bottom: 32px;
+    }
+
+    .notification-method {
+        margin-bottom: 24px;
+
+        :global(.ant-radio-wrapper) {
+            color: #ffffff;
+            margin-right: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        :global(.ant-radio-wrapper-checked) {
+            background: rgba(24, 144, 255, 0.2);
+        }
+    }
+
+    :global(.ant-list-item) {
+        padding: 16px;
+        margin-bottom: 16px;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            transform: translateY(-2px);
+        }
+
+        .ant-list-item-meta-title {
+            color: #ffffff !important;
+            margin-bottom: 4px;
+        }
+
+        .ant-list-item-meta-description {
+            color: rgba(255, 255, 255, 0.65) !important;
+        }
+    }
+}

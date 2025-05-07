@@ -37,7 +37,7 @@
     margin-left: 12px;
     font-size: 18px;
     font-weight: 600;
-    color: #333;
+    color: #ffffff; // Chuyển màu chữ sang trắng
 }
 
 .sidebar-menu {
@@ -45,4 +45,15 @@
     margin-left: 20px;
     margin-top: 30px;
     overflow-y: auto;
+
+    a {
+        color: #ffffff; // Chuyển màu chữ menu sang trắng
+        text-decoration: none;
+        display: block;
+        padding: 10px 0;
+        
+        &:hover {
+            opacity: 0.8;
+        }
+    }
 }
