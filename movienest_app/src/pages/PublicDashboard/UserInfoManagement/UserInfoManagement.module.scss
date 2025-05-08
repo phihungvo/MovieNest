@@ -1,17 +1,19 @@
 .wrapper {
     display: flex;
+    width: 100%;
     min-height: 100vh;
     background-color: #111318;
 }
 
 .right-container {
-    flex: 1;
-    width: 70%;
+    width: 80%;
+    margin-left: 30%;
+    min-height: 100vh;
+    background: var(--background);
     color: #ffffff;
-}
 
-.content {
-    min-height: calc(100vh - 66px);
-    padding: 24px;
-    padding-top: 100px; // Thêm padding top để content thấp xuống
+    .content {
+        padding: 20px;
+        margin-top: 60px;
+    }
 }

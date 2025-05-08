@@ -20,9 +20,10 @@ export const AuthProvider = ({ children }) => {
                     setUser({
                         token,
                         role: role || 'user',
-                        userId: decodedToken.userId || null,
-                        roles: decodedToken.role || [],
-                        username: decodedToken.username || decodedToken.sub || 'Unknown',
+                        userId: decodedToken.userId,
+                        roles: decodedToken.role,
+                        username: decodedToken.username,
+                        email: decodedToken.sub
                     });
                 }
             } catch (error) {

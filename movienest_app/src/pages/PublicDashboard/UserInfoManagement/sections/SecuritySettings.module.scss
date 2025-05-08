@@ -1,45 +1,65 @@
 .security-settings {
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+
     h2 {
         color: #ffffff;
         margin-bottom: 24px;
         font-size: 24px;
-    }
-
-    h3 {
-        color: #ffffff;
-        margin-bottom: 16px;
-        font-size: 18px;
+        font-weight: 600;
     }
 
     .section {
-        margin-bottom: 32px;
-    }
-
-    :global(.ant-form-item-label) > label {
-        color: #ffffff !important;
-    }
-
-    :global(.ant-input-password) {
-        background: #252830 !important;
-        border: 1px solid #393e4a !important;
-        
-        input {
-            background: #252830 !important;
-            color: #ffffff !important;
-        }
-
-        .anticon {
-            color: #ffffff !important;
-        }
-    }
-
-    .two-factor {
+        margin-bottom: 24px;
+        width: 100%;
         display: flex;
-        align-items: center;
-        gap: 12px;
+        flex-direction: column;
+        // align-items: center;
 
-        span {
+        h3 {
             color: #ffffff;
+            margin-bottom: 24px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+    }
+
+    .button-wrapper {
+        display: flex;
+        margin-top: 24px;
+
+        :global(.ant-form-item) {
+            margin-bottom: 0;
+        }
+    }
+
+    :global {
+
+        .ant-form-item {
+            margin-bottom: 24px;
+            width: 100%;
+        }
+
+        .ant-form-item-control-input {
+            width: 100%;
+        }
+
+        .ant-input-password {
+            width: 100%;
+            background: #252830 !important;
+            border: 1px solid #393e4a !important;
+
+            input {
+                background: #252830 !important;
+                color: #ffffff !important;
+            }
+        }
+
+        .ant-form-item-label > label {
+            color: #ffffff !important;
         }
     }
 }

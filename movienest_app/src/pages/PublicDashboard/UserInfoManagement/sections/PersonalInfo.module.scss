@@ -1,8 +1,30 @@
 .personal-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+
+    form {
+        width: 100%;
+    }
+
     h2 {
+        text-align: center;
         color: #ffffff;
         margin-bottom: 24px;
         font-size: 24px;
+    }
+
+    .header {
+        width: 65%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        h2 {
+            margin-bottom: 0;
+        }
     }
 
     :global(.ant-form-item-label) > label {
@@ -35,6 +57,34 @@
 
         &:hover {
             background: #40a9ff;
+        }
+    }
+
+    :global {
+        .ant-upload-list {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 16px;
+        }
+        
+        .ant-form-item-control-input {
+            min-height: auto;
+        }
+
+        .submit-button-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .ant-select {
+            width: 120px;
+            
+            .ant-select-selector {
+                background: #252830 !important;
+                border: 1px solid #393e4a !important;
+                color: #ffffff !important;
+            }
         }
     }
 }

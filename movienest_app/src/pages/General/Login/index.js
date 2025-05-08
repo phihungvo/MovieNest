@@ -79,6 +79,9 @@ function Login() {
 
     return (
         <div className={cx('login-container')}>
+            <div className={cx('logo')} onClick={() => navigate('/')}>
+                <img src="https://i.imgur.com/ZEbJI8l.png" alt="MovieNest Logo" />
+            </div>
             <div className={cx('login-box')}>
                 <h1>Chào mừng trở lại</h1>
                 <Form

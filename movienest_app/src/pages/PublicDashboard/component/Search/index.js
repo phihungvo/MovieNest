@@ -15,12 +15,14 @@ function SearchMovie({ movieData }) {
         navigate(`/movie/${movie.id}`);
     };
 
+    const limitedMovieData = movieData.slice(0, 10);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner-content')}>
                 <div className={cx('search-title')}>Tìm kiếm hot</div>
                 <List
-                    dataSource={movieData}
+                    dataSource={limitedMovieData}
                     renderItem={(movie, index) => (
                         <div
                             key={movie.id}

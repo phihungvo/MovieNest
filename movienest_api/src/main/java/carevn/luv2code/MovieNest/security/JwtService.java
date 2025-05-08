@@ -42,6 +42,7 @@ public class JwtService {
                 .map(Enum::name)
                 .collect(Collectors.toList()));
         claims.put("userId", user.getId());
+        claims.put("email", user.getEmail());
 
         return Jwts
                 .builder()

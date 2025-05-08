@@ -10,11 +10,6 @@ import User from '~/pages/AdminDashboard/User';
 import MovieDetail from '~/pages/PublicDashboard/MovieDetail';
 import Banner from '~/pages/AdminDashboard/Banner';
 import UserInfoManagement from '~/pages/PublicDashboard/UserInfoManagement';
-import PersonalInfo from '~/pages/PublicDashboard/UserInfoManagement/sections/PersonalInfo';
-import WatchHistory from '~/pages/PublicDashboard/UserInfoManagement/sections/WatchHistory';
-import MyCollection from '~/pages/PublicDashboard/UserInfoManagement/sections/MyCollection';
-import SecuritySettings from '~/pages/PublicDashboard/UserInfoManagement/sections/SecuritySettings';
-import NotificationSettings from '~/pages/PublicDashboard/UserInfoManagement/sections/NotificationSettings';
 
 const publicRoutes = [
     { path: '/', component: UserHome, title: 'User Home' },

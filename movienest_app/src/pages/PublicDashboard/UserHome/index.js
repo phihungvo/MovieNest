@@ -76,13 +76,12 @@ function UserHome() {
             <MovieBanner />
 
             <Poster
-                title={translate('homepage.trending')}
-                options={['This Week', 'Today']}
-                fetchData={fetchTrendingMovies}
-                defaultValue="This Week"
+                title={translate('homepage.popular')}
+                options={[]}
+                fetchData={fetchPopularMovies}
                 cardInfo={true}
             />
-
+            
             <Poster
                 title={translate('homepage.popular')}
                 options={['Popular', 'In Theaters']}
@@ -93,18 +92,18 @@ function UserHome() {
             />
 
             <Poster
-                title={translate('homepage.vietnamMovies')}
-                options={[]}
-                fetchData={fetchVietnamMovies}
-                isTrailer={true}
+                title={translate('homepage.trending')}
+                options={['This Week', 'Today']}
+                fetchData={fetchTrendingMovies}
+                defaultValue="This Week"
                 cardInfo={true}
             />
 
             <Poster
-                title={translate('homepage.popularMovies')}
+                title={translate('homepage.vietnameseMovies')}
                 options={[]}
-                fetchData={fetchPopularMovies}
-                // isTrailer={false}
+                fetchData={fetchVietnamMovies}
+                isTrailer={true}
                 cardInfo={true}
             />
 

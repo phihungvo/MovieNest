@@ -40,7 +40,7 @@
     display: flex;
     justify-content: flex-start;
     color: red;
-    
+
     img {
         width: 200px;
         height: 200px;
@@ -49,13 +49,16 @@
 
 .rightMenu {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     height: 40px;
     width: 238px;
     color: #fff;
+    gap: 31px; 
+    color: #fff;
+    min-width: 120px; 
 }
- 
+
 .icon {
     width: 23px;
     height: 23px;
@@ -66,7 +69,7 @@
     justify-content: center;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    
+
     img {
         width: 100%;
         height: 100%;
@@ -123,8 +126,9 @@
     transition: all 0.3s ease;
     position: relative;
     z-index: 1001;
-    
-    &:hover, &:focus-within {
+
+    &:hover,
+    &:focus-within {
         background: rgba(255, 255, 255, 0.15);
     }
 
@@ -172,7 +176,7 @@
     padding: 4px;
     background: transparent;
     border: none;
-    
+
     &:hover {
         color: #fff;
     }
@@ -205,41 +209,115 @@ body {
 }
 
 .user-profile {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    overflow: hidden;
     display: flex;
     align-items: center;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    justify-content: center;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #1ed760;
+    }
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 8px;
-
         img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            border-color: #ff6b00;
         }
     }
+}
 
-    .username {
-        color: #fff;
-        font-size: 14px;
+:global(.ant-dropdown) {
+    .dropdown-menu {
+        min-width: 240px;
+        background: #1f1f1f;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+
+        .user-info {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+            .avatar {
+                width: 48px;
+                height: 48px;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    border: 2px solid #1ed760;
+                }
+            }
+
+            .user-details {
+                flex: 1;
+
+                .username {
+                    color: #fff;
+                    font-weight: 600;
+                    font-size: 15px;
+                    margin-bottom: 4px;
+                }
+
+                .email {
+                    color: rgba(255, 255, 255, 0.5);
+                    font-size: 13px;
+                }
+            }
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: none;
+                color: #ff6b00;
+
+                .anticon {
+                    color: #ff6b00;
+                }
+            }
+
+            .anticon {
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.7);
+                transition: color 0.2s ease;
+            }
+        }
+
+        .divider {
+            margin: 8px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
     }
 }
 
 .language-switcher {
     cursor: pointer;
     transition: color 0.3s;
-    
+
     &:hover {
         color: #1890ff;
     }

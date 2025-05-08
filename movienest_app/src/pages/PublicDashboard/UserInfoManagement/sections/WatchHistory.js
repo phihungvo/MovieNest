@@ -10,7 +10,7 @@ function WatchHistory() {
         {
             id: 1,
             title: 'Người Nhện: Du Hành Vũ Trụ Nhện',
-            imageUrl: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+            imageUrl: 'https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg',
             lastWatched: '2024-01-10',
             progress: 75,
             duration: '2h 20m',
@@ -19,9 +19,18 @@ function WatchHistory() {
         {
             id: 2,
             title: 'Oppenheimer',
-            imageUrl: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+            imageUrl: 'https://image.tmdb.org/t/p/w500/9PqD3wSIjntyJDBzMNuxuKHwpUD.jpg',
             lastWatched: '2024-01-09',
             progress: 30,
+            duration: '3h 00m',
+            episode: 'Tập 1'
+        },
+        {
+            id: 2,
+            title: 'Oppenheimer',
+            imageUrl: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+            lastWatched: '2024-01-09',
+            progress: 65,
             duration: '3h 00m',
             episode: 'Tập 1'
         }

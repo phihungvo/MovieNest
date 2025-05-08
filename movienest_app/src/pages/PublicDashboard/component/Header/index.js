@@ -38,6 +38,8 @@ function Header({ activeSearch = true }) {
     const debounced = useDebounce(searchValue, 400);
     const inputRef = useRef();
 
+    const avatarUrl = "https://i.pravatar.cc/150?img=12"; 
+
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
@@ -51,7 +53,6 @@ function Header({ activeSearch = true }) {
 
         window.addEventListener('scroll', handleScroll);
 
-        // Dọn dẹp event listener khi component unmount
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
@@ -114,18 +115,30 @@ function Header({ activeSearch = true }) {
     };
 
     const userMenu = (
-        <Menu>
-            <Menu.Item key="profile" icon={<UserOutlined />} onClick={handleNavigate('/user-info-management')}>
+        <div className={cx('dropdown-menu')}>
+            <div className={cx('user-info')}>
+                <div className={cx('avatar')}>
+                    <img src={avatarUrl} alt="avatar" />
+                </div>
+                <div className={cx('user-details')}>
+                    <div className={cx('username')}>{user?.username || 'User'}</div>
+                    <div className={cx('email')}>{user?.email || 'User Email'}</div>
+                </div>
+            </div>
+            <div className={cx('menu-item')} onClick={handleNavigate('/user-info-management')}>
+                <UserOutlined />
                 {translate('user.profile')}
-            </Menu.Item>
-            <Menu.Item key="settings" icon={<SettingOutlined />}>
+            </div>
+            <div className={cx('menu-item')}>
+                <SettingOutlined />
                 {translate('user.settings')}
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
+            </div>
+            <div className={cx('divider')} />
+            <div className={cx('menu-item')} onClick={handleLogout}>
+                <LogoutOutlined />
                 {translate('user.logout')}
-            </Menu.Item>
-        </Menu>
+            </div>
+        </div>
     );
 
     const languageMenu = (
@@ -216,10 +229,7 @@ function Header({ activeSearch = true }) {
                             {user ? (
                                 <Dropdown overlay={userMenu} trigger={['click']}>
                                     <div className={cx('user-profile')}>
-                                        <div className={cx('avatar')}>
-                                            <img src="https://i.pravatar.cc/150" alt="avatar" />
-                                        </div>
-                                        <span className={cx('username')}>{user.username}</span>
+                                        <img src={avatarUrl} alt="avatar" />
                                     </div>
                                 </Dropdown>
                             ) : (

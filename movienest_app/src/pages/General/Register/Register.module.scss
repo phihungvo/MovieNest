@@ -4,6 +4,19 @@
     align-items: center;
     height: 100vh;
     background-color: #f0f2f5;
+    position: relative;
+
+    .logo {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        cursor: pointer;
+        
+        img {
+            margin-top: -60px;
+            width: 150px;
+        }
+    }
 
     .register-box {
         padding: 30px;
@@ -13,6 +26,13 @@
         text-align: center;
         background: #fff;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+        h1 {
+            color: #262626;
+            font-size: 24px;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
     }
 
     .register-form {

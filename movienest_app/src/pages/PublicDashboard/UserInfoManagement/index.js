@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './UserInfoManagement.module.scss';
-import Sidebar from "~/components/Layout/components/Sidebar";
 import Header from '../component/Header';
 import { UserOutlined, HistoryOutlined, HeartOutlined, LockOutlined, NotificationOutlined } from '@ant-design/icons';
 import PersonalInfo from '~/pages/PublicDashboard/UserInfoManagement/sections/PersonalInfo';
@@ -10,6 +9,7 @@ import MyCollection from '~/pages/PublicDashboard/UserInfoManagement/sections/My
 import { useNavigate, useLocation, Outlet, Navigate } from 'react-router-dom';
 import SecuritySettings from './sections/SecuritySettings';
 import NotificationSettings from './sections/NotificationSettings';
+import NavigationPanel from '~/components/Layout/components/NavigationPanel/NavigationPanel';
 
 const cx = classNames.bind(styles);
 
@@ -86,7 +86,7 @@ function UserInfoManagement() {
 
     return (
         <div className={cx('wrapper')}>
-            <Sidebar 
+            <NavigationPanel 
                 hiddenLogo={false} 
                 dataSource={sideBarItems}
                 onItemClick={(key) => handleMenuClick(key, sideBarItems.find(item => item.key === key)?.url)}
