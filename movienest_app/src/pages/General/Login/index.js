@@ -34,6 +34,7 @@ function Login() {
             const userId = decodedToken.userId;
             const isAdmin = roles.includes('ADMIN');
             const username = decodedToken.username || decodedToken.sub || 'Unknown';
+            const email = decodedToken.sub;
 
             localStorage.setItem('role', isAdmin ? 'admin' : 'user');
             // localStorage.setItem('userId', userId);
@@ -44,7 +45,8 @@ function Login() {
                 role: isAdmin ? 'admin' : 'user',
                 roles: roles,
                 userId: userId,
-                username: username, // 👈 Thêm username vào đây
+                username: username, 
+                email: email
             });
 
             message.success('Đăng nhập thành công!');

@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -35,6 +36,8 @@ public class MovieDTO {
 
      String director;
 
+     Set<UUID> collectedByUsersID;
+
      String country;
 
      Boolean inTheater;
@@ -43,7 +46,7 @@ public class MovieDTO {
 
      Float popularity;
 
-     List<UUID> genres; // Danh sách thể loại
+     List<UUID> genres;
 
      List<UUID> trailers;
 

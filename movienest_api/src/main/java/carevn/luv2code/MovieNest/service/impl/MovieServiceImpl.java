@@ -1,14 +1,12 @@
 package carevn.luv2code.MovieNest.service.impl;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
-import carevn.luv2code.MovieNest.entity.Comment;
-import carevn.luv2code.MovieNest.entity.Genres;
-import carevn.luv2code.MovieNest.entity.Movie;
-import carevn.luv2code.MovieNest.entity.Trailer;
+import carevn.luv2code.MovieNest.entity.*;
 import carevn.luv2code.MovieNest.enums.Country;
 import carevn.luv2code.MovieNest.enums.MovieType;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
+import carevn.luv2code.MovieNest.mapper.MovieMapper;
 import carevn.luv2code.MovieNest.repository.CommentRepository;
 import carevn.luv2code.MovieNest.repository.GenresRepository;
 import carevn.luv2code.MovieNest.repository.MovieRepository;
@@ -26,10 +24,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,15 +41,19 @@ public class MovieServiceImpl implements MovieService {
 
     private final CommentRepository commentRepository;
 
+    private final MovieMapper movieMapper;
+
     public MovieServiceImpl(MovieRepository movieRepository,
                             GenresRepository genresRepository,
                             TrailerRepository trailerRepository,
-                            CommentRepository commentRepository
+                            CommentRepository commentRepository,
+                            MovieMapper movieMapper
     ) {
         this.movieRepository = movieRepository;
         this.genresRepository = genresRepository;
         this.trailerRepository = trailerRepository;
         this.commentRepository = commentRepository;
+        this.movieMapper = movieMapper;
     }
 
     @Override
@@ -62,20 +62,9 @@ public class MovieServiceImpl implements MovieService {
             throw new AppException(ErrorCode.MOVIE_ALREADY_EXISTS);
         }
 
-        Movie movie = new Movie();
-        movie.setTitle(movieDTO.getTitle());
-        movie.setOverview(movieDTO.getOverview());
-        movie.setReleaseDate(movieDTO.getReleaseDate());
-        movie.setPosterPath(movieDTO.getPosterPath());
-        movie.setBackdropPath(movieDTO.getBackdropPath());
+        Movie movie = movieMapper.toEntity(movieDTO);
         movie.setRuntime(movieDTO.getRuntime());
         movie.setDirector(movieDTO.getDirector());
-        if (movieDTO.getVoteAverage() != null) movie.setVoteAverage(movieDTO.getVoteAverage());
-        if (movieDTO.getPopular() != null) movie.setPopular(movieDTO.getPopular());
-        if (movieDTO.getInTheater() != null) movie.setInTheater(movieDTO.getInTheater());
-        if (movieDTO.getVoteCount() != null) movie.setVoteCount(movieDTO.getVoteCount());
-        if (movieDTO.getAdult() != null) movie.setAdult(movieDTO.getAdult());
-        if (movieDTO.getPopularity() != null) movie.setPopularity(movieDTO.getPopularity());
         movie.setCountry(Country.valueOf(movieDTO.getCountry()));
 
         if (movieDTO.getGenres() != null && !movieDTO.getGenres().isEmpty()) {
@@ -119,9 +108,16 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie findMovieById(UUID movieId) {
-        return movieRepository.findById(movieId).orElseThrow(
+    public MovieDTO findMovieById(UUID movieId) {
+        Movie movie = movieRepository.findById(movieId).orElseThrow(
                 () -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
+        MovieDTO movieDTO = movieMapper.toDto(movie);
+        movieDTO.setCountry(movie.getCountry().toString());
+        movieDTO.setCollectedByUsersID(movie.getCollectedByUsers().stream().map(User::getId).collect(Collectors.toSet()));
+        movieDTO.setGenres(movie.getGenres().stream().map(Genres::getId).collect(Collectors.toList()));
+        movieDTO.setTrailers(movie.getTrailers().stream().map(Trailer::getId).collect(Collectors.toList()));
+        movieDTO.setComments(movie.getComments().stream().map(Comment::getId).collect(Collectors.toList()));
+        return movieDTO;
     }
 
     @Override
@@ -171,19 +167,8 @@ public class MovieServiceImpl implements MovieService {
         Movie movieExisted = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
 
-        movieExisted.setTitle(movieDTO.getTitle());
-        movieExisted.setOverview(movieDTO.getOverview());
-        movieExisted.setReleaseDate(movieDTO.getReleaseDate());
-        movieExisted.setPosterPath(movieDTO.getPosterPath());
-        movieExisted.setBackdropPath(movieDTO.getBackdropPath());
-        movieExisted.setRuntime(movieDTO.getRuntime());
-        movieExisted.setDirector(movieDTO.getDirector());
-        if (movieDTO.getVoteAverage() != null) movieExisted.setVoteAverage(movieDTO.getVoteAverage());
-        if (movieDTO.getPopular() != null) movieExisted.setPopular(movieDTO.getPopular());
-        if (movieDTO.getInTheater() != null) movieExisted.setInTheater(movieDTO.getInTheater());
-        if (movieDTO.getVoteCount() != null) movieExisted.setVoteCount(movieDTO.getVoteCount());
-        if (movieDTO.getAdult() != null) movieExisted.setAdult(movieDTO.getAdult());
-        if (movieDTO.getPopularity() != null) movieExisted.setPopularity(movieDTO.getPopularity());
+        movieMapper.updateMovieFromDto(movieDTO, movieExisted);
+
         if (movieDTO.getCountry() != null) movieExisted.setCountry(Country.valueOf(movieDTO.getCountry()));
 
         if (movieDTO.getGenres() != null) {
@@ -204,7 +189,6 @@ public class MovieServiceImpl implements MovieService {
 
             movieExisted.setTrailers(trailerList);
         }
-
 
         if (movieDTO.getComments() != null && !movieDTO.getComments().isEmpty()) {
             List<Comment> commentList = commentRepository.findAllById(movieDTO.getComments());

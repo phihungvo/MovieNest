@@ -47,7 +47,7 @@ public class SecurityConfig {
                 // Configure authorization rules
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/user/*/collect/**", "/api/user/*/unCollect/**", "/api/user/*/collections").permitAll()
 
                         .requestMatchers(HttpMethod.PUT, "/api/comment/**").permitAll().requestMatchers(HttpMethod.DELETE, "/api/comment/**").permitAll().requestMatchers(HttpMethod.POST, "/api/comment/**").permitAll()
 

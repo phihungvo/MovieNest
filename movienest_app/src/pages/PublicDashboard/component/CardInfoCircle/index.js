@@ -9,11 +9,9 @@ function CardInfoCircle({ movieResult }) {
     const [imageUrls, setImageUrls] = useState({});
 
     const getDefaultAvatar = (actorId) => {
-        // Tạo một số ngẫu nhiên từ 1-70 nếu không có ID hoặc ID không hợp lệ
         if (!actorId) {
             return `https://i.pravatar.cc/300?img=${Math.floor(Math.random() * 70) + 1}`;
         }
-        // Chuyển ID thành string và lấy 5 ký tự cuối để tránh số quá lớn
         const idStr = actorId.toString().slice(-5);
         const avatarId = (parseInt(idStr) % 70) + 1;
         return `https://i.pravatar.cc/300?img=${avatarId}`;

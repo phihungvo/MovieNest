@@ -1,25 +1,35 @@
 package carevn.luv2code.MovieNest.controller;
 
+import carevn.luv2code.MovieNest.dto.MovieDTO;
 import carevn.luv2code.MovieNest.dto.UserDTO;
 import carevn.luv2code.MovieNest.dto.requests.ApiResponse;
 import carevn.luv2code.MovieNest.dto.requests.UserUpdateRequest;
+import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.entity.User;
+import carevn.luv2code.MovieNest.mapper.MovieMapper;
 import carevn.luv2code.MovieNest.service.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final MovieMapper movieMapper;
+
+    public UserController(UserService userService, MovieMapper movieMapper) {
         this.userService = userService;
+        this.movieMapper = movieMapper;
     }
 
     @GetMapping("/getByUsername")
@@ -59,5 +69,27 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.ok().body("Delete user successfully");
     }
+
+    @PostMapping("/{userId}/collect/{movieId}")
+    public ResponseEntity<User> collectMovie(@PathVariable UUID userId, @PathVariable UUID movieId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.collectMovie(userId, movieId));
+    }
+
+    @DeleteMapping("/{userId}/unCollect/{movieId}")
+    public ResponseEntity<String> unCollectedMovie(@PathVariable UUID userId, @PathVariable UUID movieId) {
+        userService.unCollectedMovie(userId, movieId);
+        return ResponseEntity.status(HttpStatus.OK).body("Remove movie successfully");
+    }
+
+    @GetMapping("/{userId}/collections")
+    public ResponseEntity<List<MovieDTO>> getCollectedMovies(@PathVariable UUID userId) {
+        return ResponseEntity.ok().body(userService.getCollectedMovies(userId));
+    }
+
+//    Set<Movie> collectedMovies = userService.getCollectedMovies(userId);
+//    List<MovieDTO> movieDTOs = collectedMovies.stream()
+//            .map(MovieDTO::fromEntity)
+//            .collect(Collectors.toList());
+//    return ResponseEntity.ok().body(movieDTOs);
 
 }

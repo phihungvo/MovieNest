@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { message } from 'antd';
 import API_ENDPOINTS from '../../../constants/endpoints';
 import { getToken } from '~/constants/token';
 
@@ -15,7 +14,6 @@ export const findMovieById = async (movieId) => {
             },
         );
 
-        // console.log('Movie detail: ', response.data)
         return response.data;
     } catch (error) {
         console.error('Error find all movie: ', error);

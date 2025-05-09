@@ -37,7 +37,7 @@ public class MovieController {
     }
 
     @GetMapping("/{movieId}")
-    public ResponseEntity<Movie> findMovieById(@PathVariable UUID movieId) {
+    public ResponseEntity<MovieDTO> findMovieById(@PathVariable UUID movieId) {
         return new ResponseEntity<>(movieService.findMovieById(movieId), HttpStatus.OK);
     }
 

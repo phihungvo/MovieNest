@@ -17,6 +17,9 @@ const API_ENDPOINTS = {
         GET_ALL: `${BASE_URL}/user/getAll`,
         CREATE: `${BASE_URL}/user/createUser`,
         UPDATE: (userId) => `${BASE_URL}/user/${userId}/update`,
+        COLLECT_MOVIE: (userId, movieId) => `${BASE_URL}/user/${userId}/collect/${movieId}`,
+        UN_COLLECTED_MOVIE: (userId, movieId) => `${BASE_URL}/user/${userId}/unCollect/${movieId}`,
+        GET_COLLECTION_MOVIE: (userId) => `${BASE_URL}/user/${userId}/collections`,
     },
     MOVIES: {
         GET_ALL: `${BASE_URL}/movie/getAll`,

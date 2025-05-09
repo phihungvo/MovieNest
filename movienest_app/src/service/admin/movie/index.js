@@ -76,32 +76,15 @@ export const createMovie = async (formData) => {
             ? formData.releaseDate.format('YYYY-MM-DD')
             : formData.releaseDate;
 
-        console.log('Before processing - posterPath:', formData.posterPath);
-        console.log('Before processing - backdropPath:', formData.backdropPath);
         const posterPath = await processImageUpload(formData.posterPath);
         const backdropPath = await processImageUpload(formData.backdropPath);
 
-        const trailerIds = formData.trailers || [];
-
         const movieData = {
-            title: formData.title,
-            overview: formData.overview,
+            ...formData,
             releaseDate,
             posterPath,
             backdropPath,
-            country: formData.country,
-            voteAverage: formData.voteAverage || 0,
-            voteCount: formData.voteCount || 0,
-            popularity: formData.popularity || 0,
-            popular: formData.popular === true,
-            adult: formData.adult === true,
-            inTheater: formData.inTheater === true,
-            genres: formData.genres,
-            trailers: trailerIds,
-            comments: formData.comments || [],
         };
-
-        console.log('movie data: ', movieData);
 
         const response = await axios.post(
             API_ENDPOINTS.MOVIES.CREATE,
@@ -171,15 +154,14 @@ export const handleUpdateMovie = async (movieId, formData) => {
 
         const posterPath = await processImageUpload(formData.posterPath);
         const backdropPath = await processImageUpload(formData.backdropPath);
-
-        const trailerIds = formData.trailers || [];
+        
+        console.log('form data: ', formData);
 
         const updatedFormData = {
             ...formData,
             posterPath,
             backdropPath,
             releaseDate,
-            trailers: trailerIds, // Gửi danh sách ID của trailers
         };
         console.log('Updating movie with data>>>>>>>>>>>>>:', updatedFormData);
 

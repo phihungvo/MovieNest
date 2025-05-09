@@ -3,16 +3,17 @@ package carevn.luv2code.MovieNest.entity;
 import carevn.luv2code.MovieNest.enums.Country;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "movie")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -56,6 +57,12 @@ public class Movie {
     @Column(name = "country")
     Country country;
 
+    @ManyToMany(mappedBy = "collectedMovies",  fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    Set<User> collectedByUsers = new HashSet<>();
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "movie_genres",
@@ -69,8 +76,9 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
+    @ToString.Exclude
     List<Comment> comments;
 
-    @OneToMany(mappedBy = "movie" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Banner> banners = new ArrayList<>();
 }

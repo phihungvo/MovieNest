@@ -43,7 +43,8 @@ function Register() {
             const decodedToken = jwtDecode(token);
             const roles = decodedToken.role || [];
             const userId = decodedToken.userId;
-            const username = decodedToken.username || decodedToken.sub || 'Unknown';
+            const username = decodedToken.username;
+            const email = decodedToken.sub;
 
             localStorage.setItem('role', 'user');
 
@@ -52,7 +53,8 @@ function Register() {
                 role: 'user',
                 roles: roles,
                 userId: userId,
-                username: username
+                username: username,
+                email: email,
             });
 
             message.success('Register successful!');

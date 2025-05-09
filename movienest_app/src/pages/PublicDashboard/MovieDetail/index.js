@@ -18,6 +18,7 @@ import Header from '../component/Header';
 import {CommentList} from '~/components/Layout/components/CommentList';
 import { getAllComments } from '~/service/admin/comment';
 import { useAuth } from '~/routes/AuthContext';
+import { collectMovie, findCollectedMoviesByUserId } from '~/service/user/user';
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,10 @@ function MovieDetail() {
     const [comments, setComments] = useState([]);
     const { user } = useAuth();
     const currentUserId = user?.userId;
+
+    const handleCallGetCollection = async () => {
+        await findCollectedMoviesByUserId(currentUserId);
+    }
 
     useEffect(() => {
         const fetchMovieDetail = async () => {
@@ -100,6 +105,7 @@ function MovieDetail() {
         };
     
         fetchComments();
+        handleCallGetCollection();
     }, [tabState]);
 
     
@@ -108,6 +114,12 @@ function MovieDetail() {
             <div className={cx('error')}>Không tìm thấy thông tin phim!</div>
         );
     }
+
+    const handleCollectMovie = async () => {
+        await collectMovie(currentUserId, movieId);
+    }
+
+   
 
     const optionTabs = [
         'Chọn tập',
@@ -131,6 +143,7 @@ function MovieDetail() {
         {
             title: 'Sưu tập',
             icon: <HeartOutlined />,
+            onClick: handleCollectMovie
         },
     ];
 
@@ -251,6 +264,7 @@ function MovieDetail() {
                                             : 'btn-secondary',
                                     )}
                                     key={index}
+                                    onClick={item.onClick}
                                 >
                                     {item.icon}
                                     {item.title}
