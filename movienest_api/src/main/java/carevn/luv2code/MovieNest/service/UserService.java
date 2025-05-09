@@ -23,9 +23,4 @@ public interface UserService {
 
     void deleteUser(UUID userId);
 
-    User collectMovie(UUID userId, UUID movieId);
-
-    void unCollectedMovie(UUID userId, UUID movieId);
-
-    List<MovieDTO> getCollectedMovies(UUID userId);
 }

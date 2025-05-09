@@ -58,16 +58,11 @@ public class User {
     @EqualsAndHashCode.Exclude
     List<Comment> comments;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_movie_collection",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
-    )
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    Set<Movie> collectedMovies = new HashSet<>();
+    List<UserMovieCollection> collections = new ArrayList<>();
 
     boolean enabled = true;
 

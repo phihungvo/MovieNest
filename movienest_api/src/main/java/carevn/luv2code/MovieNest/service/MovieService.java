@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.service;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
+import carevn.luv2code.MovieNest.dto.response.MovieDetailResponse;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.enums.Country;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,8 @@ public interface MovieService {
     Page<Movie> findAllMovies(int page, int size, String keyWord);
 
     MovieDTO findMovieById(UUID movieId);
+
+    MovieDetailResponse getMovieDetail(UUID movieId, UUID userId);
 
     List<Movie> findAllNoPaging();
 

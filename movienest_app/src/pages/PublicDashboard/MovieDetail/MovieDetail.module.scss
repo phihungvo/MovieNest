@@ -220,6 +220,18 @@
     gap: 8px;
     font-weight: 600;
     font-size: medium;
+
+    .anticon {
+        margin-right: 8px;
+        font-size: 20px;
+        transition: all 0.3s ease;
+    }
+
+    &:hover {
+        .anticon {
+            transform: scale(1.1);
+        }
+    }
 }
 
 .btn-primary {
@@ -236,7 +248,9 @@
     color: white;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.25);
+        background-color: rgba(255, 107, 0, 0.1);
+        border-color: #ff6b00;
+        color: #ff6b00;
     }
 }
 

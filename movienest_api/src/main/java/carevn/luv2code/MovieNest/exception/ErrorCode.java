@@ -32,6 +32,7 @@ public enum ErrorCode {
     ACTOR_NOT_EXISTED(1019, "Actor not existed", HttpStatus.NOT_FOUND),
     UPDATE_USER_FAILED(1020, "Update user failed", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_HAS_COLLECTED_MOVIE(1021, "User has already collected this movie", HttpStatus.CONFLICT),
+    USER_HAS_NOT_COLLECTED_MOVIE(1022, "User did not collect this movie", HttpStatus.CONFLICT),
     ;
 
     int code;

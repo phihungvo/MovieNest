@@ -29,25 +29,25 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 //            "WHERE u.id = :userId AND m.id = :movieId")
 //    boolean existsUserCollectedMovie(@Param("userId") UUID userId, @Param("movieId") UUID movieId);
 
-    @Query("""
-    SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END
-    FROM User u JOIN u.collectedMovies m
-    WHERE u.id = :userId AND m.id = :movieId
-""")
-    boolean existsUserCollectedMovie(@Param("userId") UUID userId, @Param("movieId") UUID movieId);
+//    @Query("""
+//    SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END
+//    FROM User u JOIN u.collectedMovies m
+//    WHERE u.id = :userId AND m.id = :movieId
+//""")
+//    boolean existsUserCollectedMovie(@Param("userId") UUID userId, @Param("movieId") UUID movieId);
 
 
-    @Query(value = """
-    SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
-    FROM user_movie_collection
-    WHERE user_id = UNHEX(REPLACE(:userId, '-', ''))
-      AND movie_id = UNHEX(REPLACE(:movieId, '-', ''))
-""", nativeQuery = true)
-    boolean existsInUserMovieCollection(@Param("userId") UUID userId, @Param("movieId") UUID movieId);
-
-    // Lấy user kèm theo danh sách phim đã sưu tập
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.collectedMovies WHERE u.id = :userId")
-    Optional<User> findByIdWithCollectedMovies(@Param("userId") UUID userId);
+//    @Query(value = """
+//    SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
+//    FROM user_movie_collection
+//    WHERE user_id = UNHEX(REPLACE(:userId, '-', ''))
+//      AND movie_id = UNHEX(REPLACE(:movieId, '-', ''))
+//""", nativeQuery = true)
+//    boolean existsInUserMovieCollection(@Param("userId") UUID userId, @Param("movieId") UUID movieId);
+//
+//    // Lấy user kèm theo danh sách phim đã sưu tập
+//    @Query("SELECT u FROM User u LEFT JOIN FETCH u.collectedMovies WHERE u.id = :userId")
+//    Optional<User> findByIdWithCollectedMovies(@Param("userId") UUID userId);
 
     @Query("SELECT m FROM Movie m JOIN m.collectedByUsers u WHERE u.id = :userId")
     List<Movie> findMoviesByUserId(@Param("userId") UUID userId);

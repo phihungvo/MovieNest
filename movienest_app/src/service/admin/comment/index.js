@@ -63,9 +63,9 @@ export const createComment = async (data) => {
             },
         });
 
-        if (response) {
-            message.success('Bình luận đã được gửi thành công!');
-        }
+        // if (response) {
+        //     message.success('Bình luận đã được gửi thành công!');
+        // }
 
         return response.data;
     } catch (error) {
@@ -90,9 +90,9 @@ export const updateComment = async (commentId, formData) => {
             },
         );
 
-        if (response) {
-            message.success('Bình luận đã được cập nhật');
-        }
+        // if (response) {
+        //     message.success('Bình luận đã được cập nhật');
+        // }
     } catch (error) {
         console.error(
             'Error updating comment:',
@@ -129,9 +129,9 @@ export const deleteComment = async (commentId) => {
             API_ENDPOINTS.COMMENTS.DELETE(commentId),
         );
 
-        if (response) {
-            message.success('Bình luận đã được xóa');
-        }
+        // if (response) {
+        //     message.success('Bình luận đã được xóa');
+        // }
     } catch (error) {
         console.error('Error deleting comment: ', error);
         throw error;

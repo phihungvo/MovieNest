@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './MovieDetail.module.scss';
 import { getMovieImage } from '~/service/admin/uploadFile';
-import { findMovieById } from '~/service/user/movie';
+import { findMovieById, movieDetail } from '~/service/user/movie';
+import { message } from 'antd';
 import {
     CaretRightOutlined,
     HeartOutlined,
@@ -11,6 +12,7 @@ import {
     ShareAltOutlined,
     StarOutlined,
     WhatsAppOutlined,
+    HeartFilled,
 } from '@ant-design/icons';
 import Poster from '../component/Poster';
 import { getAllActorNoPaging } from '~/service/admin/actor';
@@ -18,13 +20,33 @@ import Header from '../component/Header';
 import {CommentList} from '~/components/Layout/components/CommentList';
 import { getAllComments } from '~/service/admin/comment';
 import { useAuth } from '~/routes/AuthContext';
-import { collectMovie, findCollectedMoviesByUserId } from '~/service/user/user';
+import { createCollection, findCollectedMoviesByUserId, unCollect } from '~/service/user/user';
 
 const cx = classNames.bind(styles);
 
+// Add MovieDetail type definition
+const MovieDetailType = {
+    id: '',
+    title: '',
+    overview: '',
+    releaseDate: '',
+    posterPath: '',
+    backdropPath: '',
+    voteAverage: 0,
+    genres: [],
+    runtime: 0,
+    director: '',
+    actors: [],
+    episodeCount: 0,
+    country: '',
+    collected: false,
+    rating: 0,
+    year: 'N/A'
+};
+
 function MovieDetail() {
     const { movieId } = useParams();
-    const [movie, setMovie] = useState(null);
+    const [movie, setMovie] = useState(MovieDetailType);
     const [imageUrl, setImageUrl] = useState('');
     const [tabState, setTabState] = useState(0);
     const [comments, setComments] = useState([]);
@@ -38,53 +60,26 @@ function MovieDetail() {
     useEffect(() => {
         const fetchMovieDetail = async () => {
             try {
-                const movieData = await findMovieById(movieId);
-
-                const processedData = {
+                const movieData = await movieDetail(movieId, currentUserId);
+                
+                setMovie({
+                    ...MovieDetailType, // Đảm bảo có giá trị mặc định
+                    ...movieData,
                     id: movieId,
-                    title: movieData.title,
-                    overview: movieData.overview,
-                    releaseDate: new Date(
-                        movieData.releaseDate,
-                    ).toLocaleDateString('vi-VN'),
-                    posterPath: movieData.posterPath,
-                    backdropPath: movieData.backdropPath,
-                    voteAverage: movieData.voteAverage,
-                    genres:
-                        movieData.genres && movieData.genres.length > 0
-                            ? movieData.genres.map((genre) => genre.name)
-                            : [],
-                    runtime: movieData.runtime,
-                    trailer_key: 'abc123',
-                    director: movieData.director || 'Chưa cập nhật',
-                    actors: movieData.actors || ['Chưa cập nhật'],
-                    episodeCount: movieData.episodeCount || 0,
-                    year:
-                        new Date(movieData.releaseDate).getFullYear() || 'N/A',
-                    country: movieData.country || 'Chưa cập nhật',
-                    rating: movieData.voteAverage || 0,
-                };
-
-                setMovie(processedData);
+                    releaseDate: movieData?.releaseDate ? new Date(movieData.releaseDate).toLocaleDateString('vi-VN') : '',
+                    year: movieData?.releaseDate ? new Date(movieData.releaseDate).getFullYear() : 'N/A',
+                    rating: movieData?.voteAverage || 0,
+                    collected: movieData?.collected || false,
+                    actors: movieData?.actors || [],
+                    director: movieData?.director || 'Chưa cập nhật',
+                    genres: movieData?.genres?.map(genre => genre.name) || [],
+                    country: movieData?.country || 'Chưa cập nhật'
+                });
 
                 if (movieData.posterPath) {
-                    try {
-                        if (
-                            movieData.posterPath.startsWith('http://') ||
-                            movieData.posterPath.startsWith('https://')
-                        ) {
-                            setImageUrl(movieData.posterPath);
-                        }
-                        else {
-                            const imgUrl = await getMovieImage(
-                                movieData.posterPath,
-                            );
-                            setImageUrl(imgUrl);
-                        }
-                    } catch (error) {
-                        console.error('Lỗi khi tải hình ảnh phim:', error);
-                        setImageUrl('/images/default-movie-poster.jpg');
-                    }
+                    setImageUrl(movieData.posterPath.startsWith('http') 
+                        ? movieData.posterPath 
+                        : await getMovieImage(movieData.posterPath));
                 }
             } catch (error) {
                 console.error('Lỗi khi tải chi tiết phim:', error);
@@ -94,7 +89,7 @@ function MovieDetail() {
         if (movieId) {
             fetchMovieDetail();
         }
-    }, [movieId]);
+    }, [movieId, currentUserId]);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -108,6 +103,42 @@ function MovieDetail() {
         handleCallGetCollection();
     }, [tabState]);
 
+    useEffect(() => {
+        const checkIfMovieCollected = async () => {
+            if (currentUserId) {
+                try {
+                    const collections = await findCollectedMoviesByUserId(currentUserId);
+                    if (collections) {
+                        const isMovieCollected = collections.some(movie => movie.id === movieId);
+                        setMovie(prev => ({...prev, collected: isMovieCollected}));
+                    }
+                } catch (error) {
+                    console.error("Error checking collection status:", error);
+                }
+            }
+        };
+        checkIfMovieCollected();
+    }, [currentUserId, movieId]);
+
+    // Replace isCollected state with movie.collected
+    const handleCollectMovie = async () => {
+        if (!currentUserId) {
+            message.warning('Vui lòng đăng nhập để sưu tập phim!');
+            return;
+        }
+
+        try {
+            if (!movie.collected) {
+                await createCollection(currentUserId, movieId);
+            } else {
+                await unCollect(currentUserId, movieId);
+            }
+            setMovie(prev => ({...prev, collected: !prev.collected}));
+        } catch (error) {
+            message.error('Có lỗi xảy ra khi thực hiện thao tác!');
+        }
+    };
+
     
     if (!movie) {
         return (
@@ -115,35 +146,22 @@ function MovieDetail() {
         );
     }
 
-    const handleCollectMovie = async () => {
-        await collectMovie(currentUserId, movieId);
-    }
-
-   
-
     const optionTabs = [
         'Chọn tập',
         'Diễn viên',
         'Đề xuất cho bạn',
         'Bình luận',
     ];
+    // Update button options to use movie.collected
     const buttonOptions = [
         {
-            title: 'Chiếu phát',
-            icon: <CaretRightOutlined />,
+            title: 'Xem phim',
+            icon: <PlayCircleOutlined />,
         },
         {
-            title: 'Chia sẻ',
-            icon: <ShareAltOutlined />,
-        },
-        {
-            title: 'APP',
-            icon: <WhatsAppOutlined />,
-        },
-        {
-            title: 'Sưu tập',
-            icon: <HeartOutlined />,
-            onClick: handleCollectMovie
+            title: movie.collected ? 'Đã sưu tập' : 'Sưu tập',
+            icon: movie.collected ? <HeartFilled style={{ color: '#ff6b00' }} /> : <HeartOutlined />,
+            onClick: handleCollectMovie,
         },
     ];
 
@@ -202,7 +220,7 @@ function MovieDetail() {
                         <div className={cx('movie-stats')}>
                             <span className={cx('rating')}>
                                 <StarOutlined />
-                                {movie.rating.toFixed(1)}
+                                {(movie?.rating || 0).toFixed(1)}
                             </span>
                             {movie.year && (
                                 <span className={cx('stat-item')}>

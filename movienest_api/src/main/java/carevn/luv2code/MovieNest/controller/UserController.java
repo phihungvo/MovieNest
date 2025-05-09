@@ -70,26 +70,4 @@ public class UserController {
         return ResponseEntity.ok().body("Delete user successfully");
     }
 
-    @PostMapping("/{userId}/collect/{movieId}")
-    public ResponseEntity<User> collectMovie(@PathVariable UUID userId, @PathVariable UUID movieId) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.collectMovie(userId, movieId));
-    }
-
-    @DeleteMapping("/{userId}/unCollect/{movieId}")
-    public ResponseEntity<String> unCollectedMovie(@PathVariable UUID userId, @PathVariable UUID movieId) {
-        userService.unCollectedMovie(userId, movieId);
-        return ResponseEntity.status(HttpStatus.OK).body("Remove movie successfully");
-    }
-
-    @GetMapping("/{userId}/collections")
-    public ResponseEntity<List<MovieDTO>> getCollectedMovies(@PathVariable UUID userId) {
-        return ResponseEntity.ok().body(userService.getCollectedMovies(userId));
-    }
-
-//    Set<Movie> collectedMovies = userService.getCollectedMovies(userId);
-//    List<MovieDTO> movieDTOs = collectedMovies.stream()
-//            .map(MovieDTO::fromEntity)
-//            .collect(Collectors.toList());
-//    return ResponseEntity.ok().body(movieDTOs);
-
 }

@@ -57,11 +57,11 @@ public class Movie {
     @Column(name = "country")
     Country country;
 
-    @ManyToMany(mappedBy = "collectedMovies",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    Set<User> collectedByUsers = new HashSet<>();
+    List<UserMovieCollection> collectedByUsers = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

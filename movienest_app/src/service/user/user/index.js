@@ -3,26 +3,47 @@ import { message } from 'antd';
 import API_ENDPOINTS from '../../../constants/endpoints';
 import { getToken } from '~/constants/token';
 
-export const collectMovie = async (userId, movieId) => {
+export const createCollection = async (userId, movieId) => {
+    console.log('user_id: ', userId, ' movie_id: ', movieId)
     try {
         const response = await axios.post(
-            API_ENDPOINTS.USER.COLLECT_MOVIE(userId, movieId),
+            API_ENDPOINTS.COLLECTIONS.COLLECT(userId, movieId),
         );
 
-        if (response.status === 200) {
-            message.success(response.data);
-        } else {
-            message.error(response.message);
-        }
+        // if (response.status === 200) {
+        //      message.success(response.data);
+        // } else if (response.status === 409) {
+        //     message.error(response.message);
+        // }
     } catch (error) {
         message.error(error.message);
     }
 };
 
+
+export const unCollect = async (userId, movieId) => {
+    console.log('user_id: ', userId, ' movie_id: ', movieId)
+    try {
+        const response = await axios.delete(
+            API_ENDPOINTS.COLLECTIONS.UN_COLLECT(userId, movieId),
+        );
+
+        // if (response.status === 200) {
+        //      message.success(response.data);
+        // } else if (response.status === 409) {
+        //     message.error(response.message);
+        // }
+    } catch (error) {
+        message.error(error.message);
+    }
+};
+
+
+
 export const findCollectedMoviesByUserId = async (userId) => {
     try {
         const response = await axios.get(
-            API_ENDPOINTS.USER.GET_COLLECTION_MOVIE(userId),
+            API_ENDPOINTS.COLLECTIONS.GET_COLLECTION(userId),
         );
 
         if (response.status === 200) {

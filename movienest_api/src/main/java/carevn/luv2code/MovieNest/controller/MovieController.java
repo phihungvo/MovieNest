@@ -1,6 +1,7 @@
 package carevn.luv2code.MovieNest.controller;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
+import carevn.luv2code.MovieNest.dto.response.MovieDetailResponse;
 import carevn.luv2code.MovieNest.entity.Movie;
 import carevn.luv2code.MovieNest.enums.Country;
 import carevn.luv2code.MovieNest.service.MovieService;
@@ -39,6 +40,13 @@ public class MovieController {
     @GetMapping("/{movieId}")
     public ResponseEntity<MovieDTO> findMovieById(@PathVariable UUID movieId) {
         return new ResponseEntity<>(movieService.findMovieById(movieId), HttpStatus.OK);
+    }
+
+    @GetMapping("/detail/{movieId}")
+    public ResponseEntity<MovieDetailResponse> getMovieDetail(
+            @RequestParam("userId") UUID userId,
+            @PathVariable UUID movieId) {
+        return new ResponseEntity<>(movieService.getMovieDetail(userId, movieId), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
@@ -85,11 +93,6 @@ public class MovieController {
     public ResponseEntity<List<Movie>> getThailandMovies(){
         return new ResponseEntity<>(movieService.findMovieByCountry(Country.THAILAND), HttpStatus.OK);
     }
-
-//    @GetMapping("/thailand-movie")
-//    public ResponseEntity<List<Movie>> getAnimationMovies(){
-//        return new ResponseEntity<>(movieService.findMovieByCountry(Country.), HttpStatus.OK);
-//    }
 
     @GetMapping("/findAllNoPaging")
     public ResponseEntity<List<Movie>> findAllNoPaging(){

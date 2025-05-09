@@ -1,16 +1,14 @@
 package carevn.luv2code.MovieNest.service.impl;
 
 import carevn.luv2code.MovieNest.dto.MovieDTO;
+import carevn.luv2code.MovieNest.dto.response.MovieDetailResponse;
 import carevn.luv2code.MovieNest.entity.*;
 import carevn.luv2code.MovieNest.enums.Country;
 import carevn.luv2code.MovieNest.enums.MovieType;
 import carevn.luv2code.MovieNest.exception.AppException;
 import carevn.luv2code.MovieNest.exception.ErrorCode;
 import carevn.luv2code.MovieNest.mapper.MovieMapper;
-import carevn.luv2code.MovieNest.repository.CommentRepository;
-import carevn.luv2code.MovieNest.repository.GenresRepository;
-import carevn.luv2code.MovieNest.repository.MovieRepository;
-import carevn.luv2code.MovieNest.repository.TrailerRepository;
+import carevn.luv2code.MovieNest.repository.*;
 import carevn.luv2code.MovieNest.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,19 +39,25 @@ public class MovieServiceImpl implements MovieService {
 
     private final CommentRepository commentRepository;
 
+    private final UserMovieCollectionRepository userMovieCollectionRepository;
+
     private final MovieMapper movieMapper;
+    private final UserRepository userRepository;
 
     public MovieServiceImpl(MovieRepository movieRepository,
                             GenresRepository genresRepository,
                             TrailerRepository trailerRepository,
                             CommentRepository commentRepository,
-                            MovieMapper movieMapper
-    ) {
+                            UserMovieCollectionRepository userMovieCollectionRepository,
+                            MovieMapper movieMapper,
+                            UserRepository userRepository) {
         this.movieRepository = movieRepository;
         this.genresRepository = genresRepository;
         this.trailerRepository = trailerRepository;
         this.commentRepository = commentRepository;
+        this.userMovieCollectionRepository = userMovieCollectionRepository;
         this.movieMapper = movieMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -92,7 +96,6 @@ public class MovieServiceImpl implements MovieService {
         return movies;
     }
 
-
     @Override
     public Page<Movie> findAllMovies(int page, int size, String keyWord) {
         Pageable pageable = PageRequest.of(page, size);
@@ -113,11 +116,34 @@ public class MovieServiceImpl implements MovieService {
                 () -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
         MovieDTO movieDTO = movieMapper.toDto(movie);
         movieDTO.setCountry(movie.getCountry().toString());
-        movieDTO.setCollectedByUsersID(movie.getCollectedByUsers().stream().map(User::getId).collect(Collectors.toSet()));
+//        movieDTO.setCollectedByUsersID(movie.getCollectedByUsers().stream().map(User::getId).collect(Collectors.toSet()));
         movieDTO.setGenres(movie.getGenres().stream().map(Genres::getId).collect(Collectors.toList()));
         movieDTO.setTrailers(movie.getTrailers().stream().map(Trailer::getId).collect(Collectors.toList()));
         movieDTO.setComments(movie.getComments().stream().map(Comment::getId).collect(Collectors.toList()));
         return movieDTO;
+    }
+
+    @Override
+    public MovieDetailResponse getMovieDetail(UUID userId, UUID movieId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
+
+        boolean isCollected = userMovieCollectionRepository.existsByUserAndMovie(user, movie);
+
+        MovieDetailResponse movieDetailResponse = new MovieDetailResponse();
+        movieDetailResponse.setTitle(movie.getTitle());
+        movieDetailResponse.setOverview(movie.getOverview());
+        movieDetailResponse.setBackdropPath(movie.getBackdropPath());
+        movieDetailResponse.setCountry(movie.getCountry().toString());
+        movieDetailResponse.setVoteAverage(movie.getVoteAverage());
+        movieDetailResponse.setCollected(isCollected);
+        movieDetailResponse.setGenres(movie.getGenres().stream().map(Genres::getId).collect(Collectors.toList()));
+        movieDetailResponse.setComments(movie.getComments().stream().map(Comment::getId).collect(Collectors.toList()));
+
+        return movieDetailResponse;
     }
 
     @Override

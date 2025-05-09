@@ -17,14 +17,18 @@ const API_ENDPOINTS = {
         GET_ALL: `${BASE_URL}/user/getAll`,
         CREATE: `${BASE_URL}/user/createUser`,
         UPDATE: (userId) => `${BASE_URL}/user/${userId}/update`,
-        COLLECT_MOVIE: (userId, movieId) => `${BASE_URL}/user/${userId}/collect/${movieId}`,
-        UN_COLLECTED_MOVIE: (userId, movieId) => `${BASE_URL}/user/${userId}/unCollect/${movieId}`,
-        GET_COLLECTION_MOVIE: (userId) => `${BASE_URL}/user/${userId}/collections`,
+        COLLECT_MOVIE: (userId, movieId) =>
+            `${BASE_URL}/user/${userId}/collect/${movieId}`,
+        UN_COLLECTED_MOVIE: (userId, movieId) =>
+            `${BASE_URL}/user/${userId}/unCollect/${movieId}`,
+        GET_COLLECTION_MOVIE: (userId) =>
+            `${BASE_URL}/user/${userId}/collections`,
     },
     MOVIES: {
         GET_ALL: `${BASE_URL}/movie/getAll`,
         GET_ALL_NO_PAGING: `${BASE_URL}/movie/findAllNoPaging`,
         GET_BY_ID: (id) => `${BASE_URL}/movie/${id}`,
+        DETAIL: (movieId) => `${BASE_URL}/movie/detail/${movieId}`,
         CREATE: `${BASE_URL}/movie/create`,
         UPDATE: (movieId) => `${BASE_URL}/movie/update/${movieId}`,
         DELETE: (id) => `${BASE_URL}/movie/delete?movieId=${id}`,
@@ -84,6 +88,13 @@ const API_ENDPOINTS = {
         GET_ALL: `${BASE_URL}/banner/getAll`,
         UPDATE: (bannerId) => `${BASE_URL}/banner/update/${bannerId}`,
         DELETE: (bannerId) => `${BASE_URL}/banner/${bannerId}`,
+    },
+    COLLECTIONS: {
+        GET_COLLECTION: (userId) => `${BASE_URL}/collections/${userId}`,
+        COLLECT: (userId, movieId) =>
+            `${BASE_URL}/collections/${userId}/collect/${movieId}`,
+        UN_COLLECT: (userId, movieId) =>
+            `${BASE_URL}/collections/${userId}/un_collect/${movieId}`,
     },
 };
 
