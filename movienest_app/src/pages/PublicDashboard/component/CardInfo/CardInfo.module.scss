@@ -1,9 +1,8 @@
-
 .card-film {
     min-width: 200px;
-    height: 300px;
+    height: 380px; // Tăng chiều cao để chứa card + margin
     display: flex;
-    align-items: center;
+    align-items: flex-start; // Thay đổi từ center thành flex-start
     justify-content: flex-start;
     border-radius: 8px;
     text-align: center;
@@ -13,7 +12,7 @@
     margin-left: 20px;
     margin-bottom: 20px;
     position: relative;
-    padding: 10px 0;
+    padding: 10px 0 14px;
 
     &::-webkit-scrollbar {
         height: 0px;
@@ -36,20 +35,30 @@
 
 :global(.ant-card) {
     background-color: #1a1d24;
-    border-radius: 25px !important;
-    overflow: hidden;
+    border-radius: 16px !important;
+    overflow: hidden !important;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 20px !important;
-    border: none !important;
+    border: 2px solid transparent !important;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    // margin-top: 10px !important;
+    // margin-bottom: 30px !important; // Thêm margin bottom
+    height: 320px !important; // Fix cứng chiều cao card
+    position: relative;
+    z-index: 1;
 
     &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(255, 140, 0, 0.3),
+                   0 4px 8px rgba(0, 0, 0, 0.2);
+        border-color: #ff8c00 !important;
+        z-index: 2;
+
+        :global(.ant-card-body) {
+            background: #2d3139;
+        }
     }
 }
 
-/* Style cho Card Meta - ĐIỀU CHỈNH TIÊU ĐỀ ĐỂ XUỐNG DÒNG */
 :global(.ant-card-meta-title) {
     color: #ffffff !important;
     font-size: 14px !important;
@@ -82,24 +91,53 @@
     justify-content: space-between !important;
 }
 
-/* Card Info */
 .info {
     text-align: left;
 }
 
-/* Card Content */
 .card-content {
     position: relative;
-    overflow: hidden;
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
+    overflow: hidden !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
 
     img {
         transition: transform 0.5s ease;
-        border-top-left-radius: 25px;
-        border-top-right-radius: 25px;
+        border-top-left-radius: 14px !important;
+        border-top-right-radius: 14px !important;
         width: 100%;
         object-fit: cover;
+        position: relative;
+        z-index: 1;
+    }
+
+    .button-container {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .progress-overlay,
+    .collect-button {
+        position: relative;
+        z-index: 11;
     }
 
     &:hover img {
@@ -107,7 +145,6 @@
     }
 }
 
-/* Play Icon */
 .play-icon {
     position: absolute;
     top: 50%;
@@ -150,7 +187,6 @@
     opacity: 1;
 }
 
-/* Progress Overlay */
 .progress-overlay {
     position: absolute;
     bottom: 60px;
@@ -170,7 +206,53 @@
     }
 }
 
-/* Overlay phủ mờ toàn màn hình */
+.button-container {
+    position: absolute;
+    bottom: -14px;
+    left: 6px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.collect-button {
+    width: 35px;
+    height: 35px;
+    position: relative;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ffd700, #ff8c00);
+    color: white;
+    font-size: 18px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+    }
+
+    &.collected {
+        background: linear-gradient(45deg, #ff6b00, #ff424f);
+        
+        svg {
+            color: white;
+            fill: white;
+        }
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
 .overlay {
     position: fixed;
     top: 0;
@@ -183,7 +265,6 @@
     backdrop-filter: blur(5px);
 }
 
-/* Container cho trailer */
 .trailer-container {
     position: fixed;
     top: 0;
@@ -194,7 +275,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    pointer-events: none; /* Cho phép click xuyên qua container đến overlay */
+    pointer-events: none;
 }
 
 .trailer-wrapper {
@@ -202,7 +283,7 @@
     width: 80%;
     max-width: 1000px;
     aspect-ratio: 16/9;
-    pointer-events: auto; /* Bật lại pointer events cho phần video */
+    pointer-events: auto;
     animation: fadeIn 0.4s ease;
 }
 
@@ -217,7 +298,6 @@
     }
 }
 
-/* Nút đóng trailer */
 .close-button {
     position: absolute;
     top: -40px;
@@ -241,7 +321,6 @@
     }
 }
 
-/* Iframe video */
 .trailer-wrapper iframe {
     width: 100%;
     height: 100%;
@@ -250,12 +329,10 @@
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .card-film {
         overflow-x: auto;
         justify-content: flex-start;
-        padding-bottom: 15px;
     }
 
     :global(.ant-card) {
@@ -269,7 +346,7 @@
     }
 
     :global(.ant-card-body) {
-        height: 75px !important; /* Điều chỉnh chiều cao cho mobile */
+        height: 75px !important;
     }
 
     .trailer-wrapper {
@@ -287,7 +364,7 @@
 
     :global(.ant-card-meta-title) {
         font-size: 12px !important;
-        -webkit-line-clamp: 2 !important; /* Giới hạn 2 dòng trên mobile */
+        -webkit-line-clamp: 2 !important;
     }
 
     :global(.ant-card-meta-description) {
@@ -295,7 +372,6 @@
     }
 }
 
-/* Tablet */
 @media (min-width: 769px) and (max-width: 1024px) {
     :global(.ant-card) {
         width: 180px !important;
@@ -307,6 +383,30 @@
     }
 
     :global(.ant-card-body) {
-        height: 75px !important; /* Điều chỉnh chiều cao cho tablet */
+        height: 75px !important; 
+    }
+}
+
+.collect-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ffd700, #ff8c00);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+    margin-left: 8px;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+
+    &.collected {
+        background: linear-gradient(45deg, #ff6b00, #ff424f);
     }
 }

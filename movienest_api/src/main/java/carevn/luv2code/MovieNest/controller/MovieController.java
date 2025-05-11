@@ -44,9 +44,8 @@ public class MovieController {
 
     @GetMapping("/detail/{movieId}")
     public ResponseEntity<MovieDetailResponse> getMovieDetail(
-            @RequestParam("userId") UUID userId,
             @PathVariable UUID movieId) {
-        return new ResponseEntity<>(movieService.getMovieDetail(userId, movieId), HttpStatus.OK);
+        return new ResponseEntity<>(movieService.getMovieDetail(movieId), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
@@ -110,6 +109,14 @@ public class MovieController {
     public ResponseEntity<Void> deleteMovie(@PathVariable UUID movieId){
         movieService.deleteMovie(movieId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{movieId}/check-collection")
+    public ResponseEntity<Boolean> checkMovieCollection(
+            @PathVariable UUID movieId,
+            @RequestParam UUID userId) {
+        boolean isCollected = movieService.checkMovieCollection(movieId, userId);
+        return ResponseEntity.ok(isCollected);
     }
 
 }

@@ -12,15 +12,10 @@ export const findMovieById = async (movieId) => {
     }
 };
 
-export const movieDetail = async (movieId, userId) => {
-    console.log('movieId: ', movieId, ' userId: ', userId)
+export const movieDetail = async (movieId) => {
     try {
         const response = await axios.get(
-            API_ENDPOINTS.MOVIES.DETAIL(movieId), {
-                params: {
-                    userId: userId,
-                }
-            }
+            API_ENDPOINTS.MOVIES.DETAIL(movieId)
         )
 
         console.log('Movie detail data: ', response.data);
@@ -29,3 +24,15 @@ export const movieDetail = async (movieId, userId) => {
         console.log('Error when get movie detail!');
     }
 }
+
+export const checkMovieCollection = async (movieId, userId) => {
+    try {
+        const response = await axios.get(
+            API_ENDPOINTS.MOVIES.CHECK_COLLECTION(movieId, userId)
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error checking movie collection:', error);
+        return false;
+    }
+};

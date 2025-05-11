@@ -41,6 +41,8 @@ const API_ENDPOINTS = {
         KOREAN_MOVIES: `${BASE_URL}/movie/korean-movie`,
         VIETNAME_MOVIES: `${BASE_URL}/movie/vietnamese-movie`,
         THAILAND_MOVIES: `${BASE_URL}/movie/thailand-movie`,
+        CHECK_COLLECTION: (movieId, userId) => 
+            `${BASE_URL}/movie/${movieId}/check-collection?userId=${userId}`,
     },
 
     TRAILER: {

@@ -1,6 +1,8 @@
 package carevn.luv2code.MovieNest.security;
 
+import carevn.luv2code.MovieNest.entity.InvalidatedToken;
 import carevn.luv2code.MovieNest.entity.User;
+import carevn.luv2code.MovieNest.repository.InvalidatedTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

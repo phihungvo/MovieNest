@@ -47,7 +47,8 @@ export const findCollectedMoviesByUserId = async (userId) => {
         );
 
         if (response.status === 200) {
-            console.log('response: >>> ', response.data)
+            console.log('response: >>> ', response)
+            return response.data;
         } else {
             console.log('error fetching collection!')
         }

@@ -51,17 +51,21 @@ function CommentList({ movieId, userId }) {
     }, [currentPage, pageSize]);
 
     const handleNewComment = async () => {
-        if (!newCommentText.trim()) return;
+        if (userId != null) {
+            if (!newCommentText.trim()) return;
 
-        const newCommentData = {
-            content: newCommentText,
-            movieId: movieId,
-            userId: userId,
-        };
+            const newCommentData = {
+                content: newCommentText,
+                movieId: movieId,
+                userId: userId,
+            };
 
-        await createComment(newCommentData);
-        setNewCommentText('');
-        fetchComments();
+            await createComment(newCommentData);
+            setNewCommentText('');
+
+            fetchComments();
+        }
+        message.warning('Hãy đăng nhập rồi mới bình luận!');
     };
 
     const handlePageChange = (page) => {
@@ -93,17 +97,15 @@ function CommentList({ movieId, userId }) {
 
             {/* Comments list */}
             <div className={styles['comment-list']}>
-                { (
-                    allComments.map((comment) => (
-                        <CommentItem
-                            key={comment.id}
-                            comment={comment}
-                            userId={userId}
-                            onDeleteConfirm={() => confirmDelete(comment.id)}
-                            fetchComments={fetchComments}
-                        />
-                    ))
-                )}
+                {allComments.map((comment) => (
+                    <CommentItem
+                        key={comment.id}
+                        comment={comment}
+                        userId={userId}
+                        onDeleteConfirm={() => confirmDelete(comment.id)}
+                        fetchComments={fetchComments}
+                    />
+                ))}
             </div>
 
             {/* Pagination */}

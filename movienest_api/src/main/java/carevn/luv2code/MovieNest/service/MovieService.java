@@ -20,7 +20,7 @@ public interface MovieService {
 
     MovieDTO findMovieById(UUID movieId);
 
-    MovieDetailResponse getMovieDetail(UUID movieId, UUID userId);
+    MovieDetailResponse getMovieDetail(UUID userId);
 
     List<Movie> findAllNoPaging();
 
@@ -37,4 +37,6 @@ public interface MovieService {
     void deleteMovie(UUID id);
 
     List<Movie> findMovieByCountry(Country country);
+
+    boolean checkMovieCollection(UUID movieId, UUID userId);
 }

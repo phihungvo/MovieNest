@@ -73,7 +73,7 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     private CollectionDTO mapToCollectionDTO(UserMovieCollection collection) {
-        return CollectionDTO.builder().id(collection.getId()).userId(collection.getUser().getId()).movieId(collection.getMovie().getId()).movieTitle(collection.getMovie().getTitle()).posterPath(collection.getMovie().getPosterPath()).collectedAt(collection.getCollectedAt()).build();
+        return CollectionDTO.builder().id(collection.getId()).userId(collection.getUser().getId()).movieId(collection.getMovie().getId()).movieTitle(collection.getMovie().getTitle()).posterPath(collection.getMovie().getPosterPath()).voteAverage(collection.getMovie().getVoteAverage()).collectedAt(collection.getCollectedAt()).build();
     }
 
 }

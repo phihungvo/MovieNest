@@ -48,28 +48,40 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers(
+                                // Auth
                                 "/api/auth/**",
+
+                                // Collections
                                 "/api/collections/**",
                                 "/api/collections/*/collect/*",
                                 "/api/collections/*/un_collect/*",
-                                "/api/movie/detail/**").permitAll()
+
+                                // Movie
+                                "/api/movie/**",
+                                "/api/movie/detail/**",
+                                "/api/movie/korea-movie",
+                                "/api/movie/korean-movie",
+                                "/api/movie/popular",
+                                "/api/movie/this-week",
+                                "/api/movie/vietnamese-movie",
+
+                                // Trailers
+                                "/api/trailers/movie/**",
+
+                                // Storage
+                                "/api/storage/files/**",
+
+                                // Comments
+                                "/api/comment/getAll/**",
+                                "/api/comment/create/**",
+                                "/api/comment/movie/**",
+                                "/api/comment/{commentId}/reply",
+
+                                // Actors
+                                "/api/actor/findAll"
+                        ).permitAll()
 
                         .requestMatchers(HttpMethod.PUT, "/api/comment/**").permitAll().requestMatchers(HttpMethod.DELETE, "/api/comment/**").permitAll().requestMatchers(HttpMethod.POST, "/api/comment/**").permitAll()
-
-                        .requestMatchers(
-                                "/api/storage/files/**",
-                                "/api/movie/korea-movie",
-                                "/api/trailers/movie/**",
-                                "api/actor/findAll",
-                                "api/comment/getAll/**",
-                                "api/comment/create/**",
-                                "api/movie/**",
-                                "api/movie/this-week",
-                                "api/movie/popular",
-                                "api/movie/vietnamese-movie",
-                                "api/movie/korean-movie",
-                                "api/comment/movie/**",
-                                "api/comment/{commentId}/reply").permitAll()
 
                         // User endpoints
                         .requestMatchers("/api/user/createUser", "/api/user/getAll", "/api/movie/**", "/api/storage/**").hasAnyRole("USER", "ADMIN")

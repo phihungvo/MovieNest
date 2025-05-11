@@ -30,6 +30,8 @@ public class CollectionDTO {
 
     String posterPath;
 
+    float voteAverage;
+
     Date collectedAt;
     
 }

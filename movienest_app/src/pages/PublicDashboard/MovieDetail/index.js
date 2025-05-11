@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './MovieDetail.module.scss';
 import { getMovieImage } from '~/service/admin/uploadFile';
-import { findMovieById, movieDetail } from '~/service/user/movie';
+import { checkMovieCollection, findMovieById, movieDetail } from '~/service/user/movie';
 import { message } from 'antd';
 import {
     CaretRightOutlined,
@@ -53,23 +53,20 @@ function MovieDetail() {
     const { user } = useAuth();
     const currentUserId = user?.userId;
 
-    const handleCallGetCollection = async () => {
-        await findCollectedMoviesByUserId(currentUserId);
-    }
-
     useEffect(() => {
         const fetchMovieDetail = async () => {
             try {
-                const movieData = await movieDetail(movieId, currentUserId);
+                const movieData = await movieDetail(movieId);
+                const collectionStatus = currentUserId ? await checkMovieCollection(movieId, currentUserId) : false;
                 
                 setMovie({
-                    ...MovieDetailType, // Đảm bảo có giá trị mặc định
+                    ...MovieDetailType,
                     ...movieData,
                     id: movieId,
                     releaseDate: movieData?.releaseDate ? new Date(movieData.releaseDate).toLocaleDateString('vi-VN') : '',
                     year: movieData?.releaseDate ? new Date(movieData.releaseDate).getFullYear() : 'N/A',
                     rating: movieData?.voteAverage || 0,
-                    collected: movieData?.collected || false,
+                    collected: collectionStatus,
                     actors: movieData?.actors || [],
                     director: movieData?.director || 'Chưa cập nhật',
                     genres: movieData?.genres?.map(genre => genre.name) || [],
@@ -86,41 +83,11 @@ function MovieDetail() {
             }
         };
 
-        if (movieId) {
+        if (movieId) {  // Remove currentUserId condition
             fetchMovieDetail();
         }
     }, [movieId, currentUserId]);
 
-    useEffect(() => {
-        const fetchComments = async () => {
-            if (tabState === 3) {
-                const response = await getAllComments({ page: 0, pageSize: 5 });
-                setComments(response?.content || []);
-            }
-        };
-    
-        fetchComments();
-        handleCallGetCollection();
-    }, [tabState]);
-
-    useEffect(() => {
-        const checkIfMovieCollected = async () => {
-            if (currentUserId) {
-                try {
-                    const collections = await findCollectedMoviesByUserId(currentUserId);
-                    if (collections) {
-                        const isMovieCollected = collections.some(movie => movie.id === movieId);
-                        setMovie(prev => ({...prev, collected: isMovieCollected}));
-                    }
-                } catch (error) {
-                    console.error("Error checking collection status:", error);
-                }
-            }
-        };
-        checkIfMovieCollected();
-    }, [currentUserId, movieId]);
-
-    // Replace isCollected state with movie.collected
     const handleCollectMovie = async () => {
         if (!currentUserId) {
             message.warning('Vui lòng đăng nhập để sưu tập phim!');
@@ -135,6 +102,7 @@ function MovieDetail() {
             }
             setMovie(prev => ({...prev, collected: !prev.collected}));
         } catch (error) {
+            console.error('Error toggling collection:', error);
             message.error('Có lỗi xảy ra khi thực hiện thao tác!');
         }
     };
@@ -152,7 +120,7 @@ function MovieDetail() {
         'Đề xuất cho bạn',
         'Bình luận',
     ];
-    // Update button options to use movie.collected
+
     const buttonOptions = [
         {
             title: 'Xem phim',
@@ -164,15 +132,6 @@ function MovieDetail() {
             onClick: handleCollectMovie,
         },
     ];
-
-    const handleCallAllActors = async () => {
-        return await getAllActorNoPaging();
-    };
-
-    const handleGetAllComments = async () => {
-        const response = await getAllComments();
-        console.log('comment response: ',response)
-    }
 
     const renderTabContent = () => {
         switch (tabState) {

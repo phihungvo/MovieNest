@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Flex, Progress } from 'antd';
+import { Card, Flex, Progress, message } from 'antd';
 import styles from './CardInfo.module.scss';
 import classNames from 'classnames/bind';
-import { PlayCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { PlayCircleOutlined, CloseCircleOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ProgressOverlay from '../ProgressOverplay';
 import { getMovieImage } from '~/service/admin/uploadFile';
+import { useAuth } from '~/routes/AuthContext';
+import { createCollection, unCollect } from '~/service/user/user';
+import { checkMovieCollection } from '~/service/user/movie';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +17,14 @@ function CardInfo({ movieResult, isTrailer }) {
     const [showTrailer, setShowTrailer] = useState(false);
     const [trailerURL, setTrailerURL] = useState('');
     const [imageUrls, setImageUrls] = useState({});
+    const { user } = useAuth();
+    const currentUserId = user?.userId;
+    const [movies, setMovies] = useState(movieResult);
+    const [collectedMovies, setCollectedMovies] = useState({}); 
+
+    useEffect(() => {
+        setMovies(movieResult);
+    }, [movieResult]);
 
     const handleClickPlayButton = (movie) => {
         console.log('trailer key: ', movie.key);
@@ -27,7 +38,6 @@ function CardInfo({ movieResult, isTrailer }) {
 
     const handleCloseTrailer = () => {
         setShowTrailer(false);
-        // Dừng video bằng cách xóa URL
         setTrailerURL('');
     };
 
@@ -37,10 +47,35 @@ function CardInfo({ movieResult, isTrailer }) {
         navigate(`/movie/${id}`);
     };
 
+    const handleCollectMovie = async (movieId) => {
+        if (!currentUserId) {
+            message.warning('Vui lòng đăng nhập để sưu tập phim!');
+            return;
+        }
+
+        try {
+            const isCurrentlyCollected = collectedMovies[movieId];
+            if (!isCurrentlyCollected) {
+                await createCollection(currentUserId, movieId);
+                // message.success('Đã thêm vào bộ sưu tập');
+            } else {
+                await unCollect(currentUserId, movieId);
+                // message.success('Đã xóa khỏi bộ sưu tập');
+            }
+            
+            // Cập nhật trạng thái collect trong state
+            setCollectedMovies(prev => ({
+                ...prev,
+                [movieId]: !isCurrentlyCollected
+            }));
+        } catch (error) {
+            console.error('Error toggling collection:', error);
+            // message.error('Có lỗi xảy ra khi thực hiện thao tác!');
+        }
+    };
+
     useEffect(() => {
         const loadImages = async () => {
-            // setLoading(true);
-
             const imagePromises = movieResult.map(async (movie) => {
                 let imagePath = isTrailer
                     ? movie.backdropPath
@@ -119,17 +154,48 @@ function CardInfo({ movieResult, isTrailer }) {
         };
     }, [showTrailer]);
 
+    // useEffect để check trạng thái collect của từng phim
+    useEffect(() => {
+        const checkCollectionStatus = async () => {
+            if (!currentUserId) return;
+
+            const statusMap = {};
+            for (const movie of movies) {
+                try {
+                    const isCollected = await checkMovieCollection(movie.id, currentUserId);
+                    statusMap[movie.id] = isCollected;
+                } catch (error) {
+                    console.error(`Error checking collection status for movie ${movie.id}:`, error);
+                    statusMap[movie.id] = false;
+                }
+            }
+            setCollectedMovies(statusMap);
+        };
+
+        checkCollectionStatus();
+    }, [currentUserId, movies]);
+
     return (
         <div className={cx('card-film')}>
-            {Array.isArray(movieResult) &&
-                movieResult.map((movie) => (
+            {Array.isArray(movies) &&
+                movies.map((movie) => (
                     <Card
                         key={movie.id}
                         hoverable
                         style={
                             isTrailer
-                                ? { width: 300, height: 320, marginLeft: 15 ,  flexShrink: 0 }
-                                : { width: 150, height: 320, marginLeft: 15,  flexShrink: 0  }
+                                ? {
+                                      width: 300,
+                                      height: 320,
+                                      marginLeft: 15,
+                                      flexShrink: 0,
+                                  }
+                                : {
+                                      width: 150,
+                                      height: 320,
+                                      marginLeft: 15,
+                                      flexShrink: 0,
+                                  }
                         }
                         cover={
                             isTrailer ? (
@@ -161,34 +227,48 @@ function CardInfo({ movieResult, isTrailer }) {
                                     </div>
                                 </div>
                             ) : (
-                                <img
-                                    alt={movie.title}
-                                    src={
-                                        imageUrls[movie.id] ||
-                                        '/images/loading-placeholder.gif'
-                                    }
-                                    style={{
-                                        width: '150px',
-                                        height: '225px',
-                                        objectFit: 'cover',
-                                        borderTopLeftRadius: '25px',
-                                        borderTopRightRadius: '25px',
-                                    }}
-                                    onClick={() =>
-                                        handleMovieDetailClick(movie.id)
-                                    }
-                                />
+                                <div className={cx('card-content')}>
+                                    <img
+                                        alt={movie.title}
+                                        src={
+                                            imageUrls[movie.id] ||
+                                            '/images/loading-placeholder.gif'
+                                        }
+                                        style={{
+                                            width: '150px',
+                                            height: '225px',
+                                            objectFit: 'cover',
+                                            borderTopLeftRadius: '25px',
+                                            borderTopRightRadius: '25px',
+                                        }}
+                                        onClick={() =>
+                                            handleMovieDetailClick(movie.id)
+                                        }
+                                    />
+                                    <div className={cx('button-container')}>
+                                        <Progress
+                                            type="circle"
+                                            percent={Math.round(movie.voteAverage * 10)}
+                                            width={35}
+                                            strokeWidth={8}
+                                            strokeColor="#52c41a"
+                                        />
+                                        <button 
+                                            className={cx('collect-button', { 
+                                                collected: collectedMovies[movie.id] 
+                                            })}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCollectMovie(movie.id);
+                                            }}
+                                        >
+                                            {collectedMovies[movie.id] ? <HeartFilled /> : <HeartOutlined />}
+                                        </button>
+                                    </div>
+                                </div>
                             )
                         }
                     >
-                        {isTrailer ? (
-                            <></>
-                        ) : (
-                            <ProgressOverlay
-                                popularity={movie.voteAverage}
-                                size={35}
-                            />
-                        )}
                         <Meta
                             className={cx('info')}
                             title={movie.title}

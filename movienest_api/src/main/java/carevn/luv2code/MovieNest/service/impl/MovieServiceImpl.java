@@ -124,14 +124,9 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public MovieDetailResponse getMovieDetail(UUID userId, UUID movieId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
+    public MovieDetailResponse getMovieDetail(UUID movieId) {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
-
-        boolean isCollected = userMovieCollectionRepository.existsByUserAndMovie(user, movie);
 
         MovieDetailResponse movieDetailResponse = new MovieDetailResponse();
         movieDetailResponse.setTitle(movie.getTitle());
@@ -139,7 +134,6 @@ public class MovieServiceImpl implements MovieService {
         movieDetailResponse.setBackdropPath(movie.getBackdropPath());
         movieDetailResponse.setCountry(movie.getCountry().toString());
         movieDetailResponse.setVoteAverage(movie.getVoteAverage());
-        movieDetailResponse.setCollected(isCollected);
         movieDetailResponse.setGenres(movie.getGenres().stream().map(Genres::getId).collect(Collectors.toList()));
         movieDetailResponse.setComments(movie.getComments().stream().map(Comment::getId).collect(Collectors.toList()));
 
@@ -244,5 +238,15 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> findMovieByCountry(Country country) {
         return movieRepository.findMoviesByCountry(country);
+    }
+
+    @Override
+    public boolean checkMovieCollection(UUID movieId, UUID userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Movie movie = movieRepository.findById(movieId)
+            .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_EXISTED));
+            
+        return userMovieCollectionRepository.existsByUserAndMovie(user, movie);
     }
 }

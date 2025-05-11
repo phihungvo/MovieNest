@@ -38,10 +38,10 @@ export const getCommentsByMovieId = async ({
                     page: page,
                     pageSize: pageSize,
                 },
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                    'Content-Type': 'application/json',
-                },
+                // headers: {
+                //     Authorization: `Bearer ${getToken()}`,
+                //     'Content-Type': 'application/json',
+                // },
             },
         );
 
