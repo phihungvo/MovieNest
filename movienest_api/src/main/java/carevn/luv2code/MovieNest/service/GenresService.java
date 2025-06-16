@@ -15,5 +15,7 @@ public interface GenresService {
 
     Genres findGenreById(UUID id);
 
+    List<Genres> findGenresByMovieId(UUID movieId);
+
     boolean deleteGenreById(UUID id);
 }

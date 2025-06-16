@@ -52,6 +52,13 @@ public class GenresServiceImpl implements GenresService {
     }
 
     @Override
+    public List<Genres> findGenresByMovieId(UUID movieId) {
+        List<Genres> genresList = new ArrayList<>();
+        genresRepository.findGenresByMovieId(movieId).forEach(genresList::add);
+        return genresList;
+    }
+
+    @Override
     public boolean deleteGenreById(UUID id) {
         Genres genres = genresRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Genres not found!"));

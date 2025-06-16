@@ -21,6 +21,7 @@ import {CommentList} from '~/components/Layout/components/CommentList';
 import { getAllComments } from '~/service/admin/comment';
 import { useAuth } from '~/routes/AuthContext';
 import { createCollection, findCollectedMoviesByUserId, unCollect } from '~/service/user/user';
+import { getAllGenres, getGenresByMovieId } from '~/service/admin/genres';
 
 const cx = classNames.bind(styles);
 
@@ -56,8 +57,11 @@ function MovieDetail() {
     useEffect(() => {
         const fetchMovieDetail = async () => {
             try {
-                const movieData = await movieDetail(movieId);
-                const collectionStatus = currentUserId ? await checkMovieCollection(movieId, currentUserId) : false;
+                const [movieData, collectionStatus, genresSource] = await Promise.all([
+                    movieDetail(movieId),
+                    currentUserId ? checkMovieCollection(movieId, currentUserId) : Promise.resolve(false),
+                    getGenresByMovieId(movieId)
+                ])
                 
                 setMovie({
                     ...MovieDetailType,
@@ -69,7 +73,7 @@ function MovieDetail() {
                     collected: collectionStatus,
                     actors: movieData?.actors || [],
                     director: movieData?.director || 'Chưa cập nhật',
-                    genres: movieData?.genres?.map(genre => genre.name) || [],
+                    genres: genresSource?.map(genre => genre.name) || [],
                     country: movieData?.country || 'Chưa cập nhật'
                 });
 
@@ -83,7 +87,7 @@ function MovieDetail() {
             }
         };
 
-        if (movieId) {  // Remove currentUserId condition
+        if (movieId) {  
             fetchMovieDetail();
         }
     }, [movieId, currentUserId]);

@@ -77,6 +77,9 @@ public class SecurityConfig {
                                 "/api/comment/movie/**",
                                 "/api/comment/{commentId}/reply",
 
+                                //Genres
+                                "/api/genres/*/movie",
+
                                 // Actors
                                 "/api/actor/findAll"
                         ).permitAll()

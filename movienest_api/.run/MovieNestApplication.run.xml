@@ -4,8 +4,8 @@
       <env name="FILE_UPLOAD_DIR" value="/uploads" />
       <env name="JWT_EXPIRATION" value="36000000000" />
       <env name="JWT_SECRET" value="QQU0Alvur6b2dBvD5pcC4C3mlRgSm9OUTfrGJMFtFlU=" />
-      <env name="SPRING_DATASOURCE_PASSWORD" value="Hungyeuy@2410" />
-      <env name="SPRING_DATASOURCE_URL" value="jdbc:mysql://localhost:3306/movenest_api?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true" />
+      <env name="SPRING_DATASOURCE_PASSWORD" value="root" />
+      <env name="SPRING_DATASOURCE_URL" value="jdbc:mysql://localhost:3306/movienest_api?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true" />
       <env name="SPRING_DATASOURCE_USERNAME" value="root" />
     </envs>
     <module name="MovieNest" />

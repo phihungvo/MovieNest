@@ -61,8 +61,9 @@ const API_ENDPOINTS = {
         GET_ALL: `${BASE_URL}/genres/getAll`,
         CREATE: `${BASE_URL}/genres`,
         DELETE: (genresId) => `${BASE_URL}/genres/${genresId}`,
+        GET_BY_MOVIE_ID:  (movieId) => `${BASE_URL}/genres/${movieId}/movie`,
     },
-
+    
     ACTOR: {
         GET_ALL: `${BASE_URL}/actor/getAllPagable`,
         GET_ALL_NO_PAGING: `${BASE_URL}/actor/findAll`,

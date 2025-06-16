@@ -21,3 +21,17 @@ export const getAllGenres = async () => {
         console.error('Error fetching genres:', error);
     }
 };
+
+export const getGenresByMovieId = async (movieId) => {
+    console.log('movieid: ', movieId)
+    try {
+        const response = await axios.get(
+            API_ENDPOINTS.GENRES.GET_BY_MOVIE_ID(movieId)
+        );
+
+        console.log('get genres by movie id: ', response.data);
+
+    }catch(error){
+        console.log('Error get genres by movie id ', error);
+    }
+}

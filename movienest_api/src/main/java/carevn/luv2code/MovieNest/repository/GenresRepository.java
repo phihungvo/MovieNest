@@ -15,4 +15,7 @@ public interface GenresRepository extends JpaRepository<Genres, UUID> {
     @Query("SELECT g FROM Genres g WHERE g.name LIKE %:keyWord%")
     List<Genres> searchGenres(@Param("keyWord") String keyWord);
 
+    @Query("SELECT g FROM Movie m JOIN m.genres g WHERE m.id = :movieId")
+    List<Genres> findGenresByMovieId(@Param("movieId") UUID movieId);
+
 }

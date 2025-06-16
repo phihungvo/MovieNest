@@ -41,6 +41,11 @@ public class GenresController {
         return ResponseEntity.ok(genresService.findGenreById(id));
     }
 
+    @GetMapping("/{movieId}/movie")
+    public ResponseEntity<List<Genres>> findGenreByMovieId(@PathVariable UUID movieId) {
+        return ResponseEntity.ok().body(genresService.findGenresByMovieId(movieId));
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteGenreById(@RequestParam("id") UUID id) {
         boolean success = genresService.deleteGenreById(id);

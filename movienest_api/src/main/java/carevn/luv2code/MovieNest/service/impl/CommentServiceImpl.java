@@ -113,7 +113,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void softDeleteComment(UUID commentId) {
-        // Soft delete: Chỉ ẩn comment thay vì xóa
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
@@ -179,7 +178,6 @@ public class CommentServiceImpl implements CommentService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comment> rootComments = commentRepository.findByMovieIdAndParentCommentIsNull(movieId, pageable);
 
-        // Chuyển đổi sang DTO và đảm bảo các reply được bao gồm
         return rootComments.map(rootComment -> {
             try {
                 return commentMapper.toDtoWithReplies(rootComment);
@@ -193,11 +191,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentDTO replyToComment(UUID parentId, CommentDTO replyDTO) {
-        // Fetch the parent comment
         Comment parentComment = commentRepository.findById(parentId)
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
-        // Map the reply DTO to an entity
         Comment reply = commentMapper.toComment(replyDTO);
         reply.setCreateAt(new Date());
         reply.setUpdatedAt(new Date());
@@ -205,17 +201,14 @@ public class CommentServiceImpl implements CommentService {
         reply.setMovie(parentComment.getMovie());
         reply.setStatus(CommentStatus.PENDING);
 
-        // Set the user for the reply
         if (replyDTO.getUserId() != null) {
             User user = userRepository.findById(replyDTO.getUserId())
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
             reply.setUser(user);
         }
 
-        // Save the reply
         Comment savedReply = commentRepository.save(reply);
 
-        // Map the saved reply back to a DTO
         CommentDTO resultDTO = commentMapper.toDtoWithReplies(savedReply);
         resultDTO.setParentId(parentId);
 
@@ -237,7 +230,6 @@ public class CommentServiceImpl implements CommentService {
             CommentReaction current = existingReaction.get();
 
             if (current.getType() == reactionType) {
-                // Nếu đã like/dislike rồi => hủy
                 reactionRepository.delete(current);
                 if (reactionType == ReactionType.LIKE) {
                     comment.setLikeCount(comment.getLikeCount() - 1);

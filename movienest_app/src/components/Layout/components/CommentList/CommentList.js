@@ -11,13 +11,9 @@ import {
 } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import styles from './CommentList.module.scss';
-import {
-    createComment,
-    deleteComment,
-    getCommentsByMovieId,
-} from '~/service/admin/comment';
 import CommentItem from './CommentItem';
 import NewCommentForm from './NewCommentForm';
+import { createComment, deleteComment, getCommentsByMovieId } from '~/service/admin/comment';
 
 const { TextArea } = Input;
 

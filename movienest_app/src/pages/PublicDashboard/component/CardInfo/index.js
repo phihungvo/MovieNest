@@ -57,10 +57,8 @@ function CardInfo({ movieResult, isTrailer }) {
             const isCurrentlyCollected = collectedMovies[movieId];
             if (!isCurrentlyCollected) {
                 await createCollection(currentUserId, movieId);
-                // message.success('Đã thêm vào bộ sưu tập');
             } else {
                 await unCollect(currentUserId, movieId);
-                // message.success('Đã xóa khỏi bộ sưu tập');
             }
             
             // Cập nhật trạng thái collect trong state
@@ -70,7 +68,6 @@ function CardInfo({ movieResult, isTrailer }) {
             }));
         } catch (error) {
             console.error('Error toggling collection:', error);
-            // message.error('Có lỗi xảy ra khi thực hiện thao tác!');
         }
     };
 
