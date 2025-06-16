@@ -45,3 +45,5 @@ echo "
 config/local/" >> .gitignore
 movienest_api/uploads/*
 !movienest_api/uploads/.gitkeep
+
+.env
